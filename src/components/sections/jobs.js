@@ -75,7 +75,7 @@ const StyledTabButton = styled.button`
   padding: 0 20px 2px;
   border-left: 2px solid var(--lightest-navy);
   background-color: transparent;
-  color: ${({ isActive }) => (isActive ? 'var(--green)' : 'var(--slate)')};
+  color: ${({ isActive }) => (isActive ? 'var(--yellow)' : 'var(--slate)')};
   font-family: var(--font-mono);
   font-size: var(--fz-xs);
   text-align: left;
@@ -86,8 +86,8 @@ const StyledTabButton = styled.button`
   }
   @media (max-width: 600px) {
     ${({ theme }) => theme.mixins.flexCenter};
-    min-width: 120px;
-    padding: 0 15px;
+    min-width: 160px; /* Adjusted to make tab buttons longer */
+    padding: 0 20px; /* Added padding to make the tab bigger */
     border-left: 0;
     border-bottom: 2px solid var(--lightest-navy);
     text-align: center;
@@ -99,6 +99,7 @@ const StyledTabButton = styled.button`
   }
 `;
 
+
 const StyledHighlight = styled.div`
   position: absolute;
   top: 0;
@@ -107,7 +108,7 @@ const StyledHighlight = styled.div`
   width: 2px;
   height: var(--tab-height);
   border-radius: var(--border-radius);
-  background: var(--green);
+  background: var(--yellow);
   transform: translateY(calc(${({ activeTabId }) => activeTabId} * var(--tab-height)));
   transition: transform 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
   transition-delay: 0.1s;
@@ -152,7 +153,7 @@ const StyledTabPanel = styled.div`
     line-height: 1.3;
 
     .company {
-      color: var(--green);
+      color: var(--yellow);
     }
   }
 
@@ -168,7 +169,7 @@ const Jobs = () => {
   const data = useStaticQuery(graphql`
     query {
       jobs: allMarkdownRemark(
-        filter: { fileAbsolutePath: { regex: "/content/jobs/" } }
+        filter: { fileAbsolutePath: { regex: "/jobs/" } }
         sort: { fields: [frontmatter___date], order: DESC }
       ) {
         edges {

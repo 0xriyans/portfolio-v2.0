@@ -10,21 +10,25 @@ const StyledAboutSection = styled.section`
 
   .inner {
     display: grid;
-    grid-template-columns: 3fr 2fr;
-    grid-gap: 50px;
+    grid-template-columns: 2fr 2fr;
+    grid-gap: 0px;
 
-    @media (max-width: 768px) {
+    @media (max-width: 700px) {
       display: block;
     }
   }
 `;
+
 const StyledText = styled.div`
+ @media (max-width: 768px) {
+    margin-top: 50px;
+  }
   ul.skills-list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(140px, 200px));
+    grid-template-columns: repeat(2, minmax(100px, 200px));
     grid-gap: 0 10px;
     padding: 0;
-    margin: 20px 0 0 0;
+    margin: 10px 0 0 0;
     overflow: hidden;
     list-style: none;
 
@@ -39,17 +43,18 @@ const StyledText = styled.div`
         content: '▹';
         position: absolute;
         left: 0;
-        color: var(--green);
+        color: var(--yellow);
         font-size: var(--fz-sm);
         line-height: 12px;
       }
     }
   }
 `;
+
 const StyledPic = styled.div`
   position: relative;
   max-width: 300px;
-
+  margin: 5 auto 30px;
   @media (max-width: 768px) {
     margin: 50px auto 0;
     width: 70%;
@@ -61,10 +66,11 @@ const StyledPic = styled.div`
     position: relative;
     width: 100%;
     border-radius: var(--border-radius);
-    background-color: var(--green);
+    background-color: var(--yellow);
 
     &:hover,
     &:focus {
+      background: transparent;
       outline: 0;
 
       &:after {
@@ -105,7 +111,7 @@ const StyledPic = styled.div`
     }
 
     &:after {
-      border: 2px solid var(--green);
+      border: 2px solid var(--yellow);
       top: 20px;
       left: 20px;
       z-index: -1;
@@ -125,38 +131,39 @@ const About = () => {
     sr.reveal(revealContainer.current, srConfig());
   }, []);
 
-  const skills = ['JavaScript (ES6+)', 'Java', 'React', 'Spring Boot', 'Node.js', 'WordPress'];
+  const skills = ['Java', 'JavaScript', 'SQL', 'No SQL', 'Event-Driven Architecture', 'Version Control', 'Unit Testing', 'Web3 Development'];
 
   return (
     <StyledAboutSection id="about" ref={revealContainer}>
       <h2 className="numbered-heading">About Me</h2>
 
       <div className="inner">
+        <StyledPic>
+          <div className="wrapper">
+            <StaticImage
+              className="img"
+              src="../../images/riyans.jpg"
+              width={500}
+              quality={95}
+              formats={['AUTO', 'WEBP', 'AVIF', 'JPG']}
+              alt="Headshot"
+            />
+          </div>
+        </StyledPic>
+
         <StyledText>
           <div>
-            <p>Throughout my career, I have been dedicated to building scalable and high-performance web applications. I thrive on problem-solving and enjoy the challenge of creating elegant solutions to complex technical issues. My primary focus has been on developing backend systems using various programming languages especially java</p>
-            <p>One of my key areas of specialization is WordPress development. I have a deep understanding of the platform and have successfully delivered numerous projects, ranging from custom themes and plugins to complex integrations and performance optimizations. My expertise in WordPress allows me to create tailored solutions that align with my clients' unique requirements.</p>
-            <p>Working as a software engineer has given me valuable experience collaborating with multidisciplinary teams and effectively communicating complex technical concepts to non-technical stakeholders. I strongly believe in the power of teamwork and have actively contributed to agile development environments, ensuring seamless coordination and successful project delivery.</p>
-            <p>Here are a few technologies I’ve been working with recently:</p>
+            <p>
+              Hi, I’m Riyan Sugiarto, a software engineer passionate about building impactful software. My journey started in college with Java, and I quickly discovered my love for solving problems through code.
+              I specialize in backend development with Java, Spring Boot, SQL, and microservices, building scalable systems that support millions of users and working in agile teams to deliver quality solutions.
+            </p>
+            <p>Technologies I’ve been working with:</p>
           </div>
 
           <ul className="skills-list">
             {skills && skills.map((skill, i) => <li key={i}>{skill}</li>)}
           </ul>
         </StyledText>
-
-        <StyledPic>
-          <div className="wrapper">
-            <StaticImage
-              className="img"
-              src="../../images/me.jpg"
-              width={500}
-              quality={95}
-              formats={['AUTO', 'WEBP', 'AVIF']}
-              alt="Headshot"
-            />
-          </div>
-        </StyledPic>
       </div>
     </StyledAboutSection>
   );

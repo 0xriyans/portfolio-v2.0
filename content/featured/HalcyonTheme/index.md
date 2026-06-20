@@ -1,15 +1,15 @@
 ---
 date: '1'
-title: 'Halcyon Theme'
-cover: './halcyon.png'
-github: 'https://github.com/bchiang7/halcyon-site'
-external: 'https://halcyon-theme.netlify.com/'
+title: 'Penjaminan KMK PEN'
+cover: './PEN.png'
+external: 'https://askrindo.co.id/penjaminan-kmk-pen'
 tech:
-  - VS Code
-  - Sublime Text
-  - Atom
-  - iTerm2
-  - Hyper
+  - Java
+  - Spring Boot
+  - Postgre Database
+  - REST API
+  - Jasper Report
+  - Git
 ---
 
-A minimal, dark blue theme for VS Code, Sublime Text, Atom, iTerm, and more. Available on [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=brittanychiang.halcyon-vscode), [Package Control](https://packagecontrol.io/packages/Halcyon%20Theme), [Atom Package Manager](https://atom.io/themes/halcyon-syntax), and [npm](https://www.npmjs.com/package/hyper-halcyon-theme).
+As a Backend Developer for [Penjaminan KMK PEN](https://askrindo.co.id/penjaminan-kmk-pen) at Askrindo, I developed and maintained the backend systems supporting loan guarantee services. I built and optimized APIs using Java (Spring Boot) to facilitate secure loan application processing, guarantee issuance, and real-time data tracking. My role also involved integrating with external systems for risk assessments, ensuring efficient and scalable data processing for both clients and internal users.

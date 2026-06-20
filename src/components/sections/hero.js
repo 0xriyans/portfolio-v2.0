@@ -3,23 +3,22 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import styled from 'styled-components';
 import { navDelay, loaderDelay } from '@utils';
 import { usePrefersReducedMotion } from '@hooks';
+// import { email } from '@config';
 
 const StyledHeroSection = styled.section`
   ${({ theme }) => theme.mixins.flexCenter};
   flex-direction: column;
   align-items: flex-start;
   min-height: 100vh;
-  height: 100vh;
   padding: 0;
 
-  @media (max-height: 700px) and (min-width: 700px), (max-width: 360px) {
-    height: auto;
-    padding-top: var(--nav-height);
+  @media (max-width: 480px) and (min-height: 700px) {
+    padding-bottom: 10vh;
   }
 
   h1 {
     margin: 0 0 30px 4px;
-    color: var(--green);
+    color: var(--yellow);
     font-family: var(--font-mono);
     font-size: clamp(var(--fz-sm), 5vw, var(--fz-md));
     font-weight: 400;
@@ -30,7 +29,7 @@ const StyledHeroSection = styled.section`
   }
 
   h3 {
-    margin-top: 5px;
+    margin-top: 10px;
     color: var(--slate);
     line-height: 0.9;
   }
@@ -61,22 +60,26 @@ const Hero = () => {
 
   const one = <h1>Hi, my name is</h1>;
   const two = <h2 className="big-heading">Riyan Sugiarto.</h2>;
-  const three = <h3 className="big-heading">I build things for the web.</h3>;
+  const three = <h3 className="big-heading">building impactful solutions.</h3>;
   const four = (
     <>
-      <p> A passionate software engineer with a focus on backend development and expertise in WordPress. With over 3 years of professional experience in the industry, I have honed my skills and become proficient in crafting robust and efficient solutions.
+      <p>
+      I’m a software engineer with 4+ years of experience, focused on backend development. 
+      I build scalable, reliable systems and have contributed to platforms serving millions of users. 
+      I enjoy working in agile teams to deliver impactful, user-focused solutions.
       </p>
     </>
   );
   const five = (
     <a
       className="email-link"
-      href="https://www.newline.co/courses/build-a-spotify-connected-app"
+      href="mailto:ryansgrt23@gmail.com"
       target="_blank"
       rel="noreferrer">
-      Hire me as freelancer?
+      Hire me as a freelancer
     </a>
   );
+  
 
   const items = [one, two, three, four, five];
 

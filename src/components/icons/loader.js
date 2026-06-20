@@ -19,7 +19,7 @@ const IconLoader = () => (
                   L 89, 28 z"
       />
     </g>
-    <text x="34" y="69" fill="currentColor" fontSize="65px" fontFamily="monospace">
+    <text x="31" y="72" fill="currentColor" fontSize="60px" fontFamily="elnath">
       R
     </text>
   </svg>

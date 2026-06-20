@@ -66,14 +66,14 @@ const StyledNav = styled.nav`
     ${({ theme }) => theme.mixins.flexCenter};
 
     a {
-      color: var(--green);
+      color: var(--yellow);
       width: 42px;
       height: 42px;
 
       &:hover,
       &:focus {
         svg {
-          fill: var(--green-tint);
+          fill: var(--yellow-tint);
         }
       }
 
@@ -112,7 +112,7 @@ const StyledLinks = styled.div`
         &:before {
           content: '0' counter(item) '.';
           margin-right: 5px;
-          color: var(--green);
+          color: var(--yellow);
           font-size: var(--fz-xxs);
           text-align: right;
         }
@@ -173,7 +173,7 @@ const Nav = ({ isHome }) => {
   );
 
   const ResumeLink = (
-    <a className="resume-button" href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+    <a className="resume-button" href="/Riyan Sugiarto - Resume 2025.pdf" target="_blank" rel="noopener noreferrer">
       Resume
     </a>
   );

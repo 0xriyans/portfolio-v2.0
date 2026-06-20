@@ -1,14 +1,18 @@
 module.exports = {
-  email: 'hello@riyansugiarto.com',
+  email: 'ryansgrt23@gmail.com',
 
   socialMedia: [
     {
       name: 'GitHub',
-      url: 'https://github.com/ryansgrt',
+      url: 'https://github.com/0xriyans',
     },
     {
       name: 'Instagram',
-      url: 'https://www.instagram.com/ryan_sgrt',
+      url: 'https://www.instagram.com/0xriyans',
+    },
+    {
+      name: 'Twitter',
+      url: 'https://twitter.com/0xriyans',
     },
     {
       name: 'Linkedin',
@@ -16,7 +20,11 @@ module.exports = {
     },
     {
       name: 'Codepen',
-      url: 'https://codepen.io/bchiang7',
+      url: 'https://codepen.io/0xriyans',
+    },
+    {
+      name: 'Medium',
+      url: 'https://medium.com/@0xriyans',
     },
   ],
 
@@ -40,7 +48,7 @@ module.exports = {
   ],
 
   colors: {
-    green: '#64ffda',
+    yellow: '#F1D00A',
     navy: '#0a192f',
     darkNavy: '#020c1b',
   },

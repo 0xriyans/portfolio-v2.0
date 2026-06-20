@@ -24,6 +24,15 @@ import SFMonoRegularItalicWoff2 from '@fonts/SFMono/SFMono-RegularItalic.woff2';
 import SFMonoSemiboldItalicWoff from '@fonts/SFMono/SFMono-SemiboldItalic.woff';
 import SFMonoSemiboldItalicWoff2 from '@fonts/SFMono/SFMono-SemiboldItalic.woff2';
 
+import Elnath from '@fonts/elnath/ELNATH.otf';
+
+
+const elnathNormalWeights = {
+  400: [Elnath, Elnath],
+  500: [Elnath, Elnath],
+  600: [Elnath, Elnath],
+};
+
 const calibreNormalWeights = {
   400: [CalibreRegularWoff, CalibreRegularWoff2],
   500: [CalibreMediumWoff, CalibreMediumWoff2],
@@ -58,6 +67,11 @@ const sfMono = {
   italic: sfMonoItalicWeights,
 };
 
+const elnath = {
+  name: 'elnath',
+  normal: elnathNormalWeights,
+};
+
 const createFontFaces = (family, style = 'normal') => {
   let styles = '';
 
@@ -86,8 +100,10 @@ const calibreItalic = createFontFaces(calibre, 'italic');
 const sfMonoNormal = createFontFaces(sfMono);
 const sfMonoItalic = createFontFaces(sfMono, 'italic');
 
+const elnathMonoNormal = createFontFaces(elnath);
+
 const Fonts = css`
-  ${calibreNormal + calibreItalic + sfMonoNormal + sfMonoItalic}
+  ${calibreNormal + calibreItalic + sfMonoNormal + sfMonoItalic + elnathMonoNormal}
 `;
 
 export default Fonts;

@@ -191,7 +191,7 @@ const ArchivePage = ({ location, data }) => {
                       </td>
 
                       <td className="tech hide-on-mobile">
-                        {tech?.length > 0 &&
+                        {tech.length > 0 &&
                           tech.map((item, i) => (
                             <span key={i}>
                               {item}
@@ -245,7 +245,7 @@ export default ArchivePage;
 export const pageQuery = graphql`
   {
     allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/content/projects/" } }
+      filter: { fileAbsolutePath: { regex: "/projects/" } }
       sort: { fields: [frontmatter___date], order: DESC }
     ) {
       edges {
@@ -256,8 +256,6 @@ export const pageQuery = graphql`
             tech
             github
             external
-            ios
-            android
             company
           }
           html

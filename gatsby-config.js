@@ -2,12 +2,12 @@ const config = require('./src/config');
 
 module.exports = {
   siteMetadata: {
-    title: 'Riyan Sugiarto',
+    title: 'Riyan Sugiarto | Building Impactful Solutions',
     description:
-      'Riyan Sugiarto is a software engineer who specializes in building (and occasionally designing) exceptional digital experiences.',
-    siteUrl: 'https://riyansugiarto.com', // No trailing slash allowed!
+      'Riyan Sugiarto is a software engineer focused on building scalable and reliable backend systems that drive exceptional digital experiences.',
+    siteUrl: 'https://riyans.dev', // No trailing slash allowed!
     image: '/og.png', // Path to your image you placed in the 'static' folder
-    twitterUsername: '@bchiang7',
+    twitterUsername: '@0xriyans',
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
@@ -20,8 +20,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: 'Riyan Sugiarto',
-        short_name: 'Riyan Sugiarto',
+        name: 'BrittanyChiang',
+        short_name: 'BrittanyChiang',
         start_url: '/',
         background_color: config.colors.darkNavy,
         theme_color: config.colors.navy,
@@ -77,7 +77,7 @@ module.exports = {
               maxWidth: 700,
               linkImagesToOriginal: true,
               quality: 90,
-              tracedSVG: { color: config.colors.green },
+              tracedSVG: { color: config.colors.yellow },
             },
           },
           {
