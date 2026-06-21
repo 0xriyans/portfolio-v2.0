@@ -11,6 +11,12 @@ const textLiquidAnim = keyframes`
   100% { background-position: 0% 50%; }
 `;
 
+const mobileBreath = keyframes`
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+`;
+
 const StyledHeroSection = styled.section`
   ${({ theme }) => theme.mixins.flexCenter};
   flex-direction: column;
@@ -48,8 +54,9 @@ const StyledHeroSection = styled.section`
     background-clip: text;
     text-fill-color: transparent;
     @media (max-width: 768px) {
-      animation: none;
+      animation: ${mobileBreath} 4s ease-in-out infinite;
       background-size: 100% 100%;
+      display: inline-block;
     }
   }
 
@@ -71,8 +78,9 @@ const StyledHeroSection = styled.section`
     background-clip: text;
     text-fill-color: transparent;
     @media (max-width: 768px) {
-      animation: none;
+      animation: ${mobileBreath} 5s ease-in-out infinite 1s;
       background-size: 100% 100%;
+      display: inline-block;
     }
   }
 

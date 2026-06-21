@@ -16,7 +16,9 @@ const Layout = ({ children, location }) => {
   const [themeMode, setThemeMode] = useState('light');
 
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem('theme') || 'light';
+    const isMobile = window.innerWidth <= 768;
+    const defaultTheme = isMobile ? 'dark' : 'light';
+    const savedTheme = window.localStorage.getItem('theme') || defaultTheme;
     setThemeMode(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
