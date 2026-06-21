@@ -34,12 +34,15 @@ const Ring = styled.div`
   left: 50%;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 
-    inset 0 0 60px rgba(255, 255, 255, 0.02),
-    0 0 30px rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 0 60px rgba(255, 255, 255, 0.02), 0 0 30px rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   transform-style: preserve-3d;
+
+  @media (max-width: 768px) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 `;
 
 const Ring1 = styled(Ring)`

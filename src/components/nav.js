@@ -28,6 +28,10 @@ const StyledHeader = styled.header`
   user-select: auto !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  @media (max-width: 768px) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   transition: var(--transition);
 
@@ -151,7 +155,7 @@ const StyledLinks = styled.div`
     justify-content: center;
     background: transparent;
     border: 1px solid var(--yellow);
-    
+
     &:hover,
     &:focus {
       background: var(--yellow-tint);
@@ -196,7 +200,7 @@ const StyledLanguageDropdown = styled.div`
     margin-top: 5px;
     background-color: var(--light-navy);
     min-width: 100px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
     z-index: 100;
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -283,8 +287,12 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
   );
 
   const ResumeLink = (
-    <a className="resume-button" href="/Riyan Sugiarto - Resume 2025.pdf" target="_blank" rel="noopener noreferrer">
-      {t("Resume")}
+    <a
+      className="resume-button"
+      href="/Riyan Sugiarto - Resume 2025.pdf"
+      target="_blank"
+      rel="noopener noreferrer">
+      {t('Resume')}
     </a>
   );
 
@@ -331,7 +339,9 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
                   navLinks.map(({ url, name }, i) => (
                     <li key={i}>
                       {url.startsWith('http') ? (
-                        <a href={url} target="_blank" rel="noopener noreferrer">{t(name)}</a>
+                        <a href={url} target="_blank" rel="noopener noreferrer">
+                          {t(name)}
+                        </a>
                       ) : (
                         <Link to={url}>{t(name)}</Link>
                       )}
@@ -364,7 +374,9 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
                       <CSSTransition key={i} classNames={fadeDownClass} timeout={timeout}>
                         <li key={i} style={{ transitionDelay: `${isHome ? i * 100 : 0}ms` }}>
                           {url.startsWith('http') ? (
-                            <a href={url} target="_blank" rel="noopener noreferrer">{t(name)}</a>
+                            <a href={url} target="_blank" rel="noopener noreferrer">
+                              {t(name)}
+                            </a>
                           ) : (
                             <Link to={url}>{t(name)}</Link>
                           )}
@@ -387,7 +399,11 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
               <TransitionGroup component={null}>
                 {isMounted && (
                   <CSSTransition classNames={fadeDownClass} timeout={timeout}>
-                    <div style={{ transitionDelay: `${isHome ? (navLinks.length + 1) * 100 : 0}ms`, marginLeft: '10px' }}>
+                    <div
+                      style={{
+                        transitionDelay: `${isHome ? (navLinks.length + 1) * 100 : 0}ms`,
+                        marginLeft: '10px',
+                      }}>
                       {ThemeToggle}
                     </div>
                   </CSSTransition>
@@ -397,7 +413,8 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
               <TransitionGroup component={null}>
                 {isMounted && (
                   <CSSTransition classNames={fadeDownClass} timeout={timeout}>
-                    <div style={{ transitionDelay: `${isHome ? (navLinks.length + 2) * 100 : 0}ms` }}>
+                    <div
+                      style={{ transitionDelay: `${isHome ? (navLinks.length + 2) * 100 : 0}ms` }}>
                       {LanguageSwitcher}
                     </div>
                   </CSSTransition>
