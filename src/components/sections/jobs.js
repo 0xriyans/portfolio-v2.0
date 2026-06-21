@@ -155,6 +155,10 @@ const StyledTechList = styled.ul`
       backdrop-filter: blur(10px);
     }
 
+    &::before {
+      display: none;
+    }
+
     &:hover {
       background: linear-gradient(90deg, rgba(168, 85, 247, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
       border-color: var(--pink);

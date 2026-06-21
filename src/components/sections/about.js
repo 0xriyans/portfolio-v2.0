@@ -79,14 +79,6 @@ const StyledSkills = styled.div`
         backdrop-filter: blur(10px);
       }
 
-      &::before {
-        content: '▹';
-        color: var(--yellow);
-        font-size: var(--fz-sm);
-        line-height: 12px;
-        margin-right: 8px;
-      }
-
       &:hover {
         background: linear-gradient(
           90deg,
@@ -97,10 +89,6 @@ const StyledSkills = styled.div`
         color: var(--white);
         transform: translateY(-3px);
         box-shadow: 0 10px 20px rgba(168, 85, 247, 0.2);
-
-        &::before {
-          color: var(--pink);
-        }
       }
     }
   }
