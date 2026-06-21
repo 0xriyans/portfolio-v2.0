@@ -11,7 +11,7 @@ const StyledContent = styled.div`
 `;
 
 const Layout = ({ children, location }) => {
-  const isHome = location.pathname === '/';
+  const isHome = ['/', '/id', '/id/', '/jp', '/jp/', '/en', '/en/'].includes(location.pathname);
   const [isLoading, setIsLoading] = useState(isHome);
   const [themeMode, setThemeMode] = useState('light');
 
