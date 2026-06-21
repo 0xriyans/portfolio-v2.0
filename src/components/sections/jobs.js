@@ -43,7 +43,7 @@ const StyledTabList = styled.div`
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     gap: 12px;
-    
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -59,7 +59,8 @@ const StyledTabButton = styled.button`
   padding: 0 20px;
   margin-bottom: 10px;
   border-radius: 25px;
-  background: ${({ isActive }) => (isActive ? 'linear-gradient(135deg, var(--yellow), var(--pink))' : 'rgba(255, 255, 255, 0.05)')};
+  background: ${({ isActive }) =>
+    isActive ? 'linear-gradient(135deg, var(--yellow), var(--pink))' : 'rgba(255, 255, 255, 0.05)'};
   color: ${({ isActive }) => (isActive ? '#ffffff' : 'var(--light-slate)')};
   font-family: var(--font-mono);
   font-size: var(--fz-xs);
@@ -79,7 +80,10 @@ const StyledTabButton = styled.button`
 
   &:hover,
   &:focus {
-    background: ${({ isActive }) => (isActive ? 'linear-gradient(135deg, var(--yellow), var(--pink))' : 'rgba(255, 255, 255, 0.1)')};
+    background: ${({ isActive }) =>
+    isActive
+      ? 'linear-gradient(135deg, var(--yellow), var(--pink))'
+      : 'rgba(255, 255, 255, 0.1)'};
     color: ${({ isActive }) => (isActive ? '#ffffff' : 'var(--yellow)')};
     transform: ${({ isActive }) => (isActive ? 'none' : 'translateY(-2px)')};
   }
@@ -123,24 +127,58 @@ const StyledTabPanel = styled.div`
 `;
 
 const StyledTechList = styled.ul`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
   padding: 0;
   margin: 30px 0 0 0;
   list-style: none;
 
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
   li {
-    margin: 0 10px 10px 0;
-    padding: 8px 15px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--white);
+    position: relative;
+    padding: 8px 14px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--lightest-slate);
     font-family: var(--font-mono);
-    font-size: var(--fz-xs);
-    white-space: nowrap;
-    
-    &:before {
-      display: none !important;
+    font-size: var(--fz-xxs);
+    line-height: 1.4;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    cursor: default;
+
+    @media (min-width: 768px) {
+      font-size: var(--fz-xs);
+      padding: 10px 18px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    &::before {
+      content: '▹';
+      color: var(--yellow);
+      font-size: var(--fz-sm);
+      line-height: 12px;
+      margin-right: 8px;
+    }
+
+    &:hover {
+      background: linear-gradient(90deg, rgba(168, 85, 247, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+      border-color: var(--pink);
+      color: var(--white);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+
+      &::before {
+        color: var(--pink);
+      }
     }
   }
 `;
@@ -172,7 +210,9 @@ const Jobs = () => {
 
   const { language } = useI18next();
   const { t } = useTranslation();
-  const jobsData = data.jobs.edges.filter(({ node }) => node.fileAbsolutePath.includes(`.${language}.md`));
+  const jobsData = data.jobs.edges.filter(({ node }) =>
+    node.fileAbsolutePath.includes(`.${language}.md`),
+  );
 
   const [activeTabId, setActiveTabId] = useState(0);
   const [tabFocus, setTabFocus] = useState(null);
@@ -224,7 +264,7 @@ const Jobs = () => {
 
   return (
     <StyledJobsSection id="jobs" ref={revealContainer}>
-      <h2 className="numbered-heading">{t("Where I’ve Worked")}</h2>
+      <h2 className="numbered-heading">{t('Where I’ve Worked')}</h2>
 
       <div className="inner" ref={tiltRef}>
         <StyledTabList role="tablist" aria-label="Job tabs" onKeyDown={e => onKeyDown(e)}>
@@ -276,7 +316,7 @@ const Jobs = () => {
                     <p className="range">{range}</p>
 
                     <div dangerouslySetInnerHTML={{ __html: html }} />
-                    
+
                     {frontmatter.tech && (
                       <StyledTechList>
                         {frontmatter.tech.map((tech, idx) => (

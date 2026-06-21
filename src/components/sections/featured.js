@@ -67,8 +67,6 @@ const StyledProject = styled.li`
       @media (max-width: 768px) {
         justify-content: flex-start;
       }
-
-
     }
     .project-links {
       justify-content: flex-end;
@@ -181,34 +179,64 @@ const StyledProject = styled.li`
   .project-tech-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     position: relative;
     z-index: 2;
     margin: 25px 0 10px;
     padding: 0;
     list-style: none;
 
-    li {
-      padding: 6px 16px;
-      background-color: rgba(255, 255, 255, 0.08);
-      border-radius: 50px;
-      color: var(--lightest-slate);
-      font-family: var(--font-sans);
-      font-size: var(--fz-xs);
-      white-space: nowrap;
-      backdrop-filter: blur(5px);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
-        color: var(--white);
-        transform: translateY(-2px);
-      }
+    @media (max-width: 768px) {
+      margin: 15px 0 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
 
-    @media (max-width: 768px) {
-      margin: 10px 0;
+    li {
+      position: relative;
+      padding: 6px 14px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: var(--lightest-slate);
+      font-family: var(--font-mono);
+      font-size: var(--fz-xxs);
+      line-height: 1.4;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      cursor: default;
+
+      @media (min-width: 768px) {
+        font-size: var(--fz-xs);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+      }
+
+      &::before {
+        content: '▹';
+        color: var(--yellow);
+        font-size: var(--fz-sm);
+        line-height: 12px;
+        margin-right: 8px;
+      }
+
+      &:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(168, 85, 247, 0.2) 0%,
+          rgba(236, 72, 153, 0.2) 100%
+        );
+        border-color: var(--pink);
+        color: var(--white);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+
+        &::before {
+          color: var(--pink);
+        }
+      }
     }
   }
 
@@ -256,7 +284,7 @@ const StyledProject = styled.li`
       height: 250px;
       opacity: 1;
       box-shadow: none;
-      
+
       a {
         border-radius: 0;
       }
@@ -325,8 +353,9 @@ const Featured = () => {
 
   const { language } = useI18next();
   const { t } = useTranslation();
-  const featuredProjects = data.featured.edges
-    .filter(({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`));
+  const featuredProjects = data.featured.edges.filter(
+    ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
+  );
   const revealTitle = useRef(null);
   const revealProjects = useRef([]);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -343,7 +372,7 @@ const Featured = () => {
   return (
     <section id="projects">
       <h2 className="numbered-heading" ref={revealTitle}>
-        {t("Some Things I’ve Built")}
+        {t('Some Things I’ve Built')}
       </h2>
 
       <StyledProjectsGrid>
@@ -357,7 +386,7 @@ const Featured = () => {
               <StyledProject key={i} ref={el => (revealProjects.current[i] = el)}>
                 <div className="project-content">
                   <div>
-                    <p className="project-overline">{t("Featured Project")}</p>
+                    <p className="project-overline">{t('Featured Project')}</p>
 
                     <h3 className="project-title">
                       <a href={external}>{title}</a>
@@ -379,7 +408,7 @@ const Featured = () => {
                     <div className="project-links">
                       {cta && (
                         <a href={cta} aria-label="Course Link" className="cta">
-                          {t("Learn More")}
+                          {t('Learn More')}
                         </a>
                       )}
                       {github && (

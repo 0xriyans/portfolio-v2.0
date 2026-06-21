@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
+import { useI18next } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
 import { srConfig } from '@config';
 import sr from '@utils/sr';
@@ -130,7 +131,10 @@ const StyledTableContainer = styled.div`
 `;
 
 const ArchivePage = ({ location, data }) => {
-  const projects = data.allMarkdownRemark.edges;
+  const { language } = useI18next();
+  const projects = data.allMarkdownRemark.edges.filter(
+    ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
+  );
   const revealTitle = useRef(null);
   const revealTable = useRef(null);
   const revealProjects = useRef([]);
@@ -250,6 +254,7 @@ export const pageQuery = graphql`
     ) {
       edges {
         node {
+          fileAbsolutePath
           frontmatter {
             date
             title

@@ -333,27 +333,31 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
           <>
             {Logo}
 
-            <StyledLinks>
-              <ol>
-                {navLinks &&
-                  navLinks.map(({ url, name }, i) => (
-                    <li key={i}>
-                      {url.startsWith('http') ? (
-                        <a href={url} target="_blank" rel="noopener noreferrer">
-                          {t(name)}
-                        </a>
-                      ) : (
-                        <Link to={url}>{t(name)}</Link>
-                      )}
-                    </li>
-                  ))}
-              </ol>
-              <div>{ResumeLink}</div>
-              <div style={{ marginLeft: '10px' }}>{ThemeToggle}</div>
-              {LanguageSwitcher}
-            </StyledLinks>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <StyledLinks>
+                <ol>
+                  {navLinks &&
+                    navLinks.map(({ url, name }, i) => (
+                      <li key={i}>
+                        {url.startsWith('http') ? (
+                          <a href={url} target="_blank" rel="noopener noreferrer">
+                            {t(name)}
+                          </a>
+                        ) : (
+                          <Link to={url}>{t(name)}</Link>
+                        )}
+                      </li>
+                    ))}
+                </ol>
+                <div>{ResumeLink}</div>
+                <div style={{ marginLeft: '10px', marginRight: '10px' }}>{ThemeToggle}</div>
+              </StyledLinks>
 
-            <Menu toggleTheme={toggleTheme} themeMode={themeMode} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                {LanguageSwitcher}
+                <Menu toggleTheme={toggleTheme} themeMode={themeMode} />
+              </div>
+            </div>
           </>
         ) : (
           <>
@@ -365,70 +369,77 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
               )}
             </TransitionGroup>
 
-            <StyledLinks>
-              <ol>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <StyledLinks>
+                <ol>
+                  <TransitionGroup component={null}>
+                    {isMounted &&
+                      navLinks &&
+                      navLinks.map(({ url, name }, i) => (
+                        <CSSTransition key={i} classNames={fadeDownClass} timeout={timeout}>
+                          <li key={i} style={{ transitionDelay: `${isHome ? i * 100 : 0}ms` }}>
+                            {url.startsWith('http') ? (
+                              <a href={url} target="_blank" rel="noopener noreferrer">
+                                {t(name)}
+                              </a>
+                            ) : (
+                              <Link to={url}>{t(name)}</Link>
+                            )}
+                          </li>
+                        </CSSTransition>
+                      ))}
+                  </TransitionGroup>
+                </ol>
+
                 <TransitionGroup component={null}>
-                  {isMounted &&
-                    navLinks &&
-                    navLinks.map(({ url, name }, i) => (
-                      <CSSTransition key={i} classNames={fadeDownClass} timeout={timeout}>
-                        <li key={i} style={{ transitionDelay: `${isHome ? i * 100 : 0}ms` }}>
-                          {url.startsWith('http') ? (
-                            <a href={url} target="_blank" rel="noopener noreferrer">
-                              {t(name)}
-                            </a>
-                          ) : (
-                            <Link to={url}>{t(name)}</Link>
-                          )}
-                        </li>
-                      </CSSTransition>
-                    ))}
+                  {isMounted && (
+                    <CSSTransition classNames={fadeDownClass} timeout={timeout}>
+                      <div style={{ transitionDelay: `${isHome ? navLinks.length * 100 : 0}ms` }}>
+                        {ResumeLink}
+                      </div>
+                    </CSSTransition>
+                  )}
                 </TransitionGroup>
-              </ol>
 
-              <TransitionGroup component={null}>
-                {isMounted && (
-                  <CSSTransition classNames={fadeDownClass} timeout={timeout}>
-                    <div style={{ transitionDelay: `${isHome ? navLinks.length * 100 : 0}ms` }}>
-                      {ResumeLink}
-                    </div>
-                  </CSSTransition>
-                )}
-              </TransitionGroup>
+                <TransitionGroup component={null}>
+                  {isMounted && (
+                    <CSSTransition classNames={fadeDownClass} timeout={timeout}>
+                      <div
+                        style={{
+                          transitionDelay: `${isHome ? (navLinks.length + 1) * 100 : 0}ms`,
+                          marginLeft: '10px',
+                          marginRight: '10px',
+                        }}>
+                        {ThemeToggle}
+                      </div>
+                    </CSSTransition>
+                  )}
+                </TransitionGroup>
+              </StyledLinks>
 
-              <TransitionGroup component={null}>
-                {isMounted && (
-                  <CSSTransition classNames={fadeDownClass} timeout={timeout}>
-                    <div
-                      style={{
-                        transitionDelay: `${isHome ? (navLinks.length + 1) * 100 : 0}ms`,
-                        marginLeft: '10px',
-                      }}>
-                      {ThemeToggle}
-                    </div>
-                  </CSSTransition>
-                )}
-              </TransitionGroup>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <TransitionGroup component={null}>
+                  {isMounted && (
+                    <CSSTransition classNames={fadeDownClass} timeout={timeout}>
+                      <div
+                        style={{
+                          transitionDelay: `${isHome ? (navLinks.length + 2) * 100 : 0}ms`,
+                        }}>
+                        {LanguageSwitcher}
+                      </div>
+                    </CSSTransition>
+                  )}
+                </TransitionGroup>
 
-              <TransitionGroup component={null}>
-                {isMounted && (
-                  <CSSTransition classNames={fadeDownClass} timeout={timeout}>
-                    <div
-                      style={{ transitionDelay: `${isHome ? (navLinks.length + 2) * 100 : 0}ms` }}>
-                      {LanguageSwitcher}
-                    </div>
-                  </CSSTransition>
-                )}
-              </TransitionGroup>
-            </StyledLinks>
-
-            <TransitionGroup component={null}>
-              {isMounted && (
-                <CSSTransition classNames={fadeClass} timeout={timeout}>
-                  <Menu toggleTheme={toggleTheme} themeMode={themeMode} />
-                </CSSTransition>
-              )}
-            </TransitionGroup>
+                <TransitionGroup component={null}>
+                  {isMounted && (
+                    <CSSTransition classNames={fadeClass} timeout={timeout}>
+                      <Menu toggleTheme={toggleTheme} themeMode={themeMode} />
+                    </CSSTransition>
+                  )}
+                </TransitionGroup>
+              </div>
+            </div>
           </>
         )}
       </StyledNav>

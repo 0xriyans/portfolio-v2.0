@@ -11,6 +11,6 @@
   "Get In Touch": "Get In Touch",
   "Say Hello": "Say Hello",
   "Language": "Language",
-  "about_p1": "Hello! I'm Riyan Sugiarto, a dedicated Backend Engineer with over 5 years of experience architecting secure, high-performance core systems for the telecommunications and financial industries.",
-  "about_p2": "My expertise lies in designing scalable microservices, modernizing complex legacy infrastructures, and optimizing large-scale databases. I am deeply passionate about driving business growth by slashing operational costs, maximizing system efficiency, and seamlessly integrating smart AI pipelines—such as OCR and biometrics—to build intelligent, automated workflows."
+  "about_p1": "Hello! I'm <strong>Riyan Sugiarto</strong>, a <strong>dedicated Backend Engineer</strong> with over 5 years of experience architecting secure, <strong>high-performance core systems</strong> for the telecommunications and financial industries.",
+  "about_p2": "My expertise lies in <strong>designing scalable microservices</strong>, modernizing complex legacy infrastructures, and <strong>optimizing large-scale databases</strong>. I am deeply passionate about driving business growth by slashing operational costs, maximizing system efficiency, and seamlessly integrating <strong>smart AI pipelines</strong>—such as OCR and biometrics—to build intelligent, <strong>automated workflows</strong>."
 }
