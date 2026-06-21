@@ -1,6 +1,6 @@
-﻿---
-date: '2025-12-01'
-title: 'Backend Software Engineer'
+---
+date: '2025-01-01'
+title: 'Software Engineer'
 company: 'Asuransi Kredit Indonesia'
 location: 'Jakarta, Indonesia'
 range: '2025 - Present'
@@ -12,11 +12,14 @@ tech:
   - TypeScript
   - PostgreSQL
   - Midtrans
+  - JasperReports
+  - Git
+  - Docker
+  - REST API
 ---
 
-- Architected the end-to-end frontend and backend infrastructure for **Portal Bisnis Asuransi Kredit Indonesia**, a B2B and B2C general insurance platform serving various insurance lines (Property, SME, Marine, Fire, Earthquake, Travel).
-- Designed highly decoupled systems using Angular for dynamic UIs and Java Spring Boot for high-concurrency backend processing.
-- Implemented a custom enterprise security layer with end-to-end data encryption and strict session management.
-- Integrated Midtrans payment gateway to automate secure, real-time premium collections.
-- Optimized high-volume B2B transaction logs and multi-tenant customer data using complex PostgreSQL / SQL Server database schemas.
-
+- Architected enterprise-grade B2B and B2C general insurance platforms, managing the technical roadmap from conceptual system modeling to live production delivery.
+- Designed a highly decoupled infrastructure using Angular and Java Spring Boot, implementing custom authentication and end-to-end data encryption protocols.
+- Spearheaded the **Portal Bisnis Askrindo (Insurtech Platform)**, managing technical pipelines for diverse insurance lines including Property, SME, Marine, Fire, Earthquake, and Travel.
+- Engineered robust integration layers connecting insurance products with legacy core financial systems and the Midtrans payment gateway for real-time premium collections.
+- Formulated comprehensive Technical Design Documents (TDDs) and modeled complex relational database schemas optimized for high-volume transactions.

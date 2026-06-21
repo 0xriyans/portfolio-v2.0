@@ -1,7 +1,7 @@
-﻿---
-date: '2023-12-01'
-title: 'Backend Software Engineer'
-company: 'Prudential'
+---
+date: '2023-01-01'
+title: 'Software Engineer'
+company: 'Prudential Life Assurance'
 location: 'Jakarta, Indonesia'
 range: '2023 - 2024'
 url: 'https://www.prudential.co.id/'
@@ -10,13 +10,16 @@ tech:
   - Apache Flink
   - Apache Kafka
   - IBM BPM
-  - PostgreSQL
   - Couchbase
+  - Git
+  - Docker
+  - REST API
+  - PostgreSQL
 ---
 
-- Mengarahkan architectural migration untuk stream-processing services dari Apache Flink ke lightweight Quarkus runtimes untuk **Pruhub**, yang secara signifikan berhasil mengurangi cloud memory overhead.
-- Merancang high-velocity ETL streaming pipelines melalui Apache Kafka untuk menangani operasi SPAJ real-time dengan strict zero-loss data constraints.
-- Mengotomatiskan complex policy processing dan business logic dengan cara menghubungkan real-time streaming runtimes ke IBM BPM dan BRMS.
-- Membangun high-security identity verification API untuk **PruServices**, yang secara seamless integrated dengan mesin AI e-KYC pihak ketiga untuk secure biometric workflows.
-- Memodelkan high-performance hybrid data environments menggunakan PostgreSQL dan Couchbase NoSQL untuk mendukung instant global policy availability.
-
+- Memimpin migrasi arsitektur layanan pemrosesan aliran data (_stream-processing_) dari ketergantungan Apache Flink yang berat ke _runtime_ Quarkus yang ringan, berhasil memangkas penggunaan memori _cloud_ secara drastis.
+- Merancang jalur pipa data ETL berkecepatan tinggi menggunakan Apache Kafka untuk menangani transaksi operasi SPAJ secara _real-time_ dengan toleransi data hilang nol persen (_zero-loss_).
+- Mengembangkan lapisan integrasi yang menghubungkan pemrosesan _streaming real-time_ dengan IBM BPM dan BRMS untuk mengotomatisasi alur pemrosesan polis asuransi dan logika bisnis secara penuh.
+- Memimpin integrasi layanan AI pihak ketiga untuk verifikasi identitas otomatis pada sistem e-KYC, memastikan proses pendaftaran nasabah (_onboarding_) yang sangat aman dan _touchless_.
+- Memodelkan lingkungan retensi data berkinerja tinggi menggunakan arsitektur _hybrid_ antara tabel relasional PostgreSQL dan dokumen NoSQL Couchbase.
+- Membangun API e-KYC untuk **PruServices** dan mengeksekusi migrasi _framework_ inti untuk **Pruhub**, menanamkan mekanisme deteksi penipuan (_fraud detection_) pada mesin perutean finansial.

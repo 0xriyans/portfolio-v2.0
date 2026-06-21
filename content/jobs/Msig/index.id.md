@@ -1,20 +1,24 @@
-﻿---
-date: '2024-12-01'
-title: 'Backend Software Engineer'
-company: 'MSIG Life'
+---
+date: '2024-01-01'
+title: 'Software Engineer'
+company: 'MSIG Life Indonesia'
 location: 'Jakarta, Indonesia'
 range: '2024 - 2025'
-url: 'https://www.msiglife.co.id/'
+url: 'https://msiglife.co.id/'
 tech:
-  - Java
   - Spring Cloud
-  - Kafka
-  - OCR / TTS APIs
+  - Apache Kafka
+  - Integrasi AI
+  - Zuul Gateway
   - PostgreSQL
+  - Git
+  - Docker
+  - REST API
 ---
 
-- Merancang dan memelihara resilient financial backend microservices menggunakan Spring Cloud, Eureka Server, dan Zuul Gateway untuk **Fortify** Digital Life Insurance Platform.
-- Memimpin technical integration mesin AI ke dalam digital application pipelines, seperti menerapkan automated OCR, biometric Liveness Detection, Text-to-Speech (TTS), dan Speech-to-Text (STT) untuk real-time user verification.
-- Membangun highly decoupled event-driven messaging networks menggunakan Apache Kafka untuk mengelola asynchronous workflows.
-- Merancang keseluruhan arsitektur database schema untuk **Andromeda** (platform internal Agensi), serta membangun custom financial calculation engine untuk loan requests dan payout distributions.
-
+- Merancang dan memelihara arsitektur _backend_ finansial terdistribusi yang sangat tangguh menggunakan Spring Cloud, Eureka Server, dan Zuul Gateway untuk manajemen API terpusat.
+- Memimpin integrasi teknis mesin AI pihak ketiga (OCR, deteksi _liveness_ biometrik, TTS, dan STT) untuk memungkinkan ekstraksi dokumen identitas secara otomatis dan verifikasi pengguna _real-time_.
+- Mendesain skema _database_ relasional kompleks untuk PostgreSQL, menerapkan partisi struktural dan indeks tertarget untuk menjaga integritas data saat terjadi ratusan _query_ serentak.
+- Membangun jaringan komunikasi asinkron (_event-driven_) yang sangat terpisah menggunakan Apache Kafka untuk mengelola alur kerja lintas _microservices_ secara konsisten.
+- Menerapkan arsitektur keamanan tingkat _enterprise_ menggunakan protokol OAuth2 dan tanda tangan JWT pada tingkat _Gateway_ untuk melindungi portal keuangan dari akses ilegal.
+- Mengembangkan komponen inti untuk **Fortify (Platform Asuransi Jiwa Digital)** dan merancang modul Pembiayaan Agen pada **Andromeda (Platform Agensi)** dengan mesin kalkulasi finansial kustom.

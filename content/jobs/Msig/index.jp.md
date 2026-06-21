@@ -1,20 +1,24 @@
-﻿---
-date: '2024-12-01'
-title: 'バックエンドソフトウェアエンジニア'
-company: 'MSIG Life'
-location: 'ジャカルタ、インドネシア'
-range: '2024 - 2025'
-url: 'https://www.msiglife.co.id/'
+---
+date: '2024-01-01'
+title: 'ソフトウェアエンジニア'
+company: 'MSIG Life Indonesia'
+location: 'インドネシア、ジャカルタ'
+range: '2024年 - 2025年'
+url: 'https://msiglife.co.id/'
 tech:
-  - Java
   - Spring Cloud
-  - Kafka
-  - OCR / TTS APIs
+  - Apache Kafka
+  - AI Integrations
+  - Zuul Gateway
   - PostgreSQL
+  - Git
+  - Docker
+  - REST API
 ---
 
-- **Fortify** デジタル生命保険プラットフォーム向けに、Spring Cloud、Eureka Server、Zuul Gatewayを使用した、障害に強い金融バックエンドマイクロサービスを設計・保守。
-- デジタルアプリケーションのパイプラインへのAIエンジンの技術統合を主導し、自動化されたOCR、生体認証によるLiveness Detection、リアルタイムユーザー検証のためのテキスト読み上げ（TTS）および音声認識（STT）を展開。
-- 非同期ワークフローを管理するため、Apache Kafkaを使用した高度に疎結合なイベント駆動型メッセージングネットワークを構築。
-- **Andromeda**（社内向け代理店プラットフォーム）のデータベーススキーマ全体を設計し、ローン申請や支払い分配のためのカスタム金融計算エンジンを開発。
-
+- Spring Cloud、Eureka Server、および集中型 API 管理とルーティングのための Zuul Gateway を利用して、回復力のある分散型財務バックエンドアーキテクチャを設計および保守。
+- タッチレスの身分証明書抽出や高度なリアルタイムユーザー検証を可能にするため、サードパーティの AI エンジン（OCR、生体検知、TTS、STT）の技術統合を主導。
+- 大量の同時クエリにおいて厳密なデータ整合性を維持するため、インデックスや構造的パーティショニングを導入した PostgreSQL の複雑なリレーショナルデータベーススキーマを設計。
+- 異なるマイクロサービス間で非同期ワークフローとデータの一貫性を管理するために、Apache Kafka を使用した高度に分離されたイベント駆動型メッセージングネットワークを構築。
+- ゲートウェイレベルで OAuth2 プロトコルおよび JWT 署名を使用したエンタープライズグレードの認証フレームワークを実装し、機密性の高い財務ポータルを保護。
+- **Fortify（デジタル生命保険プラットフォーム）**のコアコンポーネントを開発し、**Andromeda（代理店向けプラットフォーム）**の代理店融資モジュール用のカスタム財務計算エンジンを設計。
