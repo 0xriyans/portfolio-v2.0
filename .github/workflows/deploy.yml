@@ -16,10 +16,18 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Asumsi project ini ditaruh di /var/www/portfolio-v2.0 di server
-            cd /var/www/portfolio-v2.0
+            # Masuk ke direktori web atau clone jika belum ada
+            mkdir -p /var/www
+            cd /var/www
+            if [ ! -d "portfolio-v2.0" ]; then
+              echo "Direktori belum ada, melakukan git clone..."
+              git clone https://github.com/0xriyans/portfolio-v2.0.git
+            fi
+            
+            cd portfolio-v2.0
             
             # Tarik kode terbaru dari GitHub
+            git checkout master
             git pull origin master
             
             # Update dependencies
