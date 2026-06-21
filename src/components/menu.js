@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
+import { Link, useTranslation } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
+
 import { navLinks } from '@config';
 import { KEY_CODES } from '@utils';
 import { useOnClickOutside } from '@hooks';
@@ -176,9 +176,8 @@ const StyledSidebar = styled.aside`
   }
 `;
 
-const Menu = ({ toggleTheme, themeMode }) => {
+const Menu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { languages, language, originalPath } = useI18next();
   const { t } = useTranslation();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -301,63 +300,11 @@ const Menu = ({ toggleTheme, themeMode }) => {
                 ))}
               </ol>
             )}
-
-            <a href="/Riyan Sugiarto Resume.pdf" className="resume-link">
-              {t('Resume')}
-            </a>
-
-            <button
-              className="theme-button"
-              onClick={() => {
-                toggleTheme();
-                setMenuOpen(false);
-              }}
-              aria-label="Toggle Theme">
-              {themeMode === 'light' ? '🌙' : '☀️'}
-            </button>
-
-            <div
-              style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginTop: '30px' }}>
-              {languages.map(lng => {
-                const flags = {
-                  id: 'https://flagcdn.com/w80/id.png',
-                  en: 'https://flagcdn.com/w80/gb.png',
-                  jp: 'https://flagcdn.com/w80/jp.png',
-                  ar: 'https://flagcdn.com/w80/sa.png',
-                };
-                return (
-                  <Link
-                    key={lng}
-                    to={originalPath}
-                    language={lng}
-                    onClick={() => setMenuOpen(false)}>
-                    <img
-                      src={flags[lng]}
-                      alt={lng}
-                      style={{
-                        width: '32px',
-                        height: '24px',
-                        objectFit: 'cover',
-                        borderRadius: '4px',
-                        border:
-                          language === lng ? '2px solid var(--yellow)' : '2px solid transparent',
-                        transition: 'var(--transition)',
-                      }}
-                    />
-                  </Link>
-                );
-              })}
-            </div>
           </nav>
         </StyledSidebar>
       </div>
     </StyledMenu>
   );
-};
-
-Menu.propTypes = {
-  toggleTheme: PropTypes.func.isRequired,
-  themeMode: PropTypes.string.isRequired,
 };
 
 export default Menu;
