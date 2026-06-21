@@ -47,6 +47,10 @@ const StyledHeroSection = styled.section`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
+    @media (max-width: 768px) {
+      animation: none;
+      background-size: 100% 100%;
+    }
   }
 
   h3 {
@@ -66,6 +70,10 @@ const StyledHeroSection = styled.section`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
+    @media (max-width: 768px) {
+      animation: none;
+      background-size: 100% 100%;
+    }
   }
 
   h2.big-heading, h3.big-heading {
@@ -129,23 +137,21 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, []);
 
-  const one = <h1>{t("Hi, my name is")}</h1>;
+  const one = <h1>{t('Hi, my name is')}</h1>;
   const two = <h2 className="big-heading">Riyan Sugiarto.</h2>;
-  const three = <h3 className="big-heading">{t("Building impactful solutions.")}</h3>;
+  const three = <h3 className="big-heading">{t('Building impactful solutions.')}</h3>;
   const four = (
     <>
       <p>
-        {t("I'm a backend software engineer with over 5 years of experience building secure, high-traffic core systems in the telecom and insurance sectors. I specialize in system design and automating complex workflows through smart AI services like document scanning, face verification, and voice features.")}
+        {t(
+          'I\'m a backend software engineer with over 5 years of experience building secure, high-traffic core systems in the telecom and insurance sectors. I specialize in system design and automating complex workflows through smart AI services like document scanning, face verification, and voice features.',
+        )}
       </p>
     </>
   );
   const five = (
-    <a
-      className="email-link"
-      href="mailto:ryansgrt23@gmail.com"
-      target="_blank"
-      rel="noreferrer">
-      {t("Hire me as a freelancer")}
+    <a className="email-link" href="mailto:ryansgrt23@gmail.com" target="_blank" rel="noreferrer">
+      {t('Hire me as a freelancer')}
     </a>
   );
 
