@@ -2,8 +2,10 @@ import { css } from 'styled-components';
 
 const button = css`
   color: var(--yellow);
-  background-color: transparent;
-  border: 1px solid var(--yellow);
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: var(--border-radius);
   font-size: var(--fz-xs);
   font-family: var(--font-mono);
@@ -16,7 +18,9 @@ const button = css`
   &:hover,
   &:focus,
   &:active {
-    background-color: var(--yellow-tint);
+    background-color: var(--yellow);
+    color: #ffffff;
+    border-color: var(--yellow);
     outline: none;
   }
   &:after {
@@ -89,8 +93,10 @@ const mixins = {
 
   smallButton: css`
     color: var(--yellow);
-    background-color: transparent;
-    border: 1px solid var(--yellow);
+    background-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: var(--border-radius);
     padding: 0.75rem 1rem;
     font-size: var(--fz-xs);
@@ -102,7 +108,9 @@ const mixins = {
     &:hover,
     &:focus,
     &:active {
-      background-color: var(--yellow-tint);
+      background-color: var(--yellow);
+      color: #ffffff;
+      border-color: var(--yellow);
       outline: none;
     }
     &:after {
@@ -112,8 +120,10 @@ const mixins = {
 
   bigButton: css`
     color: var(--yellow);
-    background-color: transparent;
-    border: 1px solid var(--yellow);
+    background-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: var(--border-radius);
     padding: 1.25rem 1.75rem;
     font-size: var(--fz-sm);
@@ -125,7 +135,9 @@ const mixins = {
     &:hover,
     &:focus,
     &:active {
-      background-color: var(--yellow-tint);
+      background-color: var(--yellow);
+      color: #ffffff;
+      border-color: var(--yellow);
       outline: none;
     }
     &:after {
@@ -133,13 +145,23 @@ const mixins = {
     }
   `,
 
+  glassmorphism: css`
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.05);
+    position: relative;
+  `,
+
   boxShadow: css`
-    box-shadow: 0 10px 30px -15px var(--navy-shadow);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     transition: var(--transition);
 
     &:hover,
     &:focus {
-      box-shadow: 0 20px 30px -15px var(--navy-shadow);
+      box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
     }
   `,
 

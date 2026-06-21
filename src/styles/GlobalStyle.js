@@ -5,6 +5,9 @@ import TransitionStyles from './TransitionStyles';
 import PrismStyles from './PrismStyles';
 
 const GlobalStyle = createGlobalStyle`
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+  ${TransitionStyles};
   ${fonts};
   ${variables};
 
@@ -21,8 +24,8 @@ const GlobalStyle = createGlobalStyle`
   }
 
   ::selection {
-    background-color: var(--lightest-navy);
-    color: var(--lightest-slate);
+    background-color: var(--pink);
+    color: var(--white);
   }
 
   /* Provide basic, default focus styles.*/
@@ -53,7 +56,7 @@ const GlobalStyle = createGlobalStyle`
   /* Scrollbar Styles */
   html {
     scrollbar-width: thin;
-    scrollbar-color: var(--dark-slate) var(--navy);
+    scrollbar-color: var(--slate) var(--navy);
   }
   body::-webkit-scrollbar {
     width: 12px;
@@ -62,9 +65,15 @@ const GlobalStyle = createGlobalStyle`
     background: var(--navy);
   }
   body::-webkit-scrollbar-thumb {
-    background-color: var(--dark-slate);
+    background-color: var(--slate);
     border: 3px solid var(--navy);
     border-radius: 10px;
+  }
+
+  @keyframes neonBorder {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   body {
@@ -74,8 +83,8 @@ const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    background-color: var(--navy);
-    color: var(--slate);
+    background-color: transparent;
+    color: var(--white);
     font-family: var(--font-sans);
     font-size: var(--fz-xl);
     line-height: 1.3;
@@ -164,7 +173,7 @@ const GlobalStyle = createGlobalStyle`
   h5,
   h6 {
     margin: 0 0 10px 0;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--lightest-slate);
     line-height: 1.1;
   }
@@ -172,11 +181,13 @@ const GlobalStyle = createGlobalStyle`
   .big-heading {
     margin: 0;
     font-size: clamp(40px, 8vw, 80px);
+    font-weight: 800;
   }
 
   .medium-heading {
     margin: 0;
     font-size: clamp(40px, 8vw, 60px);
+    font-weight: 700;
   }
 
   .numbered-heading {

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
+import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import styled from 'styled-components';
 import sr from '@utils/sr';
@@ -24,18 +25,22 @@ const StyledProject = styled.li`
   align-items: center;
 
   @media (max-width: 768px) {
-    ${({ theme }) => theme.mixins.boxShadow};
+    display: flex;
+    flex-direction: column-reverse;
+    ${({ theme }) => theme.mixins.glassmorphism};
+    padding: 0;
+    overflow: hidden;
   }
 
   &:not(:last-of-type) {
     margin-bottom: 100px;
 
     @media (max-width: 768px) {
-      margin-bottom: 70px;
+      margin-bottom: 80px;
     }
 
     @media (max-width: 480px) {
-      margin-bottom: 30px;
+      margin-bottom: 80px;
     }
   }
 
@@ -63,13 +68,7 @@ const StyledProject = styled.li`
         justify-content: flex-start;
       }
 
-      li {
-        margin: 0 0 5px 20px;
 
-        @media (max-width: 768px) {
-          margin: 0 10px 5px 0;
-        }
-      }
     }
     .project-links {
       justify-content: flex-end;
@@ -105,8 +104,7 @@ const StyledProject = styled.li`
       flex-direction: column;
       justify-content: center;
       height: 100%;
-      grid-column: 1 / -1;
-      padding: 40px 40px 30px;
+      padding: 30px;
       z-index: 5;
     }
 
@@ -132,8 +130,6 @@ const StyledProject = styled.li`
     }
 
     @media (max-width: 768px) {
-      color: var(--white);
-
       a {
         position: static;
 
@@ -152,12 +148,10 @@ const StyledProject = styled.li`
   }
 
   .project-description {
-    ${({ theme }) => theme.mixins.boxShadow};
+    ${({ theme }) => theme.mixins.glassmorphism};
     position: relative;
     z-index: 2;
-    padding: 25px;
-    border-radius: var(--border-radius);
-    background-color: var(--light-navy);
+    padding: 30px;
     color: var(--light-slate);
     font-size: var(--fz-lg);
 
@@ -165,6 +159,9 @@ const StyledProject = styled.li`
       padding: 20px 0;
       background-color: transparent;
       box-shadow: none;
+      border: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
 
       &:hover {
         box-shadow: none;
@@ -176,14 +173,15 @@ const StyledProject = styled.li`
     }
 
     strong {
-      color: var(--white);
-      font-weight: normal;
+      color: var(--lightest-slate);
+      font-weight: 600;
     }
   }
 
   .project-tech-list {
     display: flex;
     flex-wrap: wrap;
+    gap: 10px;
     position: relative;
     z-index: 2;
     margin: 25px 0 10px;
@@ -191,20 +189,26 @@ const StyledProject = styled.li`
     list-style: none;
 
     li {
-      margin: 0 20px 5px 0;
-      color: var(--light-slate);
-      font-family: var(--font-mono);
+      padding: 6px 16px;
+      background-color: rgba(255, 255, 255, 0.08);
+      border-radius: 50px;
+      color: var(--lightest-slate);
+      font-family: var(--font-sans);
       font-size: var(--fz-xs);
       white-space: nowrap;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
+        color: var(--white);
+        transform: translateY(-2px);
+      }
     }
 
     @media (max-width: 768px) {
       margin: 10px 0;
-
-      li {
-        margin: 0 10px 5px 0;
-        color: var(--lightest-slate);
-      }
     }
   }
 
@@ -248,56 +252,44 @@ const StyledProject = styled.li`
     z-index: 1;
 
     @media (max-width: 768px) {
-      grid-column: 1 / -1;
-      height: 100%;
-      opacity: 0.25;
+      width: 100%;
+      height: 250px;
+      opacity: 1;
+      box-shadow: none;
+      
+      a {
+        border-radius: 0;
+      }
     }
 
     a {
       width: 100%;
       height: 100%;
-      background-color: var(--yellow);
       border-radius: var(--border-radius);
       vertical-align: middle;
+      overflow: hidden;
+      display: block;
 
       &:hover,
       &:focus {
-        background: transparent;
         outline: 0;
 
-        &:before,
         .img {
-          background: transparent;
-          filter: none;
+          transform: scale(1.05);
         }
-      }
-
-      &:before {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 3;
-        transition: var(--transition);
-        background-color: var(--navy);
-        mix-blend-mode: screen;
       }
     }
 
     .img {
       border-radius: var(--border-radius);
-      mix-blend-mode: multiply;
-      filter: grayscale(100%) contrast(1) brightness(90%);
+      transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 
       @media (max-width: 768px) {
         object-fit: cover;
-        width: auto;
+        width: 100%;
         height: 100%;
-        filter: grayscale(100%) contrast(1) brightness(50%);
+        filter: none;
+        border-radius: 0;
       }
     }
   }
@@ -312,6 +304,7 @@ const Featured = () => {
       ) {
         edges {
           node {
+            fileAbsolutePath
             frontmatter {
               title
               cover {
@@ -330,7 +323,10 @@ const Featured = () => {
     }
   `);
 
-  const featuredProjects = data.featured.edges.filter(({ node }) => node);
+  const { language } = useI18next();
+  const { t } = useTranslation();
+  const featuredProjects = data.featured.edges
+    .filter(({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`));
   const revealTitle = useRef(null);
   const revealProjects = useRef([]);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -347,7 +343,7 @@ const Featured = () => {
   return (
     <section id="projects">
       <h2 className="numbered-heading" ref={revealTitle}>
-        Some Things I’ve Built
+        {t("Some Things I’ve Built")}
       </h2>
 
       <StyledProjectsGrid>
@@ -361,7 +357,7 @@ const Featured = () => {
               <StyledProject key={i} ref={el => (revealProjects.current[i] = el)}>
                 <div className="project-content">
                   <div>
-                    <p className="project-overline">Featured Project</p>
+                    <p className="project-overline">{t("Featured Project")}</p>
 
                     <h3 className="project-title">
                       <a href={external}>{title}</a>
@@ -383,7 +379,7 @@ const Featured = () => {
                     <div className="project-links">
                       {cta && (
                         <a href={cta} aria-label="Course Link" className="cta">
-                          Learn More
+                          {t("Learn More")}
                         </a>
                       )}
                       {github && (

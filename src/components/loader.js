@@ -14,24 +14,18 @@ const StyledLoader = styled.div`
   right: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--dark-navy);
+  background: radial-gradient(circle at center, var(--light-navy) 0%, var(--navy) 100%);
   z-index: 99;
 
   .logo-wrapper {
-    width: max-content;
-    max-width: 100px;
-    transition: var(--transition);
-    opacity: ${props => (props.isMounted ? 1 : 0)};
+    width: 100px;
+    opacity: 1;
     svg {
       display: block;
       width: 100%;
       height: 100%;
       margin: 0 auto;
-      fill: none;
       user-select: none;
-      #B {
-        opacity: 0;
-      }
     }
   }
 `;
@@ -46,29 +40,29 @@ const Loader = ({ finishLoading }) => {
 
     loader
       .add({
-        targets: '#logo path',
+        targets: '.logo-outline',
         delay: 300,
-        duration: 1500,
+        duration: 1000,
         easing: 'easeInOutQuart',
         strokeDashoffset: [anime.setDashoffset, 0],
       })
       .add({
-        targets: '#logo #B',
-        duration: 700,
-        easing: 'easeInOutQuart',
-        opacity: 1,
+        targets: '#liquid-rect',
+        y: [100, 0],
+        height: [0, 100],
+        duration: 1200,
+        easing: 'easeInOutCubic',
       })
       .add({
         targets: '#logo',
-        delay: 500,
-        duration: 300,
-        easing: 'easeInOutQuart',
-        opacity: 0,
-        scale: 0.1,
-      })
+        scale: [1, 1.05, 1],
+        duration: 500,
+        easing: 'easeOutBack',
+      }, '-=400')
       .add({
         targets: '.loader',
-        duration: 200,
+        delay: 300,
+        duration: 400,
         easing: 'easeInOutQuart',
         opacity: 0,
         zIndex: -1,
@@ -84,7 +78,6 @@ const Loader = ({ finishLoading }) => {
   return (
     <StyledLoader className="loader" isMounted={isMounted}>
       <Helmet bodyAttributes={{ class: `hidden` }} />
-
       <div className="logo-wrapper">
         <IconLoader />
       </div>

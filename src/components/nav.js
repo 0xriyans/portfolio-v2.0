@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'gatsby';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import styled, { css } from 'styled-components';
 import { navLinks } from '@config';
 import { loaderDelay } from '@utils';
-import { useScrollDirection, usePrefersReducedMotion } from '@hooks';
+import { useScrollDirection, usePrefersReducedMotion, useOnClickOutside } from '@hooks';
 import { Menu } from '@components';
 import { IconLogo } from '@components/icons';
 
@@ -16,12 +16,13 @@ const StyledHeader = styled.header`
   z-index: 11;
   padding: 0px 50px;
   width: 100%;
-  height: var(--nav-height);
-  background-color: rgba(10, 25, 47, 0.85);
+  background-color: rgba(255, 255, 255, 0.1);
   filter: none !important;
   pointer-events: auto !important;
   user-select: auto !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   transition: var(--transition);
 
   @media (max-width: 1080px) {
@@ -38,8 +39,9 @@ const StyledHeader = styled.header`
       css`
         height: var(--nav-scroll-height);
         transform: translateY(0px);
-        background-color: rgba(10, 25, 47, 0.85);
-        box-shadow: 0 10px 30px -10px var(--navy-shadow);
+        background-color: rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       `};
 
     ${props =>
@@ -104,7 +106,7 @@ const StyledLinks = styled.div`
       margin: 0 5px;
       position: relative;
       counter-increment: item 1;
-      font-size: var(--fz-xs);
+      font-size: var(--fz-md);
 
       a {
         padding: 10px;
@@ -123,15 +125,109 @@ const StyledLinks = styled.div`
   .resume-button {
     ${({ theme }) => theme.mixins.smallButton};
     margin-left: 15px;
-    font-size: var(--fz-xs);
+    font-size: var(--fz-sm);
+  }
+  .theme-button {
+    ${({ theme }) => theme.mixins.smallButton};
+    margin-left: 15px;
+    font-size: var(--fz-xl);
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--yellow);
+    
+    &:hover,
+    &:focus {
+      background: var(--yellow-tint);
+    }
   }
 `;
 
-const Nav = ({ isHome }) => {
+const StyledLanguageDropdown = styled.div`
+  position: relative;
+  display: inline-block;
+  margin-left: 10px;
+
+  .dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--yellow);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+
+    &:hover,
+    &:focus {
+      background: var(--yellow-tint);
+    }
+
+    img {
+      width: 24px;
+      height: 16px;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 5px;
+    background-color: var(--light-navy);
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 100;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+
+    &.show {
+      display: block;
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--lightest-slate);
+      padding: 10px 15px;
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: var(--fz-sm);
+      transition: var(--transition);
+
+      img {
+        width: 20px;
+        height: 14px;
+        object-fit: cover;
+        border-radius: 2px;
+      }
+
+      &:hover,
+      &:focus {
+        background-color: var(--navy);
+        color: var(--yellow);
+      }
+    }
+  }
+`;
+
+const Nav = ({ isHome, toggleTheme, themeMode }) => {
   const [isMounted, setIsMounted] = useState(!isHome);
   const scrollDirection = useScrollDirection('down');
   const [scrolledToTop, setScrolledToTop] = useState(true);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { languages, language, originalPath } = useI18next();
+  const { t } = useTranslation();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  useOnClickOutside(dropdownRef, () => setDropdownOpen(false));
 
   const handleScroll = () => {
     setScrolledToTop(window.pageYOffset < 50);
@@ -174,8 +270,38 @@ const Nav = ({ isHome }) => {
 
   const ResumeLink = (
     <a className="resume-button" href="/Riyan Sugiarto - Resume 2025.pdf" target="_blank" rel="noopener noreferrer">
-      Resume
+      {t("Resume")}
     </a>
+  );
+
+  const ThemeToggle = (
+    <button className="theme-button" onClick={toggleTheme} aria-label="Toggle Theme">
+      {themeMode === 'light' ? '🌙' : '☀️'}
+    </button>
+  );
+
+  const flags = {
+    id: { src: 'https://flagcdn.com/w80/id.png', label: 'ID' },
+    en: { src: 'https://flagcdn.com/w80/us.png', label: 'EN' },
+    jp: { src: 'https://flagcdn.com/w80/jp.png', label: 'JP' },
+    ar: { src: 'https://flagcdn.com/w80/sa.png', label: 'AR' },
+  };
+
+  const LanguageSwitcher = (
+    <StyledLanguageDropdown ref={dropdownRef}>
+      <button className="dropdown-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
+        <img src={flags[language]?.src || flags.en.src} alt={language} />
+        <span style={{ fontSize: '10px', color: 'var(--light-slate)' }}>▼</span>
+      </button>
+      <div className={`dropdown-content ${dropdownOpen ? 'show' : ''}`}>
+        {languages.map(lng => (
+          <Link key={lng} to={originalPath} language={lng} onClick={() => setDropdownOpen(false)}>
+            <img src={flags[lng]?.src} alt={lng} />
+            <span>{flags[lng]?.label}</span>
+          </Link>
+        ))}
+      </div>
+    </StyledLanguageDropdown>
   );
 
   return (
@@ -190,14 +316,20 @@ const Nav = ({ isHome }) => {
                 {navLinks &&
                   navLinks.map(({ url, name }, i) => (
                     <li key={i}>
-                      <Link to={url}>{name}</Link>
+                      {url.startsWith('http') ? (
+                        <a href={url} target="_blank" rel="noopener noreferrer">{t(name)}</a>
+                      ) : (
+                        <Link to={url}>{t(name)}</Link>
+                      )}
                     </li>
                   ))}
               </ol>
               <div>{ResumeLink}</div>
+              <div style={{ marginLeft: '10px' }}>{ThemeToggle}</div>
+              {LanguageSwitcher}
             </StyledLinks>
 
-            <Menu />
+            <Menu toggleTheme={toggleTheme} themeMode={themeMode} />
           </>
         ) : (
           <>
@@ -217,7 +349,11 @@ const Nav = ({ isHome }) => {
                     navLinks.map(({ url, name }, i) => (
                       <CSSTransition key={i} classNames={fadeDownClass} timeout={timeout}>
                         <li key={i} style={{ transitionDelay: `${isHome ? i * 100 : 0}ms` }}>
-                          <Link to={url}>{name}</Link>
+                          {url.startsWith('http') ? (
+                            <a href={url} target="_blank" rel="noopener noreferrer">{t(name)}</a>
+                          ) : (
+                            <Link to={url}>{t(name)}</Link>
+                          )}
                         </li>
                       </CSSTransition>
                     ))}
@@ -233,12 +369,32 @@ const Nav = ({ isHome }) => {
                   </CSSTransition>
                 )}
               </TransitionGroup>
+
+              <TransitionGroup component={null}>
+                {isMounted && (
+                  <CSSTransition classNames={fadeDownClass} timeout={timeout}>
+                    <div style={{ transitionDelay: `${isHome ? (navLinks.length + 1) * 100 : 0}ms`, marginLeft: '10px' }}>
+                      {ThemeToggle}
+                    </div>
+                  </CSSTransition>
+                )}
+              </TransitionGroup>
+
+              <TransitionGroup component={null}>
+                {isMounted && (
+                  <CSSTransition classNames={fadeDownClass} timeout={timeout}>
+                    <div style={{ transitionDelay: `${isHome ? (navLinks.length + 2) * 100 : 0}ms` }}>
+                      {LanguageSwitcher}
+                    </div>
+                  </CSSTransition>
+                )}
+              </TransitionGroup>
             </StyledLinks>
 
             <TransitionGroup component={null}>
               {isMounted && (
                 <CSSTransition classNames={fadeClass} timeout={timeout}>
-                  <Menu />
+                  <Menu toggleTheme={toggleTheme} themeMode={themeMode} />
                 </CSSTransition>
               )}
             </TransitionGroup>
@@ -251,6 +407,8 @@ const Nav = ({ isHome }) => {
 
 Nav.propTypes = {
   isHome: PropTypes.bool,
+  toggleTheme: PropTypes.func,
+  themeMode: PropTypes.string,
 };
 
 export default Nav;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'gatsby';
+import { Link, useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
 import { navLinks } from '@config';
 import { KEY_CODES } from '@utils';
@@ -98,8 +98,11 @@ const StyledSidebar = styled.aside`
     width: min(75vw, 400px);
     height: 100vh;
     outline: 0;
-    background-color: var(--light-navy);
-    box-shadow: -10px 0px 30px -15px var(--navy-shadow);
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: -10px 0px 30px -15px rgba(0, 0, 0, 0.1);
     z-index: 9;
     transform: translateX(${props => (props.menuOpen ? 0 : 100)}vw);
     visibility: ${props => (props.menuOpen ? 'visible' : 'hidden')};
@@ -153,10 +156,30 @@ const StyledSidebar = styled.aside`
     margin: 10% auto 0;
     width: max-content;
   }
+
+  .theme-button {
+    ${({ theme }) => theme.mixins.smallButton};
+    margin: 20px auto 0;
+    width: max-content;
+    font-size: var(--fz-md);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--yellow);
+    
+    &:hover,
+    &:focus {
+      background: var(--yellow-tint);
+    }
+  }
 `;
 
-const Menu = () => {
+const Menu = ({ toggleTheme, themeMode }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { languages, language, originalPath } = useI18next();
+  const { t } = useTranslation();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -168,7 +191,7 @@ const Menu = () => {
   let lastFocusableEl;
 
   const setFocusables = () => {
-    menuFocusables = [buttonRef.current, ...Array.from(navRef.current.querySelectorAll('a'))];
+    menuFocusables = [buttonRef.current, ...Array.from(navRef.current.querySelectorAll('a, button'))];
     firstFocusableEl = menuFocusables[0];
     lastFocusableEl = menuFocusables[menuFocusables.length - 1];
   };
@@ -258,17 +281,54 @@ const Menu = () => {
               <ol>
                 {navLinks.map(({ url, name }, i) => (
                   <li key={i}>
-                    <Link to={url} onClick={() => setMenuOpen(false)}>
-                      {name}
-                    </Link>
+                    {url.startsWith('http') ? (
+                      <a href={url} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)}>
+                        {t(name)}
+                      </a>
+                    ) : (
+                      <Link to={url} onClick={() => setMenuOpen(false)}>
+                        {t(name)}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ol>
             )}
 
             <a href="/Riyan Sugiarto - Resume 2025.pdf" className="resume-link">
-              Resume
+              {t("Resume")}
             </a>
+
+            <button className="theme-button" onClick={() => { toggleTheme(); setMenuOpen(false); }} aria-label="Toggle Theme">
+              {themeMode === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
+            </button>
+
+            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginTop: '30px' }}>
+              {languages.map(lng => {
+                const flags = {
+                  id: 'https://flagcdn.com/w80/id.png',
+                  en: 'https://flagcdn.com/w80/us.png',
+                  jp: 'https://flagcdn.com/w80/jp.png',
+                  ar: 'https://flagcdn.com/w80/sa.png',
+                };
+                return (
+                  <Link key={lng} to={originalPath} language={lng} onClick={() => setMenuOpen(false)}>
+                    <img 
+                      src={flags[lng]} 
+                      alt={lng} 
+                      style={{
+                        width: '32px',
+                        height: '24px',
+                        objectFit: 'cover',
+                        borderRadius: '4px',
+                        border: language === lng ? '2px solid var(--yellow)' : '2px solid transparent',
+                        transition: 'var(--transition)'
+                      }}
+                    />
+                  </Link>
+                );
+              })}
+            </div>
           </nav>
         </StyledSidebar>
       </div>

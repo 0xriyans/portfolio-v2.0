@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useStaticQuery, graphql } from 'gatsby';
+import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
+import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import styled from 'styled-components';
 import { srConfig } from '@config';
@@ -63,16 +65,32 @@ const StyledProject = styled.li`
   }
 
   .project-inner {
-    ${({ theme }) => theme.mixins.boxShadow};
+    ${({ theme }) => theme.mixins.glassmorphism};
     ${({ theme }) => theme.mixins.flexBetween};
     flex-direction: column;
     align-items: flex-start;
     position: relative;
     height: 100%;
     padding: 2rem 1.75rem;
-    border-radius: var(--border-radius);
-    background-color: var(--light-navy);
     transition: var(--transition);
+  }
+
+  .project-image {
+    width: 100%;
+    margin-bottom: 25px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    ${({ theme }) => theme.mixins.boxShadow};
+    
+    .img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: var(--transition);
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
   }
 
   .project-top {
@@ -176,11 +194,17 @@ const Projects = () => {
       ) {
         edges {
           node {
+            fileAbsolutePath
             frontmatter {
               title
               tech
               github
               external
+              cover {
+                childImageSharp {
+                  gatsbyImageData(width: 400, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
+                }
+              }
             }
             html
           }
@@ -205,22 +229,37 @@ const Projects = () => {
     revealProjects.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 100)));
   }, []);
 
+  const { language } = useI18next();
+  const { t } = useTranslation();
+  
   const GRID_LIMIT = 6;
-  const projects = data.projects.edges.filter(({ node }) => node);
+  const projects = data.projects.edges
+    .filter(({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`));
   const firstSix = projects.slice(0, GRID_LIMIT);
   const projectsToShow = showMore ? projects : firstSix;
 
   const projectInner = node => {
     const { frontmatter, html } = node;
-    const { github, external, title, tech } = frontmatter;
+    const { github, external, title, tech, cover } = frontmatter;
+    const image = cover ? getImage(cover) : null;
 
     return (
       <div className="project-inner">
         <header>
-          <div className="project-top">
-            <div className="folder">
-              <Icon name="Folder" />
+          {image && (
+            <div className="project-image">
+              <a href={external ? external : github ? github : '#'} target="_blank" rel="noreferrer">
+                <GatsbyImage image={image} alt={title} className="img" />
+              </a>
             </div>
+          )}
+
+          <div className="project-top" style={image ? { marginBottom: '20px', justifyContent: 'flex-end' } : {}}>
+            {!image && (
+              <div className="folder">
+                <Icon name="Folder" />
+              </div>
+            )}
             <div className="project-links">
               {github && (
                 <a href={github} aria-label="GitHub Link" target="_blank" rel="noreferrer">
@@ -264,10 +303,10 @@ const Projects = () => {
 
   return (
     <StyledProjectsSection>
-      <h2 ref={revealTitle}>Other Noteworthy Projects</h2>
+      <h2 ref={revealTitle}>{t("Other Noteworthy Projects")}</h2>
 
       <Link className="inline-link archive-link" to="/archive" ref={revealArchiveLink}>
-        view the archive
+        {t("view the archive")}
       </Link>
 
       <ul className="projects-grid">
@@ -302,7 +341,7 @@ const Projects = () => {
       </ul>
 
       <button className="more-button" onClick={() => setShowMore(!showMore)}>
-        Show {showMore ? 'Less' : 'More'}
+        {t("Show")} {showMore ? t("Less") : t("More")}
       </button>
     </StyledProjectsSection>
   );

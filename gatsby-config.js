@@ -47,10 +47,27 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `posts`,
-        path: `${__dirname}/content/posts`,
-      },
+        path: `${__dirname}/locales`,
+        name: `locale`
+      }
     },
+    {
+      resolve: `gatsby-plugin-react-i18next`,
+      options: {
+        localeJsonSourceName: `locale`,
+        languages: [`en`, `id`, `jp`],
+        defaultLanguage: `en`,
+        siteUrl: `https://riyans.dev`,
+        i18nextOptions: {
+          interpolation: {
+            escapeValue: false
+          },
+          keySeparator: false,
+          nsSeparator: false
+        },
+      }
+    },
+
     {
       resolve: `gatsby-source-filesystem`,
       options: {

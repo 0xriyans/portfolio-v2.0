@@ -1,0 +1,16 @@
+{
+  "About": "About",
+  "Experience": "Experience",
+  "Work": "Work",
+  "Contact": "Contact",
+  "Resume": "Resume",
+  "Featured Project": "Featured Project",
+  "Learn More": "Learn More",
+  "Some Things I’ve Built": "Some Things I’ve Built",
+  "Where I’ve Worked": "Where I’ve Worked",
+  "Get In Touch": "Get In Touch",
+  "Say Hello": "Say Hello",
+  "Language": "Language",
+  "about_p1": "Hi, I'm Riyan Sugiarto, a backend engineer with 5+ years of experience building secure, high-traffic core systems for the telecom and financial sectors.",
+  "about_p2": "I specialize in large-scale system design, microservices architectures, and modernizing legacy infrastructure. My passion lies in slashing operational costs, maximizing performance, and integrating smart AI pipelines (like OCR and biometrics) to create secure, automated workflows."
+}

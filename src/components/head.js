@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useLocation } from '@reach/router';
 import { useStaticQuery, graphql } from 'gatsby';
+import { useI18next } from 'gatsby-plugin-react-i18next';
 
 // https://www.gatsbyjs.com/docs/add-seo-component/
 
@@ -40,9 +41,11 @@ const Head = ({ title, description, image }) => {
     url: `${siteUrl}${pathname}`,
   };
 
+  const { language } = useI18next();
+
   return (
     <Helmet title={title} defaultTitle={seo.title} titleTemplate={`%s | ${defaultTitle}`}>
-      <html lang="en" />
+      <html lang={language} dir={language === 'ar' ? 'rtl' : 'ltr'} />
 
       <meta name="description" content={seo.description} />
       <meta name="image" content={seo.image} />

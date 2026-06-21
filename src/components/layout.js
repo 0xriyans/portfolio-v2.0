@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
-import { Head, Loader, Nav, Social, Email, Footer } from '@components';
+import { Head, Loader, Nav, Social, Email, Footer, LightFluidBackground } from '@components';
 import { GlobalStyle, theme } from '@styles';
 
 const StyledContent = styled.div`
@@ -13,6 +13,20 @@ const StyledContent = styled.div`
 const Layout = ({ children, location }) => {
   const isHome = location.pathname === '/';
   const [isLoading, setIsLoading] = useState(isHome);
+  const [themeMode, setThemeMode] = useState('light');
+
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem('theme') || 'light';
+    setThemeMode(savedTheme);
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = themeMode === 'light' ? 'dark' : 'light';
+    setThemeMode(newTheme);
+    window.localStorage.setItem('theme', newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
 
   // Sets target="_blank" rel="noopener noreferrer" on external links
   const handleExternalLinks = () => {
@@ -62,7 +76,8 @@ const Layout = ({ children, location }) => {
             <Loader finishLoading={() => setIsLoading(false)} />
           ) : (
             <StyledContent>
-              <Nav isHome={isHome} />
+              <LightFluidBackground />
+              <Nav isHome={isHome} toggleTheme={toggleTheme} themeMode={themeMode} />
               <Social isHome={isHome} />
               <Email isHome={isHome} />
 
