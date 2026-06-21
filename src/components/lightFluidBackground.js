@@ -37,18 +37,19 @@ const BackgroundContainer = styled.div`
   overflow: hidden;
   background: var(--navy);
   transition: background 0.4s ease-in-out;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 // HD Glossy Blob Base
 const Blob3D = styled.div`
   position: absolute;
   opacity: 0.95;
-  box-shadow: 
-    inset -30px -30px 50px rgba(0, 0, 0, 0.4),
-    inset 30px 30px 60px rgba(255, 255, 255, 0.6),
-    inset -10px -10px 20px rgba(0, 0, 0, 0.2),
-    inset 10px 10px 20px rgba(255, 255, 255, 0.8),
-    30px 30px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: inset -30px -30px 50px rgba(0, 0, 0, 0.4),
+    inset 30px 30px 60px rgba(255, 255, 255, 0.6), inset -10px -10px 20px rgba(0, 0, 0, 0.2),
+    inset 10px 10px 20px rgba(255, 255, 255, 0.8), 30px 30px 60px rgba(0, 0, 0, 0.3);
 `;
 
 const Blob1 = styled(Blob3D)`
@@ -58,7 +59,11 @@ const Blob1 = styled(Blob3D)`
   height: 35vw;
   background: linear-gradient(135deg, var(--blob1-start) 0%, var(--blob1-end) 100%);
   animation: ${moveBlob1} 30s ease-in-out infinite, ${morphAnim} 15s ease-in-out infinite;
-  @media (max-width: 768px) { animation-duration: 15s, 7.5s; width: 60vw; height: 60vw; }
+  @media (max-width: 768px) {
+    animation-duration: 15s, 7.5s;
+    width: 60vw;
+    height: 60vw;
+  }
 `;
 
 const Blob2 = styled(Blob3D)`
@@ -68,7 +73,11 @@ const Blob2 = styled(Blob3D)`
   height: 30vw;
   background: linear-gradient(135deg, var(--blob2-start) 0%, var(--blob2-end) 100%);
   animation: ${moveBlob2} 35s ease-in-out infinite, ${morphAnim2} 18s ease-in-out infinite;
-  @media (max-width: 768px) { animation-duration: 17s, 9s; width: 50vw; height: 50vw; }
+  @media (max-width: 768px) {
+    animation-duration: 17s, 9s;
+    width: 50vw;
+    height: 50vw;
+  }
 `;
 
 const Blob3 = styled(Blob3D)`
@@ -78,7 +87,11 @@ const Blob3 = styled(Blob3D)`
   height: 18vw;
   background: linear-gradient(135deg, var(--blob3-start) 0%, var(--blob3-end) 100%);
   animation: ${moveBlob1} 28s ease-in-out infinite reverse, ${morphAnim} 12s ease-in-out infinite;
-  @media (max-width: 768px) { animation-duration: 14s, 6s; width: 35vw; height: 35vw; }
+  @media (max-width: 768px) {
+    animation-duration: 14s, 6s;
+    width: 35vw;
+    height: 35vw;
+  }
 `;
 
 const Blob4 = styled(Blob3D)`
@@ -88,7 +101,11 @@ const Blob4 = styled(Blob3D)`
   height: 25vw;
   background: linear-gradient(135deg, var(--blob4-start) 0%, var(--blob4-end) 100%);
   animation: ${moveBlob2} 32s ease-in-out infinite, ${morphAnim2} 22s ease-in-out infinite reverse;
-  @media (max-width: 768px) { animation-duration: 16s, 11s; width: 45vw; height: 45vw; }
+  @media (max-width: 768px) {
+    animation-duration: 16s, 11s;
+    width: 45vw;
+    height: 45vw;
+  }
 `;
 
 const Blob5 = styled(Blob3D)`
@@ -98,7 +115,11 @@ const Blob5 = styled(Blob3D)`
   height: 28vw;
   background: linear-gradient(135deg, var(--blob5-start) 0%, var(--blob5-end) 100%);
   animation: ${moveBlob1} 38s ease-in-out infinite, ${morphAnim} 25s ease-in-out infinite;
-  @media (max-width: 768px) { animation-duration: 19s, 12.5s; width: 50vw; height: 50vw; }
+  @media (max-width: 768px) {
+    animation-duration: 19s, 12.5s;
+    width: 50vw;
+    height: 50vw;
+  }
 `;
 
 const Blob6 = styled(Blob3D)`
@@ -108,7 +129,11 @@ const Blob6 = styled(Blob3D)`
   height: 15vw;
   background: linear-gradient(135deg, var(--blob6-start) 0%, var(--blob6-end) 100%);
   animation: ${moveBlob2} 25s ease-in-out infinite reverse, ${morphAnim2} 15s ease-in-out infinite;
-  @media (max-width: 768px) { animation-duration: 12.5s, 7.5s; width: 30vw; height: 30vw; }
+  @media (max-width: 768px) {
+    animation-duration: 12.5s, 7.5s;
+    width: 30vw;
+    height: 30vw;
+  }
 `;
 
 const NoiseOverlay = styled.div`
