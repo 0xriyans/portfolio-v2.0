@@ -2,12 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { navLinks } from '@config';
 import { loaderDelay } from '@utils';
 import { useScrollDirection, usePrefersReducedMotion, useOnClickOutside } from '@hooks';
 import { Menu } from '@components';
 import { IconLogo } from '@components/icons';
+
+const liquidBlobAnim = keyframes`
+  0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+`;
 
 const StyledHeader = styled.header`
   ${({ theme }) => theme.mixins.flexBetween};
@@ -68,20 +74,28 @@ const StyledNav = styled.nav`
     ${({ theme }) => theme.mixins.flexCenter};
 
     a {
-      color: var(--yellow);
-      width: 42px;
-      height: 42px;
+      color: var(--navy);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, var(--yellow), var(--pink));
+      animation: ${liquidBlobAnim} 4s ease-in-out infinite;
+      transition: var(--transition);
+      box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
 
       &:hover,
       &:focus {
-        svg {
-          fill: var(--yellow-tint);
-        }
+        background: linear-gradient(135deg, var(--pink), var(--yellow));
+        transform: scale(1.1);
+        box-shadow: 0 6px 15px rgba(255, 77, 109, 0.5);
       }
 
       svg {
         fill: none;
-        transition: var(--transition);
+        width: 60%;
+        height: 60%;
         user-select: none;
       }
     }

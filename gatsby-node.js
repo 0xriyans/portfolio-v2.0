@@ -7,6 +7,9 @@
 const path = require('path');
 const _ = require('lodash');
 
+// Mencegah peringatan MaxListenersExceededWarning saat gatsby-plugin-manifest membuat puluhan favicon
+require('events').EventEmitter.defaultMaxListeners = 20;
+
 exports.createPages = async ({ actions, graphql, reporter }) => {
   // Blog (pensieve) and tag pages have been removed to keep the portfolio clean.
 };

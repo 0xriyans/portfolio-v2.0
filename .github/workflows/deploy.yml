@@ -15,6 +15,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 30m
           script: |
             # Masuk ke direktori web atau clone jika belum ada
             mkdir -p /var/www
@@ -32,7 +33,9 @@ jobs:
             
             # Update dependencies
             echo "Updating dependencies..."
-            npm install --legacy-peer-deps
+            rm -rf node_modules
+            npm cache clean --force
+            npm install --legacy-peer-deps --no-audit --no-fund
             
             # Build Gatsby site
             echo "Building static files..."
