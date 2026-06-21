@@ -1,87 +1,63 @@
 <div align="center">
-  <img alt="Logo" src="https://raw.githubusercontent.com/bchiang7/v4/main/src/images/logo.png" width="100" />
+  <h1>🚀 Riyan Sugiarto - Personal Portfolio v2.0</h1>
+  <p>A modern, interactive, and fully responsive web portfolio built with Gatsby, React, and Styled Components.</p>
 </div>
-<h1 align="center">
-  brittanychiang.com - v4
-</h1>
-<p align="center">
-  The fourth iteration of <a href="https://brittanychiang.com" target="_blank">brittanychiang.com</a> built with <a href="https://www.gatsbyjs.org/" target="_blank">Gatsby</a> and hosted with <a href="https://www.netlify.com/" target="_blank">Netlify</a>
-</p>
-<p align="center">
-  Previous iterations:
-  <a href="https://github.com/bchiang7/v1" target="_blank">v1</a>,
-  <a href="https://github.com/bchiang7/v2" target="_blank">v2</a>,
-  <a href="https://github.com/bchiang7/bchiang7.github.io" target="_blank">v3</a>
-</p>
-<p align="center">
-  <a href="https://app.netlify.com/sites/brittanychiang/deploys" target="_blank">
-    <img src="https://api.netlify.com/api/v1/badges/1963b488-7b78-48c9-9e2d-6fb5e47ab3af/deploy-status" alt="Netlify Status" />
-  </a>
-</p>
 
-![demo](https://raw.githubusercontent.com/bchiang7/v4/main/src/images/demo.png)
+<br />
 
-## 🚨 Forking this repo (please read!)
+## 🌟 Key Features
 
-Many people have contacted me asking me if they can use this code for their own website, and the answer to that question is usually **yes, with attribution**.
+- **Sleek Glassmorphism Design:** A highly modern, frosted-glass aesthetic combined with colorful, dynamic background blobs.
+- **Internationalization (i18n):** Full multi-language support (English, Bahasa Indonesia, and Japanese) with seamless switching.
+- **Automated CI/CD Pipeline:** Fully automated deployments to a DigitalOcean Droplet via GitHub Actions.
+- **Responsive Architecture:** Perfectly tailored layouts for seamless viewing across desktop, tablet, and mobile devices.
+- **Performant & Fast:** Powered by Gatsby's static site generation for lightning-fast page loads.
 
-I value keeping my site open source, but as you all know, _**plagiarism is bad**_. It's always disheartening whenever I find that someone has copied my site without giving me credit. I spent a non-trivial amount of effort building and designing this iteration of my website, and I am proud of it! All I ask of you all is to not claim this effort as your own.
+## 🛠️ Built With
 
-Please also note that I did not build this site with the intention of it being a starter theme, so if you have questions about implementation, please refer to the [Gatsby docs](https://www.gatsbyjs.org/docs/).
+- **Core Framework:** [Gatsby](https://www.gatsbyjs.com/) v4 & [React](https://reactjs.org/)
+- **Styling:** [Styled Components](https://styled-components.com/)
+- **Localization:** `gatsby-plugin-react-i18next`
+- **Animation:** `scrollreveal` & Custom CSS Keyframes
+- **Infrastructure:** DigitalOcean (Nginx), GitHub Actions, PM2
 
-### TL;DR
+## 🚀 Getting Started (Local Development)
 
-Yes, you can fork this repo. Please give me proper credit by linking back to [brittanychiang.com](https://brittanychiang.com). Thanks!
+Follow these steps to run the portfolio on your local machine.
 
-## 🛠 Installation & Set Up
+### Prerequisites
 
-1. Install the Gatsby CLI
+- Node.js (v18 or higher recommended)
+- Git
 
-   ```sh
-   npm install -g gatsby-cli
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/0xriyans/portfolio-v2.0.git
+   cd portfolio-v2.0
    ```
 
-2. Install and use the correct version of Node using [NVM](https://github.com/nvm-sh/nvm)
+2. **Install dependencies**
 
-   ```sh
-   nvm install
+   ```bash
+   npm install --legacy-peer-deps
    ```
 
-3. Install dependencies
+3. **Start the development server**
 
-   ```sh
-   yarn
+   ```bash
+   npm run develop
    ```
 
-4. Start the development server
+4. **View in browser**
+   Open `http://localhost:8000` to see your site. You can also view the GraphQL explorer at `http://localhost:8000/___graphql`.
 
-   ```sh
-   npm start
-   ```
+## 🚢 Deployment
 
-## 🚀 Building and Running for Production
+This project uses **GitHub Actions** for CI/CD. Every time code is pushed to the `master` branch, the `.github/workflows/deploy.yml` script automatically connects to the production server via SSH, pulls the latest code, and rebuilds the Gatsby site.
 
-1. Generate a full static production build
+## 💡 Acknowledgements
 
-   ```sh
-   npm run build
-   ```
-
-1. Preview the site as it will appear once deployed
-
-   ```sh
-   npm run serve
-   ```
-
-## 🎨 Color Reference
-
-| Color          | Hex                                                                |
-| -------------- | ------------------------------------------------------------------ |
-| Navy           | ![#0a192f](https://via.placeholder.com/10/0a192f?text=+) `#0a192f` |
-| Light Navy     | ![#112240](https://via.placeholder.com/10/0a192f?text=+) `#112240` |
-| Lightest Navy  | ![#233554](https://via.placeholder.com/10/303C55?text=+) `#233554` |
-| Slate          | ![#8892b0](https://via.placeholder.com/10/8892b0?text=+) `#8892b0` |
-| Light Slate    | ![#a8b2d1](https://via.placeholder.com/10/a8b2d1?text=+) `#a8b2d1` |
-| Lightest Slate | ![#ccd6f6](https://via.placeholder.com/10/ccd6f6?text=+) `#ccd6f6` |
-| White          | ![#e6f1ff](https://via.placeholder.com/10/e6f1ff?text=+) `#e6f1ff` |
-| yellow          | ![#F1D00A](https://via.placeholder.com/10/F1D00A?text=+) `#F1D00A` |
+The original base architecture of this template was inspired by the incredible work of [Brittany Chiang](https://github.com/bchiang7). It has since been heavily modified and redesigned to fit personal branding and specific functional requirements.
