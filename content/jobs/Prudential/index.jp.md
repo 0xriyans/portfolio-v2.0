@@ -1,6 +1,6 @@
 ---
 date: '2023-01-01'
-title: 'ソフトウェアエンジニア'
+title: 'バックエンド開発者'
 company: 'Prudential Life Assurance'
 location: 'インドネシア、ジャカルタ'
 range: '2023年 - 2024年'

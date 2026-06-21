@@ -1,6 +1,6 @@
 ---
 date: '2024-01-01'
-title: 'ソフトウェアエンジニア'
+title: 'ソフトウェア開発者'
 company: 'MSIG Life Indonesia'
 location: 'インドネシア、ジャカルタ'
 range: '2024年 - 2025年'

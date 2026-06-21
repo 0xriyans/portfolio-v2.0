@@ -1,6 +1,6 @@
 ---
 date: '2023-01-01'
-title: 'Software Engineer'
+title: 'Backend Developer'
 company: 'Prudential Life Assurance'
 location: 'Jakarta, Indonesia'
 range: '2023 - 2024'

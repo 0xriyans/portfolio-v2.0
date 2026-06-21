@@ -1,6 +1,6 @@
 ---
 date: '2024-01-01'
-title: 'Software Engineer'
+title: 'Software Developer'
 company: 'MSIG Life Indonesia'
 location: 'Jakarta, Indonesia'
 range: '2024 - 2025'

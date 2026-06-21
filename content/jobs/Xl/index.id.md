@@ -1,6 +1,6 @@
 ---
 date: '2022-01-01'
-title: 'Software Engineer'
+title: 'API Developer'
 company: 'XLSMART Telecom'
 location: 'Jakarta, Indonesia'
 range: '2022 - 2023'
