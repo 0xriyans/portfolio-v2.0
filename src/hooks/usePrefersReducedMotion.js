@@ -16,8 +16,15 @@ function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(getInitialState);
   useEffect(() => {
     const mediaQueryList = window.matchMedia(QUERY);
+    const checkMobile = () => window.innerWidth <= 768;
+
+    // Initial check
+    if (checkMobile()) {
+      setPrefersReducedMotion(true);
+    }
+
     const listener = event => {
-      setPrefersReducedMotion(!event.matches);
+      setPrefersReducedMotion(!event.matches || checkMobile());
     };
     mediaQueryList.addListener(listener);
     return () => {
