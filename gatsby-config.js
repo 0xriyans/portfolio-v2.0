@@ -58,6 +58,7 @@ module.exports = {
         languages: [`en`, `id`, `jp`],
         defaultLanguage: `en`,
         siteUrl: `https://riyans.dev`,
+        redirect: false,
         i18nextOptions: {
           interpolation: {
             escapeValue: false
