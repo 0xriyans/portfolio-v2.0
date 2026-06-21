@@ -15,4 +15,4 @@ export { default as Projects } from './sections/projects';
 export { default as Contact } from './sections/contact';
 export { default as Starfield } from './starfield';
 export { default as LightFluidBackground } from './lightFluidBackground';
-
+export { default as FloatingMobileButton } from './floatingMobileButton';

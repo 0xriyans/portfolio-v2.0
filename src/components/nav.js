@@ -289,7 +289,7 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
   const ResumeLink = (
     <a
       className="resume-button"
-      href="/Riyan Sugiarto - Resume 2025.pdf"
+      href="/Riyan Sugiarto Resume.pdf"
       target="_blank"
       rel="noopener noreferrer">
       {t('Resume')}
@@ -304,7 +304,7 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
 
   const flags = {
     id: { src: 'https://flagcdn.com/w80/id.png', label: 'ID' },
-    en: { src: 'https://flagcdn.com/w80/us.png', label: 'EN' },
+    en: { src: 'https://flagcdn.com/w80/gb.png', label: 'EN' },
     jp: { src: 'https://flagcdn.com/w80/jp.png', label: 'JP' },
     ar: { src: 'https://flagcdn.com/w80/sa.png', label: 'AR' },
   };

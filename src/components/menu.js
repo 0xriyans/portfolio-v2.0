@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { navLinks } from '@config';
 import { KEY_CODES } from '@utils';
 import { useOnClickOutside } from '@hooks';
@@ -160,15 +161,14 @@ const StyledSidebar = styled.aside`
   .theme-button {
     ${({ theme }) => theme.mixins.smallButton};
     margin: 20px auto 0;
-    width: max-content;
-    font-size: var(--fz-md);
-    padding: 0.75rem 1.5rem;
+    font-size: var(--fz-xl);
+    padding: 0.5rem 0.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
     border: 1px solid var(--yellow);
-    
+
     &:hover,
     &:focus {
       background: var(--yellow-tint);
@@ -191,7 +191,10 @@ const Menu = ({ toggleTheme, themeMode }) => {
   let lastFocusableEl;
 
   const setFocusables = () => {
-    menuFocusables = [buttonRef.current, ...Array.from(navRef.current.querySelectorAll('a, button'))];
+    menuFocusables = [
+      buttonRef.current,
+      ...Array.from(navRef.current.querySelectorAll('a, button')),
+    ];
     firstFocusableEl = menuFocusables[0];
     lastFocusableEl = menuFocusables[menuFocusables.length - 1];
   };
@@ -282,7 +285,11 @@ const Menu = ({ toggleTheme, themeMode }) => {
                 {navLinks.map(({ url, name }, i) => (
                   <li key={i}>
                     {url.startsWith('http') ? (
-                      <a href={url} target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)}>
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setMenuOpen(false)}>
                         {t(name)}
                       </a>
                     ) : (
@@ -295,34 +302,46 @@ const Menu = ({ toggleTheme, themeMode }) => {
               </ol>
             )}
 
-            <a href="/Riyan Sugiarto - Resume 2025.pdf" className="resume-link">
-              {t("Resume")}
+            <a href="/Riyan Sugiarto Resume.pdf" className="resume-link">
+              {t('Resume')}
             </a>
 
-            <button className="theme-button" onClick={() => { toggleTheme(); setMenuOpen(false); }} aria-label="Toggle Theme">
-              {themeMode === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
+            <button
+              className="theme-button"
+              onClick={() => {
+                toggleTheme();
+                setMenuOpen(false);
+              }}
+              aria-label="Toggle Theme">
+              {themeMode === 'light' ? '🌙' : '☀️'}
             </button>
 
-            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginTop: '30px' }}>
+            <div
+              style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginTop: '30px' }}>
               {languages.map(lng => {
                 const flags = {
                   id: 'https://flagcdn.com/w80/id.png',
-                  en: 'https://flagcdn.com/w80/us.png',
+                  en: 'https://flagcdn.com/w80/gb.png',
                   jp: 'https://flagcdn.com/w80/jp.png',
                   ar: 'https://flagcdn.com/w80/sa.png',
                 };
                 return (
-                  <Link key={lng} to={originalPath} language={lng} onClick={() => setMenuOpen(false)}>
-                    <img 
-                      src={flags[lng]} 
-                      alt={lng} 
+                  <Link
+                    key={lng}
+                    to={originalPath}
+                    language={lng}
+                    onClick={() => setMenuOpen(false)}>
+                    <img
+                      src={flags[lng]}
+                      alt={lng}
                       style={{
                         width: '32px',
                         height: '24px',
                         objectFit: 'cover',
                         borderRadius: '4px',
-                        border: language === lng ? '2px solid var(--yellow)' : '2px solid transparent',
-                        transition: 'var(--transition)'
+                        border:
+                          language === lng ? '2px solid var(--yellow)' : '2px solid transparent',
+                        transition: 'var(--transition)',
                       }}
                     />
                   </Link>
@@ -334,6 +353,11 @@ const Menu = ({ toggleTheme, themeMode }) => {
       </div>
     </StyledMenu>
   );
+};
+
+Menu.propTypes = {
+  toggleTheme: PropTypes.func.isRequired,
+  themeMode: PropTypes.string.isRequired,
 };
 
 export default Menu;

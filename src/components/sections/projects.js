@@ -81,7 +81,7 @@ const StyledProject = styled.li`
     border-radius: var(--border-radius);
     overflow: hidden;
     ${({ theme }) => theme.mixins.boxShadow};
-    
+
     .img {
       width: 100%;
       height: 200px;
@@ -163,20 +163,37 @@ const StyledProject = styled.li`
 
   .project-tech-list {
     display: flex;
-    align-items: flex-end;
-    flex-grow: 1;
     flex-wrap: wrap;
+    gap: 8px;
     padding: 0;
     margin: 20px 0 0 0;
     list-style: none;
+    flex-grow: 1;
+    align-items: flex-end;
 
     li {
+      position: relative;
+      padding: 4px 12px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+      color: var(--lightest-slate);
       font-family: var(--font-mono);
       font-size: var(--fz-xxs);
-      line-height: 1.75;
+      line-height: 1.4;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
 
-      &:not(:last-of-type) {
-        margin-right: 15px;
+      &:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(168, 85, 247, 0.2) 0%,
+          rgba(236, 72, 153, 0.2) 100%
+        );
+        border-color: var(--pink);
+        color: var(--white);
+        transform: translateY(-2px);
       }
     }
   }
@@ -231,10 +248,11 @@ const Projects = () => {
 
   const { language } = useI18next();
   const { t } = useTranslation();
-  
+
   const GRID_LIMIT = 6;
-  const projects = data.projects.edges
-    .filter(({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`));
+  const projects = data.projects.edges.filter(
+    ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
+  );
   const firstSix = projects.slice(0, GRID_LIMIT);
   const projectsToShow = showMore ? projects : firstSix;
 
@@ -248,13 +266,18 @@ const Projects = () => {
         <header>
           {image && (
             <div className="project-image">
-              <a href={external ? external : github ? github : '#'} target="_blank" rel="noreferrer">
+              <a
+                href={external ? external : github ? github : '#'}
+                target="_blank"
+                rel="noreferrer">
                 <GatsbyImage image={image} alt={title} className="img" />
               </a>
             </div>
           )}
 
-          <div className="project-top" style={image ? { marginBottom: '20px', justifyContent: 'flex-end' } : {}}>
+          <div
+            className="project-top"
+            style={image ? { marginBottom: '20px', justifyContent: 'flex-end' } : {}}>
             {!image && (
               <div className="folder">
                 <Icon name="Folder" />
@@ -303,10 +326,10 @@ const Projects = () => {
 
   return (
     <StyledProjectsSection>
-      <h2 ref={revealTitle}>{t("Other Noteworthy Projects")}</h2>
+      <h2 ref={revealTitle}>{t('Other Noteworthy Projects')}</h2>
 
       <Link className="inline-link archive-link" to="/archive" ref={revealArchiveLink}>
-        {t("view the archive")}
+        {t('view the archive')}
       </Link>
 
       <ul className="projects-grid">
@@ -341,7 +364,7 @@ const Projects = () => {
       </ul>
 
       <button className="more-button" onClick={() => setShowMore(!showMore)}>
-        {t("Show")} {showMore ? t("Less") : t("More")}
+        {t('Show')} {showMore ? t('Less') : t('More')}
       </button>
     </StyledProjectsSection>
   );

@@ -127,46 +127,32 @@ const StyledTabPanel = styled.div`
 `;
 
 const StyledTechList = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   padding: 0;
   margin: 30px 0 0 0;
   list-style: none;
 
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  }
-
   li {
     position: relative;
-    padding: 8px 14px;
+    padding: 6px 16px;
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 50px;
     color: var(--lightest-slate);
     font-family: var(--font-mono);
     font-size: var(--fz-xxs);
     line-height: 1.4;
     transition: all 0.3s ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     cursor: default;
 
     @media (min-width: 768px) {
       font-size: var(--fz-xs);
-      padding: 10px 18px;
-      border-radius: 20px;
       backdrop-filter: blur(10px);
-    }
-
-    &::before {
-      content: '▹';
-      color: var(--yellow);
-      font-size: var(--fz-sm);
-      line-height: 12px;
-      margin-right: 8px;
     }
 
     &:hover {
@@ -175,10 +161,6 @@ const StyledTechList = styled.ul`
       color: var(--white);
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
-
-      &::before {
-        color: var(--pink);
-      }
     }
   }
 `;
