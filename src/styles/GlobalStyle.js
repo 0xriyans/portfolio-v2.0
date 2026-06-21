@@ -15,6 +15,10 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     width: 100%;
     scroll-behavior: smooth;
+
+    @media (max-width: 768px) {
+      scroll-behavior: auto;
+    }
   }
 
   *,

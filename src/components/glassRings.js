@@ -26,6 +26,10 @@ const RingsContainer = styled.div`
   overflow: hidden;
   background-color: #050505;
   perspective: 1000px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Ring = styled.div`
