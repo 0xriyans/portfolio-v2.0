@@ -68,6 +68,13 @@ const StyledHeroSection = styled.section`
     text-fill-color: transparent;
   }
 
+  h2.big-heading, h3.big-heading {
+    @media (max-width: 480px) {
+      font-size: clamp(32px, 10vw, 40px);
+      line-height: 1.1;
+    }
+  }
+
   p {
     margin: 30px 0 0;
     max-width: 600px;
@@ -75,6 +82,11 @@ const StyledHeroSection = styled.section`
     line-height: 1.6;
     color: var(--light-slate); 
     font-weight: 600;
+
+    @media (max-width: 480px) {
+      font-size: var(--fz-md);
+      margin-top: 20px;
+    }
   }
 
   .email-link {
