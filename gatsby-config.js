@@ -5,7 +5,7 @@ module.exports = {
     title: 'Riyan Sugiarto | Building Impactful Solutions',
     description:
       'Riyan Sugiarto is a software engineer focused on building scalable and reliable backend systems that drive exceptional digital experiences.',
-    siteUrl: 'https://riyans.dev', // No trailing slash allowed!
+    siteUrl: 'https://riyans.tech', // No trailing slash allowed!
     image: '/og.png', // Path to your image you placed in the 'static' folder
     twitterUsername: '@0xriyans',
   },
@@ -48,8 +48,8 @@ module.exports = {
       resolve: `gatsby-source-filesystem`,
       options: {
         path: `${__dirname}/locales`,
-        name: `locale`
-      }
+        name: `locale`,
+      },
     },
     {
       resolve: `gatsby-plugin-react-i18next`,
@@ -57,16 +57,16 @@ module.exports = {
         localeJsonSourceName: `locale`,
         languages: [`en`, `id`, `jp`],
         defaultLanguage: `en`,
-        siteUrl: `https://riyans.dev`,
+        siteUrl: `https://riyans.tech`,
         redirect: false,
         i18nextOptions: {
           interpolation: {
-            escapeValue: false
+            escapeValue: false,
           },
           keySeparator: false,
-          nsSeparator: false
+          nsSeparator: false,
         },
-      }
+      },
     },
 
     {
