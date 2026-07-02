@@ -31,6 +31,7 @@ jobs:
             
             # Tarik kode terbaru dari GitHub
             git checkout master
+            git reset --hard HEAD
             git pull origin master
             
             # Update dependencies
