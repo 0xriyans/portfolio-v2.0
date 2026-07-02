@@ -13,6 +13,11 @@ const pulseBar = keyframes`
   100% { opacity: 0.4; }
 `;
 
+const loadBar = keyframes`
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+`;
+
 const scanAnim = keyframes`
   0% { transform: translateY(-100%); }
   100% { transform: translateY(500%); }
@@ -239,6 +244,43 @@ const StyledSkills = styled.div`
     line-height: 1.5;
     margin-bottom: 20px;
     flex-grow: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-content: flex-start;
+
+    .skill-tag {
+      background: rgba(2, 12, 27, 0.5); /* Deep dark background */
+      border: 1px solid rgba(100, 255, 218, 0.1);
+      color: var(--light-slate);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+      cursor: default;
+      display: inline-flex;
+      align-items: center;
+
+      &::before {
+        content: '>';
+        color: var(--green);
+        margin-right: 5px;
+        opacity: 0.7;
+        font-weight: 600;
+        transition: all 0.2s var(--easing);
+      }
+
+      &:hover {
+        background: rgba(100, 255, 218, 0.05);
+        border-color: var(--green);
+        color: var(--green);
+        transform: translateY(-2px);
+        
+        &::before {
+          opacity: 1;
+        }
+      }
+    }
   }
 
   .card-bottom {
@@ -404,8 +446,10 @@ const IntegratedStatBar = ({ title, number, unit, desc }) => {
 
 const About = () => {
   const revealContainer = useRef(null);
+  const skillsContainer = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const { t } = useTranslation();
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -413,6 +457,21 @@ const About = () => {
     }
 
     sr.reveal(revealContainer.current, srConfig());
+
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        setVisible(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.2 });
+    
+    if (skillsContainer.current) {
+      observer.observe(skillsContainer.current);
+    }
+
+    return () => {
+      if (observer) observer.disconnect();
+    };
   }, []);
 
   const techCore = [
@@ -497,7 +556,7 @@ const About = () => {
           <IntegratedStatBar title="Data Integrity" number="100" unit="%" desc="ZERO-LOSS STREAMING" />
         </StyledIntegratedStats>
 
-        <StyledSkills>
+        <StyledSkills ref={skillsContainer}>
           <h2 className="skills-heading">TECH_CORE</h2>
           <div className="skills-grid">
             {techCore && techCore.map((node, i) => (
@@ -507,7 +566,11 @@ const About = () => {
                   <div className="version">{node.version}</div>
                 </div>
                 <div className="card-title">{node.title}</div>
-                <div className="card-skills">{node.skills}</div>
+                <div className="card-skills">
+                  {node.skills.split(', ').map((skill, idx) => (
+                    <span key={idx} className="skill-tag">{skill}</span>
+                  ))}
+                </div>
                 <div className="card-bottom">
                   <div className="integrity-header">
                     <span>INTEGRITY</span>
@@ -517,9 +580,10 @@ const About = () => {
                     <div 
                       className="progress-fill" 
                       style={{ 
-                        width: `${node.integrity}%`, 
+                        width: visible ? `${node.integrity}%` : '0%', 
                         backgroundColor: node.color,
-                        boxShadow: `0 0 10px ${node.color}`
+                        boxShadow: `0 0 10px ${node.color}`,
+                        transition: 'width 1.5s cubic-bezier(0.23, 1, 0.32, 1) 0.3s'
                       }} 
                     />
                   </div>
