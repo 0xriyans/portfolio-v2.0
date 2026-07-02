@@ -189,6 +189,11 @@ const StyledProject = styled.li`
     margin: 0 0 10px;
     color: var(--lightest-slate);
     font-size: var(--fz-xxl);
+    word-break: break-word;
+
+    @media (max-width: 480px) {
+      font-size: var(--fz-xl);
+    }
 
     a {
       position: static;

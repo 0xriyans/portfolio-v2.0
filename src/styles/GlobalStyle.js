@@ -264,6 +264,7 @@ const GlobalStyle = createGlobalStyle`
 
     @media (max-width: 480px) {
       white-space: normal;
+      word-break: break-word;
       flex-wrap: wrap;
     }
 
