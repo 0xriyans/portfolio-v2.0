@@ -17,6 +17,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           command_timeout: 30m
           script: |
+            set -e
+            
             # Masuk ke direktori web atau clone jika belum ada
             mkdir -p /var/www
             cd /var/www
@@ -38,6 +40,8 @@ jobs:
             npm install --legacy-peer-deps --no-audit --no-fund
             
             # Build Gatsby site
+            echo "Cleaning Gatsby cache..."
+            npm run clean
             echo "Building static files..."
             npm run build
             
