@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StaticImage } from 'gatsby-plugin-image';
 import { useTranslation } from 'gatsby-plugin-react-i18next';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { FaJava, FaAws, FaRobot, FaServer, FaDatabase, FaCode, FaCheckCircle, FaNetworkWired, FaBrain, FaFileAlt, FaDesktop, FaProjectDiagram } from 'react-icons/fa';
 import { SiSpringboot, SiApachekafka, SiPostgresql, SiRedis, SiGraphql, SiKubernetes, SiElasticsearch, SiGithubactions } from 'react-icons/si';
 import { srConfig } from '@config';
@@ -58,18 +58,6 @@ const StyledIntegratedStats = styled.div`
   &:hover {
     border-color: var(--pink);
     box-shadow: inset 0 0 20px rgba(184, 255, 0, 0.2), 0 0 20px rgba(184, 255, 0, 0.4);
-  }
-  
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 20px;
-    height: 1px;
-    background: var(--blue);
-    transform: rotate(-45deg);
-    transform-origin: 100% 100%;
   }
 
   @media (max-width: 768px) {
@@ -138,7 +126,13 @@ const StyledIntegratedStats = styled.div`
 `;
 
 const StyledText = styled.div`
+  ${({ theme }) => theme.mixins.glassmorphism};
+  padding: 60px 30px 30px;
   font-family: var(--font-mono);
+
+  &::after {
+    content: 'cat about.txt';
+  }
 
   p {
     line-height: 1.6;
@@ -192,9 +186,8 @@ const StyledSkills = styled.div`
   }
 
   .skill-card {
-    background: rgba(10, 10, 15, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 20px;
+    ${({ theme }) => theme.mixins.glassmorphism};
+    padding: 60px 20px 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -278,6 +271,23 @@ const StyledSkills = styled.div`
   }
 `;
 
+const floatAnimation = keyframes`
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+`;
+
+const glitchAnim = keyframes`
+  0%, 100% { transform: translate(0); filter: grayscale(100%) contrast(110%); }
+  2% { transform: translate(-3px, 2px) skewX(2deg); filter: grayscale(0%) sepia(100%) hue-rotate(300deg) saturate(300%); }
+  4% { transform: translate(3px, -2px) skewX(-2deg); filter: grayscale(0%) sepia(100%) hue-rotate(90deg) saturate(300%); }
+  6% { transform: translate(0) skewX(0); filter: grayscale(100%) contrast(110%); }
+  52% { transform: translate(0); filter: grayscale(100%) contrast(110%); }
+  54% { transform: translate(3px, 2px) skewX(-3deg); filter: grayscale(0%) sepia(100%) hue-rotate(0deg) saturate(300%); }
+  56% { transform: translate(-3px, -2px) skewX(3deg); filter: grayscale(0%) sepia(100%) hue-rotate(180deg) saturate(300%); }
+  58% { transform: translate(0) skewX(0); filter: grayscale(100%) contrast(110%); }
+`;
+
 const StyledPic = styled.div`
   position: relative;
   max-width: 300px;
@@ -293,23 +303,59 @@ const StyledPic = styled.div`
     display: block;
     position: relative;
     width: 100%;
-    border-radius: 0;
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%);
-    border: 1px solid rgba(0, 255, 102, 0.5);
-    background-color: rgba(0, 255, 102, 0.05);
+    
+    /* Terminal window styles */
+    background: #0d1117;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.7);
+    padding-top: 40px;
     transition: var(--transition);
     overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 15px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ff5f56;
+      box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
+      z-index: 2;
+    }
+
+    &::after {
+      content: 'profile.jpg';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: #161b22;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--light-slate);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      line-height: 40px;
+      text-align: center;
+      letter-spacing: 1px;
+      z-index: 1;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
     
     &:hover,
     &:focus {
       outline: 0;
-      transform: translateY(-5px);
-      border-color: var(--green, #00ff66);
-      box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
 
       .img {
+        animation: none;
         transform: scale(1.05);
         filter: none;
+        transition: var(--transition);
       }
     }
 
@@ -317,8 +363,8 @@ const StyledPic = styled.div`
       position: relative;
       display: block;
       width: 100%;
-      transition: var(--transition);
       filter: grayscale(100%) contrast(110%);
+      animation: ${glitchAnim} 2.5s infinite;
     }
   }
 `;
@@ -441,9 +487,9 @@ const About = () => {
         </StyledPic>
 
         <StyledIntegratedStats>
-          <IntegratedStatBar title="System Reliability" number="99" unit=".99%" desc="TARGET UPTIME SLA" />
-          <IntegratedStatBar title="P99 Latency" number="45" unit="ms" desc="AVG API RESPONSE" />
-          <IntegratedStatBar title="UI Performance" number="100" unit="/100" desc="LIGHTHOUSE SCORE" />
+          <IntegratedStatBar title="Experience" number="5" unit="+ Yrs" desc="ENTERPRISE ARCHITECTURE" />
+          <IntegratedStatBar title="System Reliability" number="99" unit=".99%" desc="PRODUCTION UPTIME SLA" />
+          <IntegratedStatBar title="Data Integrity" number="100" unit="%" desc="ZERO-LOSS STREAMING" />
         </StyledIntegratedStats>
 
         <StyledSkills>

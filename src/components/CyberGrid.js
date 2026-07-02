@@ -3,19 +3,20 @@ import styled, { keyframes } from 'styled-components';
 
 const gridMove = keyframes`
   0% { transform: rotateX(75deg) translateY(0); }
-  100% { transform: rotateX(75deg) translateY(100px); }
+  100% { transform: rotateX(75deg) translateY(50px); }
 `;
 
 const CyberGridContainer = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -5;
-  background-color: #050505;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
   overflow: hidden;
   perspective: 1000px;
+  transform-style: preserve-3d;
+  background-color: transparent;
 `;
 
 const HorizonFade = styled.div`
@@ -24,34 +25,65 @@ const HorizonFade = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, #050505 35%, transparent 60%, #050505 100%);
+  background: linear-gradient(to bottom, var(--navy) 20%, transparent 60%, var(--navy) 100%);
   z-index: 2;
   pointer-events: none;
 `;
 
+const CyberSun = styled.div`
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(to bottom, #ff007f 0%, #ffbb00 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 60px rgba(255, 0, 127, 0.5), 0 0 120px rgba(255, 187, 0, 0.3);
+  z-index: 1;
+  opacity: 0.85;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(to bottom, transparent, transparent 3px, rgba(10, 25, 47, 0.5) 3px, rgba(10, 25, 47, 0.5) 6px);
+    border-radius: 50%;
+  }
 
+  @media (max-width: 768px) {
+    width: 200px;
+    height: 200px;
+  }
+`;
 
 const CyberGridPlane = styled.div`
   position: absolute;
-  bottom: -60%;
+  top: 50%;
   left: -50%;
   width: 200%;
-  height: 160%;
+  height: 150vh;
   transform-origin: top center;
-  transform: rotateX(75deg) translateY(0);
+  transform: rotateX(75deg);
   background-image: 
-    linear-gradient(rgba(0, 255, 102, 0.3) 2px, transparent 2px),
-    linear-gradient(90deg, rgba(0, 255, 102, 0.3) 2px, transparent 2px);
-  background-size: 100px 100px;
-  animation: ${gridMove} 3s linear infinite;
-  will-change: transform;
-  z-index: 0;
+    linear-gradient(rgba(0, 255, 102, 0.6) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(0, 255, 102, 0.6) 2px, transparent 2px);
+  background-size: 50px 50px;
+  animation: ${gridMove} 1s linear infinite;
+  z-index: 3;
+  
+  mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
 `;
 
 const CyberGrid = () => {
   return (
     <CyberGridContainer>
       <HorizonFade />
+      <CyberSun />
       <CyberGridPlane />
     </CyberGridContainer>
   );

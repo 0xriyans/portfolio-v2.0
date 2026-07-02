@@ -147,45 +147,17 @@ const StyledProject = styled.li`
   }
 
   .project-description {
-    background: rgba(2, 10, 20, 0.95);
-    border: 1px solid rgba(0, 255, 102, 0.2);
-    border-top: 2px solid var(--blue);
+    ${({ theme }) => theme.mixins.glassmorphism};
+    padding: 60px 25px 25px;
     position: relative;
     z-index: 2;
-    padding: 25px;
     color: var(--light-slate);
-    font-size: var(--fz-sm); /* Smaller text like a log */
+    font-size: var(--fz-sm);
     font-family: var(--font-mono);
-    border-radius: 0;
     transition: var(--transition);
 
-    &::before {
-      content: 'SYS_LOG_OUTPUT...';
-      display: block;
-      margin-bottom: 15px;
-      color: var(--blue);
-      font-size: var(--fz-xxs);
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      opacity: 0.7;
-    }
-
     &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.15),
-        rgba(0, 0, 0, 0.15) 1px,
-        transparent 1px,
-        transparent 2px
-      );
-      pointer-events: none;
-      z-index: -1;
+      content: 'sys_log.sh';
     }
 
     &:hover {

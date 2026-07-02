@@ -3,8 +3,6 @@ import { css } from 'styled-components';
 const button = css`
   color: var(--pink);
   background-color: rgba(184, 255, 0, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--pink);
   border-radius: var(--border-radius);
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
@@ -98,8 +96,6 @@ const mixins = {
   smallButton: css`
     color: var(--pink);
     background-color: rgba(184, 255, 0, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--pink);
     border-radius: var(--border-radius);
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
@@ -127,8 +123,6 @@ const mixins = {
   bigButton: css`
     color: var(--pink);
     background-color: rgba(184, 255, 0, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--pink);
     border-radius: var(--border-radius);
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
@@ -154,14 +148,45 @@ const mixins = {
   `,
 
   glassmorphism: css`
-    background: rgba(5, 5, 5, 0.6);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-radius: 0;
-    border: 1px solid rgba(0, 255, 102, 0.3);
-    box-shadow: 0 0 20px rgba(0, 255, 102, 0.1);
+    background: #0d1117;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.7);
     position: relative;
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+    padding-top: 40px;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 15px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ff5f56;
+      box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
+      z-index: 2;
+    }
+
+    &::after {
+      content: 'bash';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: #161b22;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--light-slate);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      line-height: 40px;
+      text-align: center;
+      letter-spacing: 1px;
+      z-index: 1;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
   `,
 
   boxShadow: css`

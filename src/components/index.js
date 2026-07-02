@@ -19,3 +19,4 @@ export { default as LightFluidBackground } from './lightFluidBackground';
 export { default as FloatingMobileButton } from './floatingMobileButton';
 export { default as CyberGrid } from './CyberGrid';
 export { default as MatrixRain } from './MatrixRain';
+export { default as ScrollProgress } from './ScrollProgress';

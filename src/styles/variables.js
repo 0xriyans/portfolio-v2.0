@@ -37,9 +37,9 @@ const variables = css`
     --blob6-end: #004d1f;
 
     /* Fonts */
-    --font-heading: 'Orbitron', sans-serif;
-    --font-sans: 'Rajdhani', 'JetBrains Mono', sans-serif;
-    --font-mono: 'Share Tech Mono', 'Space Grotesk', 'Fira Code', 'Fira Mono', monospace;
+    --font-heading: 'Orbitron', 'M PLUS 1 Code', sans-serif;
+    --font-sans: 'Rajdhani', 'JetBrains Mono', 'M PLUS 1 Code', sans-serif;
+    --font-mono: 'Share Tech Mono', 'Space Grotesk', 'Fira Code', 'Fira Mono', 'M PLUS 1 Code', monospace;
 
     --fz-xxs: 12px;
     --fz-xs: 13px;
@@ -58,8 +58,8 @@ const variables = css`
     --tab-height: 42px;
     --tab-width: 120px;
 
-    --easing: cubic-bezier(0.645, 0.045, 0.355, 1);
-    --transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+    --easing: cubic-bezier(0.23, 1, 0.32, 1);
+    --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 
     --hamburger-width: 30px;
 

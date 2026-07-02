@@ -21,7 +21,6 @@ const StyledFloatingBtn = styled.a`
   height: 45px;
   border: 1px solid var(--blue);
   background: rgba(0, 255, 102, 0.1);
-  backdrop-filter: blur(5px);
   color: var(--blue);
   display: flex;
   justify-content: center;

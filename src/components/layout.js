@@ -8,9 +8,8 @@ import {
   Social,
   Email,
   Footer,
-  LightFluidBackground,
-  CyberGrid,
   MatrixRain,
+  ScrollProgress,
 } from '@components';
 import { GlobalStyle, theme } from '@styles';
 
@@ -67,12 +66,12 @@ const Layout = ({ children, location }) => {
             Skip to Content
           </a>
           <MatrixRain />
+          <ScrollProgress />
 
           {isLoading && isHome ? (
             <Loader finishLoading={() => setIsLoading(false)} />
           ) : (
             <StyledContent>
-              <CyberGrid />
               <Nav isHome={isHome} />
               <Social isHome={isHome} />
               <Email isHome={isHome} />

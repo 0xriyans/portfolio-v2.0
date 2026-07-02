@@ -99,9 +99,7 @@ const StyledSidebar = styled.aside`
     width: min(75vw, 400px);
     height: 100vh;
     outline: 0;
-    background-color: rgba(9, 10, 15, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background-color: #0d1117;
     border-left: 1px solid rgba(0, 255, 102, 0.3);
     box-shadow: -10px 0px 30px -15px rgba(0, 255, 102, 0.3);
     z-index: 9;
@@ -146,14 +144,19 @@ const StyledSidebar = styled.aside`
     }
 
     a {
-      ${({ theme }) => theme.mixins.link};
+      display: inline-block;
+      text-decoration: none;
+      text-decoration-skip-ink: auto;
+      color: var(--light-slate);
+      position: relative;
+      transition: var(--transition);
       width: 100%;
       padding: 10px 20px;
       
       &:hover,
       &:focus {
         color: var(--white);
-        text-shadow: 0 0 8px rgba(0, 255, 102, 0.8);
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
       }
     }
   }

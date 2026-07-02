@@ -2,7 +2,7 @@ const config = require('./src/config');
 
 module.exports = {
   siteMetadata: {
-    title: 'Riyan Sugiarto | Building Impactful Solutions',
+    title: 'Riyan Sugiarto | System Design & Architecture',
     description:
       'Riyan Sugiarto is a Software Engineer focused on enterprise-scale System Design and Backend Architecture, highly capable of delivering end-to-end Full-Stack and Frontend experiences.',
     siteUrl: 'https://riyans.tech', // No trailing slash allowed!

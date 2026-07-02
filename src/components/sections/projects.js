@@ -55,15 +55,10 @@ const StyledProject = styled.li`
     &:hover,
     &:focus-within {
       .project-inner {
-        background-color: rgba(184, 255, 0, 0.05);
-        border-color: var(--pink);
-        box-shadow: inset 0 0 30px rgba(184, 255, 0, 0.2), 0 0 20px rgba(184, 255, 0, 0.4);
+        background-color: #161b22;
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
         transform: translateY(-5px);
-        
-        &::before, &::after {
-          opacity: 1;
-          transform: scale(1.3);
-        }
       }
       .project-image::after {
         opacity: 1;
@@ -79,39 +74,16 @@ const StyledProject = styled.li`
 
   .project-inner {
     ${({ theme }) => theme.mixins.glassmorphism};
-    background-image: radial-gradient(rgba(0, 255, 102, 0.15) 1px, transparent 1px);
-    background-size: 10px 10px;
     ${({ theme }) => theme.mixins.flexBetween};
     flex-direction: column;
     align-items: flex-start;
     position: relative;
     height: 100%;
-    padding: 2rem 1.75rem;
+    padding: 60px 1.75rem 2rem;
     transition: var(--transition);
 
-    &::before, &::after {
-      content: '';
-      position: absolute;
-      width: 15px;
-      height: 15px;
-      border: 2px solid transparent;
-      transition: var(--transition);
-      opacity: 0;
-      z-index: 10;
-    }
-
-    &::before {
-      top: 5px;
-      left: 5px;
-      border-top-color: var(--pink);
-      border-left-color: var(--pink);
-    }
-
     &::after {
-      bottom: 25px;
-      right: 5px;
-      border-bottom-color: var(--pink);
-      border-right-color: var(--pink);
+      content: 'module.exe';
     }
   }
 

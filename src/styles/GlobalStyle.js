@@ -5,7 +5,7 @@ import TransitionStyles from './TransitionStyles';
 import PrismStyles from './PrismStyles';
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=M+PLUS+1+Code:wght@400;500;600&display=swap');
 
   ${TransitionStyles};
   ${fonts};
@@ -63,26 +63,13 @@ const GlobalStyle = createGlobalStyle`
     outline-offset: 3px;
   }
 
+
   /* Scrollbar Styles */
   html {
-    scrollbar-width: thin;
-    scrollbar-color: var(--pink) rgba(9, 10, 15, 0.95);
+    scrollbar-width: none;
   }
-  body::-webkit-scrollbar {
-    width: 8px;
-  }
-  body::-webkit-scrollbar-track {
-    background: rgba(9, 10, 15, 0.95);
-    border-left: 1px solid rgba(0, 255, 102, 0.2);
-  }
-  body::-webkit-scrollbar-thumb {
-    background-color: var(--pink);
-    border-radius: 0;
-    box-shadow: inset 0 0 5px rgba(184, 255, 0, 0.5);
-  }
-  body::-webkit-scrollbar-thumb:hover {
-    background-color: var(--blue);
-    box-shadow: inset 0 0 5px rgba(0, 255, 102, 0.8);
+  ::-webkit-scrollbar {
+    display: none;
   }
 
   @keyframes neonBorder {
@@ -255,17 +242,15 @@ const GlobalStyle = createGlobalStyle`
     position: relative;
     margin: 10px 0 40px;
     width: 100%;
-    font-size: clamp(26px, 5vw, var(--fz-heading));
-    font-family: var(--font-heading);
+    font-size: clamp(18px, 4vw, var(--fz-heading));
+    font-family: var(--font-mono);
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     white-space: nowrap;
     animation: neon-glow-pulse 3s infinite alternate;
 
     @media (max-width: 480px) {
-      white-space: normal;
-      word-break: break-word;
-      flex-wrap: wrap;
+      font-size: clamp(16px, 4.5vw, 20px);
     }
 
     &:before {
@@ -291,7 +276,8 @@ const GlobalStyle = createGlobalStyle`
       display: block;
       position: relative;
       top: -5px;
-      width: 300px;
+      width: 100%;
+      max-width: 300px;
       height: 1px;
       margin-left: 20px;
       background-color: var(--pink);
@@ -299,10 +285,11 @@ const GlobalStyle = createGlobalStyle`
       animation: expand-line 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 
       @media (max-width: 1080px) {
-        width: 200px;
+        max-width: 200px;
       }
       @media (max-width: 768px) {
-        width: 100%;
+        flex: 1;
+        width: auto;
       }
       @media (max-width: 600px) {
         margin-left: 10px;
@@ -528,6 +515,16 @@ const GlobalStyle = createGlobalStyle`
   ${TransitionStyles};
 
   ${PrismStyles};
+
+  /* Force hide Gatsby Query On Demand indicator */
+  #query-on-demand-indicator-element,
+  gatsby-qod,
+  #gatsby-qod {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
 `;
 
 export default GlobalStyle;

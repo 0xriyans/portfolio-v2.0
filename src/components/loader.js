@@ -80,24 +80,25 @@ const Loader = ({ finishLoading }) => {
     loader
       .add({
         targets: '.boot-text p',
-        delay: anime.stagger(150),
-        duration: 300,
+        delay: anime.stagger(400),
+        duration: 600,
         opacity: [0, 1],
-        translateX: [-10, 0],
+        translateX: [-20, 0],
         easing: 'easeOutExpo',
       })
       .add({
         targets: '.progress-bar',
         width: ['0%', '100%'],
-        duration: 500,
+        duration: 2000,
         easing: 'easeInOutExpo',
-      }, '+=100')
+      }, '+=200')
       .add({
         targets: '.loader',
-        delay: 150,
-        duration: 300,
+        delay: 500,
+        duration: 800,
         easing: 'easeInOutQuart',
         opacity: 0,
+        scale: 1.1,
         zIndex: -1,
       });
   };

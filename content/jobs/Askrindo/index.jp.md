@@ -12,7 +12,7 @@ tech:
   - Midtrans
 ---
 
-- Acted as the primary engineer responsible for the architectural design and full-cycle development of enterprise-grade B2B and B2C general insurance platforms.
-- Architected a highly decoupled frontend-backend infrastructure using Angular and Spring Boot to ensure seamless scalability for retail and corporate clients.
-- Designed robust integration layers connecting core systems with third-party platforms, including Midtrans payment gateways for real-time premium collections.
-- Formulated Technical Design Documents (TDDs) to translate complex business requirements into clear engineering specifications.
+- 企業向けB2BおよびB2C損害保険プラットフォームのアーキテクチャ設計とフルサイクル開発を担当する主要エンジニアとして従事。
+- 小売・企業クライアント向けのシームレスなスケーラビリティを確保するため、AngularとSpring Bootを使用して高度に分離されたフロントエンド・バックエンドインフラストラクチャを構築。
+- リアルタイムでの保険料徴収のためのMidtrans決済ゲートウェイを含む、コアシステムとサードパーティプラットフォームを接続する堅牢な統合レイヤーを設計。
+- 複雑なビジネス要件を明確なエンジニアリング仕様に変換するための技術設計書（TDD）を作成。

@@ -12,7 +12,7 @@ tech:
   - JasperReports
 ---
 
-- Conceptualized and maintained high-performance backend application modules using Java and Spring Boot for core corporate financial operations.
-- Executed secure integration frameworks with the Ministry of Finance (Kemenkeu) for automating real-time electronic stamp duty (e-Materai) processing.
-- Analyzed and optimized complex relational database queries and established strategic data indexing plans within PostgreSQL and SQL Server.
-- Built automated end-to-end data pipelines to generate precise financial reporting and reconciliation models using JasperReports.
+- Mengonsep dan memelihara modul aplikasi backend berkinerja tinggi menggunakan Java dan Spring Boot untuk operasi keuangan inti perusahaan.
+- Menjalankan kerangka integrasi yang aman dengan Kementerian Keuangan (Kemenkeu) untuk mengotomatisasi pemrosesan e-Meterai secara real-time.
+- Menganalisis dan mengoptimalkan kueri basis data relasional yang kompleks serta menetapkan rencana pengindeksan data strategis di PostgreSQL dan SQL Server.
+- Membangun pipeline data end-to-end terotomatisasi untuk menghasilkan laporan keuangan dan model rekonsiliasi yang presisi menggunakan JasperReports.

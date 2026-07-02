@@ -12,7 +12,7 @@ tech:
   - Midtrans
 ---
 
-- Acted as the primary engineer responsible for the architectural design and full-cycle development of enterprise-grade B2B and B2C general insurance platforms.
-- Architected a highly decoupled frontend-backend infrastructure using Angular and Spring Boot to ensure seamless scalability for retail and corporate clients.
-- Designed robust integration layers connecting core systems with third-party platforms, including Midtrans payment gateways for real-time premium collections.
-- Formulated Technical Design Documents (TDDs) to translate complex business requirements into clear engineering specifications.
+- Bertindak sebagai insinyur utama yang bertanggung jawab atas desain arsitektur dan pengembangan siklus penuh dari platform asuransi umum B2B dan B2C tingkat perusahaan.
+- Merancang infrastruktur frontend-backend yang sangat terpisah (decoupled) menggunakan Angular dan Spring Boot untuk memastikan skalabilitas yang mulus bagi klien ritel dan korporat.
+- Merancang lapisan integrasi yang kuat untuk menghubungkan sistem inti dengan platform pihak ketiga, termasuk gateway pembayaran Midtrans untuk penagihan premi secara real-time.
+- Merumuskan Dokumen Desain Teknis (TDD) untuk menerjemahkan kebutuhan bisnis yang kompleks ke dalam spesifikasi rekayasa perangkat lunak yang jelas.

@@ -49,6 +49,7 @@ const Head = ({ title, description, image }) => {
 
       <meta name="description" content={seo.description} />
       <meta name="image" content={seo.image} />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />

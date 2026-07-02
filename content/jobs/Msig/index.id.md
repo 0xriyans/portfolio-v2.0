@@ -12,7 +12,7 @@ tech:
   - OCR & Biometrics
 ---
 
-- Designed and maintained a resilient, distributed financial backend architecture using Spring Cloud, Eureka Server, and Zuul Gateway.
-- Spearheaded the technical integration of AI engines (OCR, biometric Liveness Detection, TTS, STT) to enable real-time user verification and automated voice interactions.
-- Built decoupled, event-driven messaging networks using Apache Kafka to manage asynchronous workflows across distinct service clusters.
-- Orchestrated extensive historical database migrations of active agent profiles using Spring Batch.
+- Merancang dan memelihara arsitektur backend keuangan terdistribusi yang tangguh menggunakan Spring Cloud, Eureka Server, dan Zuul Gateway.
+- Memimpin integrasi teknis mesin AI (OCR, Liveness Detection biometrik, TTS, STT) untuk memungkinkan verifikasi pengguna real-time dan interaksi suara otomatis.
+- Membangun jaringan perpesanan berbasis event yang terpisah menggunakan Apache Kafka untuk mengelola alur kerja asinkron melintasi klaster layanan yang berbeda.
+- Mengorkestrasi migrasi basis data historis ekstensif dari profil agen aktif menggunakan Spring Batch.

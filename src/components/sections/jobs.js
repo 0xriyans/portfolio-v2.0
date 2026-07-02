@@ -80,7 +80,6 @@ const StyledTabList = styled.div`
     flex-direction: row;
     overflow-x: auto;
     width: 100%;
-    max-width: 100vw;
     padding: 15px 20px;
     border-right: none;
     border-bottom: 1px solid rgba(0, 255, 102, 0.2);
@@ -141,6 +140,11 @@ const StyledTabPanels = styled.div`
 const StyledTabPanel = styled.div`
   width: 100%;
   height: auto;
+  font-family: var(--font-mono);
+
+  p {
+    font-family: var(--font-mono);
+  }
 
   ul {
     ${({ theme }) => theme.mixins.fancyList};

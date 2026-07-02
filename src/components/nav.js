@@ -48,8 +48,7 @@ const StyledHeader = styled.header`
       css`
         height: var(--nav-scroll-height);
         transform: translateY(0px);
-        background-color: rgba(9, 10, 15, 0.85);
-        backdrop-filter: blur(10px);
+        background-color: #0d1117;
       `};
 
     ${props =>

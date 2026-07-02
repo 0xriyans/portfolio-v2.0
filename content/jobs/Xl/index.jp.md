@@ -12,7 +12,7 @@ tech:
   - K6
 ---
 
-- Spearheaded the massive architectural migration of legacy SOAR (TIBCO) infrastructure to a decentralized microservices framework using Spring Boot.
-- Engineered low-latency, event-driven service interaction mechanisms using Solace message brokers across high-traffic telecommunications modules.
-- Managed the full development lifecycle of core RESTful APIs, configuring proxy rules and rate-limiting metrics at the API Gateway layer.
-- Executed high-load stress testing and performance tuning using K6 to identify processing bottlenecks under peak traffic.
+- 従来のSOAR（TIBCO）インフラストラクチャからSpring Bootを使用した分散型マイクロサービスフレームワークへの大規模なアーキテクチャ移行を主導。
+- トラフィックの多い通信モジュール全体で、Solaceメッセージブローカーを使用して低遅延のイベント駆動型サービス相互作用メカニズムを設計。
+- コアRESTful APIの開発ライフサイクル全体を管理し、APIゲートウェイレイヤーでプロキシルールとレート制限メトリクスを構成。
+- K6を使用して高負荷のストレステストとパフォーマンスチューニングを実行し、ピークトラフィック時の処理のボトルネックを特定。

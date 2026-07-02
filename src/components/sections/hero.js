@@ -4,6 +4,8 @@ import { useTranslation } from 'gatsby-plugin-react-i18next';
 import styled, { keyframes } from 'styled-components';
 import { navDelay, loaderDelay } from '@utils';
 import { usePrefersReducedMotion } from '@hooks';
+import TerminalTyping from '../TerminalTyping';
+import ParticleNetwork from '../ParticleNetwork';
 
 const blinkCaret = keyframes`
   from, to { opacity: 1; }
@@ -12,6 +14,7 @@ const blinkCaret = keyframes`
 
 const StyledHeroSection = styled.section`
   ${({ theme }) => theme.mixins.flexCenter};
+  position: relative;
   flex-direction: column;
   align-items: center;
   text-align: center;
@@ -192,9 +195,7 @@ const Hero = () => {
     </h3>
   );
   const four = (
-    <p>
-      {t('hero_desc')}
-    </p>
+    <TerminalTyping />
   );
   const five = (
     <a className="email-link" href="mailto:ryansgrt23@gmail.com" target="_blank" rel="noreferrer">
@@ -206,6 +207,7 @@ const Hero = () => {
 
   return (
     <StyledHeroSection>
+      <ParticleNetwork />
       <div 
         style={{ 
           width: '100%',

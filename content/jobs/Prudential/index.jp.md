@@ -12,7 +12,7 @@ tech:
   - Couchbase
 ---
 
-- Directed the architectural conversion of stream-processing services from Apache Flink to lightweight Quarkus runtimes, achieving massive reductions in cloud memory overhead.
-- Designed high-velocity ETL data streaming pipelines utilizing Apache Kafka to handle real-time transactional operations with strict zero-loss data constraints.
-- Developed integration layers connecting real-time streaming runtimes with IBM BPM and BRMS to automate complex policy processing and decision-making logic.
-- Modeled high-performance, resilient data retention environments utilizing a hybrid of PostgreSQL and Couchbase NoSQL.
+- ストリーム処理サービスのアーキテクチャをApache Flinkから軽量なQuarkusランタイムに変換し、クラウドメモリのオーバーヘッドを大幅に削減。
+- 厳格なデータ欠損ゼロの制約の下でリアルタイムのトランザクション操作を処理するため、Apache Kafkaを利用した高速ETLデータストリーミングパイプラインを設計。
+- 複雑なポリシー処理と意思決定ロジックを自動化するため、リアルタイムストリーミングランタイムとIBM BPMおよびBRMSを接続する統合レイヤーを開発。
+- PostgreSQLとCouchbase NoSQLのハイブリッドを利用して、高性能で回復力のあるデータ保持環境をモデル化。
