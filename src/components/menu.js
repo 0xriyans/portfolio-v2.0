@@ -47,7 +47,7 @@ const StyledHamburgerButton = styled.button`
     width: var(--hamburger-width);
     height: 2px;
     border-radius: var(--border-radius);
-    background-color: var(--yellow);
+    background-color: var(--blue);
     transition-duration: 0.22s;
     transition-property: transform;
     transition-delay: ${props => (props.menuOpen ? `0.12s` : `0s`)};
@@ -65,7 +65,7 @@ const StyledHamburgerButton = styled.button`
       width: var(--hamburger-width);
       height: 2px;
       border-radius: 4px;
-      background-color: var(--yellow);
+      background-color: var(--blue);
       transition-timing-function: ease;
       transition-duration: 0.15s;
       transition-property: transform;
@@ -99,11 +99,11 @@ const StyledSidebar = styled.aside`
     width: min(75vw, 400px);
     height: 100vh;
     outline: 0;
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: -10px 0px 30px -15px rgba(0, 0, 0, 0.1);
+    background-color: rgba(9, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-left: 1px solid rgba(0, 255, 102, 0.3);
+    box-shadow: -10px 0px 30px -15px rgba(0, 255, 102, 0.3);
     z-index: 9;
     transform: translateX(${props => (props.menuOpen ? 0 : 100)}vw);
     visibility: ${props => (props.menuOpen ? 'visible' : 'hidden')};
@@ -139,15 +139,22 @@ const StyledSidebar = styled.aside`
         content: '0' counter(item) '.';
         display: block;
         margin-bottom: 5px;
-        color: var(--yellow);
+        color: var(--pink);
         font-size: var(--fz-sm);
+        text-shadow: 0 0 5px var(--pink);
       }
     }
 
     a {
       ${({ theme }) => theme.mixins.link};
       width: 100%;
-      padding: 3px 20px 20px;
+      padding: 10px 20px;
+      
+      &:hover,
+      &:focus {
+        color: var(--white);
+        text-shadow: 0 0 8px rgba(0, 255, 102, 0.8);
+      }
     }
   }
 
@@ -158,24 +165,7 @@ const StyledSidebar = styled.aside`
     width: max-content;
   }
 
-  .theme-button {
-    ${({ theme }) => theme.mixins.smallButton};
-    margin: 20px auto 0;
-    font-size: var(--fz-xl);
-    padding: 0.5rem 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: 1px solid var(--yellow);
-
-    &:hover,
-    &:focus {
-      background: var(--yellow-tint);
-    }
-  }
 `;
-
 const Menu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { t } = useTranslation();
@@ -300,6 +290,10 @@ const Menu = () => {
                 ))}
               </ol>
             )}
+            
+            <a href="/Riyan Sugiarto Resume.pdf" className="resume-link" target="_blank" rel="noopener noreferrer">
+              [ CV ]
+            </a>
           </nav>
         </StyledSidebar>
       </div>

@@ -4,7 +4,7 @@ module.exports = {
   siteMetadata: {
     title: 'Riyan Sugiarto | Building Impactful Solutions',
     description:
-      'Riyan Sugiarto is a software engineer focused on building scalable and reliable backend systems that drive exceptional digital experiences.',
+      'Riyan Sugiarto is a Software Engineer focused on enterprise-scale System Design and Backend Architecture, highly capable of delivering end-to-end Full-Stack and Frontend experiences.',
     siteUrl: 'https://riyans.tech', // No trailing slash allowed!
     image: '/og.png', // Path to your image you placed in the 'static' folder
     twitterUsername: '@0xriyans',

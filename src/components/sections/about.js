@@ -1,38 +1,155 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StaticImage } from 'gatsby-plugin-image';
 import { useTranslation } from 'gatsby-plugin-react-i18next';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { FaJava, FaAws, FaRobot, FaServer, FaDatabase, FaCode, FaCheckCircle, FaNetworkWired, FaBrain, FaFileAlt, FaDesktop, FaProjectDiagram } from 'react-icons/fa';
+import { SiSpringboot, SiApachekafka, SiPostgresql, SiRedis, SiGraphql, SiKubernetes, SiElasticsearch, SiGithubactions } from 'react-icons/si';
 import { srConfig } from '@config';
 import sr from '@utils/sr';
-import { usePrefersReducedMotion, useTilt } from '@hooks';
+import { usePrefersReducedMotion } from '@hooks';
+
+const pulseBar = keyframes`
+  0% { opacity: 0.15; }
+  100% { opacity: 0.4; }
+`;
+
+const scanAnim = keyframes`
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(500%); }
+`;
+
+const glitchImage = keyframes`
+  0% { filter: hue-rotate(0deg) contrast(150%) saturate(200%); transform: translate(0) }
+  20% { filter: hue-rotate(90deg) contrast(150%) saturate(200%); transform: translate(-2px, 2px) }
+  40% { filter: hue-rotate(180deg) contrast(150%) saturate(200%); transform: translate(-2px, -2px) }
+  60% { filter: hue-rotate(270deg) contrast(150%) saturate(200%); transform: translate(2px, 2px) }
+  80% { filter: hue-rotate(360deg) contrast(150%) saturate(200%); transform: translate(2px, -2px) }
+  100% { filter: hue-rotate(0deg) contrast(150%) saturate(200%); transform: translate(0) }
+`;
 
 const StyledAboutSection = styled.section`
   max-width: 900px;
 
   .inner {
-    ${({ theme }) => theme.mixins.glassmorphism};
     display: grid;
-    grid-template-columns: 2fr 3fr;
+    grid-template-columns: 3fr 2fr;
     grid-gap: 50px;
     padding: 50px;
     border-radius: 20px;
 
     @media (max-width: 768px) {
-      display: block;
+      display: flex;
+      flex-direction: column;
       padding: 30px;
     }
   }
 `;
 
+const StyledIntegratedStats = styled.div`
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin: 40px 0 60px 0;
+  ${({ theme }) => theme.mixins.glassmorphism};
+  position: relative;
+  transition: var(--transition);
+
+  &:hover {
+    border-color: var(--pink);
+    box-shadow: inset 0 0 20px rgba(184, 255, 0, 0.2), 0 0 20px rgba(184, 255, 0, 0.4);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 1px;
+    background: var(--blue);
+    transform: rotate(-45deg);
+    transform-origin: 100% 100%;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    clip-path: none;
+    border-radius: var(--border-radius);
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    padding: 30px 20px;
+
+    &:not(:last-child) {
+      border-right: 1px solid rgba(0, 255, 102, 0.15);
+      
+      @media (max-width: 768px) {
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 255, 102, 0.15);
+      }
+    }
+
+    .stat-number {
+      font-family: var(--font-heading);
+      font-size: clamp(40px, 4vw, 55px);
+      font-weight: 700;
+      color: var(--blue);
+      text-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+      line-height: 1;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+
+      span.unit {
+        font-size: clamp(16px, 2vw, 20px);
+        color: var(--pink);
+        font-family: var(--font-mono);
+        font-weight: 500;
+        margin-left: 5px;
+        text-shadow: none;
+      }
+    }
+
+    .stat-title {
+      font-family: var(--font-mono);
+      font-size: var(--fz-xs);
+      color: var(--yellow);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    
+    .stat-desc {
+      font-family: var(--font-sans);
+      font-size: var(--fz-xxs);
+      color: var(--slate);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+  }
+`;
+
 const StyledText = styled.div`
+  font-family: var(--font-mono);
+
   p {
     line-height: 1.6;
     margin-bottom: 20px;
+    color: var(--slate);
+    font-size: var(--fz-md);
   }
 
   strong {
-    color: var(--yellow);
-    font-weight: 600;
+    color: var(--green, #00ff66);
+    font-weight: 500;
   }
 `;
 
@@ -41,54 +158,121 @@ const StyledSkills = styled.div`
   margin-top: 20px;
 
   .skills-heading {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    font-family: var(--font-mono);
+    color: var(--white);
+    font-size: var(--fz-md);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    
+    &::after {
+      content: '';
+      display: block;
+      height: 1px;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.1);
+      margin-left: 20px;
+    }
   }
 
-  ul.skills-list {
+  .skills-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    
+    @media (max-width: 1080px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
 
-    @media (min-width: 768px) {
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  .skill-card {
+    background: rgba(10, 10, 15, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+    position: relative;
+    transition: var(--transition);
+    overflow: hidden;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-5px);
+    }
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+
+    .icon {
+      color: var(--white);
+      font-size: 20px;
     }
 
-    li {
-      position: relative;
-      padding: 10px 18px;
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      color: var(--lightest-slate);
-      font-family: var(--font-sans);
-      font-size: var(--fz-xs);
-      line-height: 1.4;
-      transition: all 0.3s ease;
+    .version {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--light-slate);
+    }
+  }
+
+  .card-title {
+    font-family: var(--font-heading);
+    color: var(--white);
+    font-size: var(--fz-md);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .card-skills {
+    font-family: var(--font-mono);
+    color: var(--slate);
+    font-size: 11px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex-grow: 1;
+  }
+
+  .card-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .integrity-header {
       display: flex;
-      align-items: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      cursor: default;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--light-slate);
+    }
 
-      @media (min-width: 768px) {
-        font-size: var(--fz-sm);
-        padding: 14px 24px;
-        border-radius: 50px;
-        backdrop-filter: blur(10px);
-      }
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
 
-      &:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(168, 85, 247, 0.2) 0%,
-          rgba(236, 72, 153, 0.2) 100%
-        );
-        border-color: var(--pink);
-        color: var(--white);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(168, 85, 247, 0.2);
+      .progress-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        border-radius: 2px;
       }
     }
   }
@@ -102,27 +286,30 @@ const StyledPic = styled.div`
   @media (max-width: 768px) {
     margin: 0 auto 40px;
     width: 70%;
+    order: -1;
   }
 
   .wrapper {
     display: block;
     position: relative;
     width: 100%;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px -15px var(--navy-shadow);
+    border-radius: 0;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%);
+    border: 1px solid rgba(0, 255, 102, 0.5);
+    background-color: rgba(0, 255, 102, 0.05);
     transition: var(--transition);
     overflow: hidden;
-
+    
     &:hover,
     &:focus {
       outline: 0;
       transform: translateY(-5px);
-      box-shadow: 0 20px 40px -15px var(--navy-shadow);
-      border-color: rgba(255, 255, 255, 0.2);
+      border-color: var(--green, #00ff66);
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
 
       .img {
         transform: scale(1.05);
+        filter: none;
       }
     }
 
@@ -130,15 +317,42 @@ const StyledPic = styled.div`
       position: relative;
       display: block;
       width: 100%;
-      border-radius: 20px;
-      transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+      transition: var(--transition);
+      filter: grayscale(100%) contrast(110%);
     }
   }
 `;
 
+const IntegratedStatBar = ({ title, number, unit, desc }) => {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    let start = 0;
+    const end = parseFloat(number);
+    if (start === end) return;
+    let totalDuration = 2000;
+    let incrementTime = (totalDuration / end) * 2;
+    
+    const timer = setInterval(() => {
+      start += 1;
+      setCount(String(start));
+      if (start >= end) clearInterval(timer);
+    }, incrementTime);
+    
+    return () => clearInterval(timer);
+  }, [number]);
+
+  return (
+    <div className="stat-item">
+      <div className="stat-title">{title}</div>
+      <div className="stat-number">{count}<span className="unit">{unit}</span></div>
+      <div className="stat-desc">{desc}</div>
+    </div>
+  );
+};
+
 const About = () => {
   const revealContainer = useRef(null);
-  const tiltRef = useTilt();
   const prefersReducedMotion = usePrefersReducedMotion();
   const { t } = useTranslation();
 
@@ -150,22 +364,69 @@ const About = () => {
     sr.reveal(revealContainer.current, srConfig());
   }, []);
 
-  const skills = [
-    'Backend & Core (Java, Spring, Quarkus)',
-    'Microservices (Spring Cloud, GraphQL)',
-    'Message Brokers (Kafka, Solace)',
-    'Databases & Cache (PostgreSQL, Redis)',
-    'DevOps & Cloud (K8s, Docker, AWS)',
-    'Observability (ELK Stack, SonarQube)',
-    'AI & Automation (OCR, IBM BPM)',
-    'Frontend (Angular, React, TS)',
+  const techCore = [
+    {
+      title: 'Backend & Architecture',
+      skills: 'Java, Spring Boot, Quarkus, System Design, Microservices',
+      version: 'v.Core',
+      icon: <FaServer />,
+      integrity: 99,
+      color: 'var(--green, #00ff66)'
+    },
+    {
+      title: 'Frontend Experiences',
+      skills: 'React, Angular, TypeScript, Tailwind CSS, Web Perf',
+      version: 'v.UI',
+      icon: <FaDesktop />,
+      integrity: 92,
+      color: 'var(--pink, #b8ff00)'
+    },
+    {
+      title: 'Data & Messaging',
+      skills: 'PostgreSQL, MongoDB, Kafka, RabbitMQ, Redis',
+      version: 'v.Data',
+      icon: <FaDatabase />,
+      integrity: 97,
+      color: 'var(--green, #00ff66)'
+    },
+    {
+      title: 'Cloud & DevOps',
+      skills: 'Kubernetes, AWS, Docker, CI/CD, Nginx, Shell',
+      version: 'v.Ops',
+      icon: <FaAws />,
+      integrity: 95,
+      color: 'var(--pink, #b8ff00)'
+    },
+    {
+      title: 'Observability & QA',
+      skills: 'ELK Stack, SonarQube, K6, JMeter, TDD',
+      version: 'v.Mon',
+      icon: <SiElasticsearch />,
+      integrity: 94,
+      color: 'var(--green, #00ff66)'
+    },
+    {
+      title: 'Enterprise Integration',
+      skills: 'AI (OCR/Biometric), IBM BPM, GraphQL, REST APIs',
+      version: 'v.Sync',
+      icon: <FaNetworkWired />,
+      integrity: 91,
+      color: 'var(--pink, #b8ff00)'
+    }
   ];
 
   return (
     <StyledAboutSection id="about" ref={revealContainer}>
       <h2 className="numbered-heading">{t('About Me')}</h2>
 
-      <div className="inner" ref={tiltRef}>
+      <div className="inner">
+        <StyledText>
+          <div className="text">
+            <p dangerouslySetInnerHTML={{ __html: t('about_p1') }} />
+            <p dangerouslySetInnerHTML={{ __html: t('about_p2') }} />
+          </div>
+        </StyledText>
+
         <StyledPic>
           <div className="wrapper">
             <StaticImage
@@ -179,18 +440,42 @@ const About = () => {
           </div>
         </StyledPic>
 
-        <StyledText>
-          <div>
-            <p dangerouslySetInnerHTML={{ __html: t('about_p1') }}></p>
-            <p dangerouslySetInnerHTML={{ __html: t('about_p2') }}></p>
-          </div>
-        </StyledText>
+        <StyledIntegratedStats>
+          <IntegratedStatBar title="System Reliability" number="99" unit=".99%" desc="TARGET UPTIME SLA" />
+          <IntegratedStatBar title="P99 Latency" number="45" unit="ms" desc="AVG API RESPONSE" />
+          <IntegratedStatBar title="UI Performance" number="100" unit="/100" desc="LIGHTHOUSE SCORE" />
+        </StyledIntegratedStats>
 
         <StyledSkills>
-          <p className="skills-heading">{t('Technologies I’ve been working with:')}</p>
-          <ul className="skills-list">
-            {skills && skills.map((skill, i) => <li key={i}>{skill}</li>)}
-          </ul>
+          <h2 className="skills-heading">TECH_CORE</h2>
+          <div className="skills-grid">
+            {techCore && techCore.map((node, i) => (
+              <div className="skill-card" key={i}>
+                <div className="card-top">
+                  <div className="icon">{node.icon}</div>
+                  <div className="version">{node.version}</div>
+                </div>
+                <div className="card-title">{node.title}</div>
+                <div className="card-skills">{node.skills}</div>
+                <div className="card-bottom">
+                  <div className="integrity-header">
+                    <span>INTEGRITY</span>
+                    <span style={{ color: node.color }}>{node.integrity}%</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div 
+                      className="progress-fill" 
+                      style={{ 
+                        width: `${node.integrity}%`, 
+                        backgroundColor: node.color,
+                        boxShadow: `0 0 10px ${node.color}`
+                      }} 
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </StyledSkills>
       </div>
     </StyledAboutSection>

@@ -1,24 +1,18 @@
 ---
-date: '2020-12-01'
+date: '2025-01-01'
 title: 'Software Engineer'
 company: 'Asuransi Kredit Indonesia'
 location: 'Jakarta, Indonesia'
-range: '2020 - 2022'
+range: '2025 - Present'
 url: 'https://askrindo.co.id/'
 tech:
   - Java
   - Spring Boot
-  - PostgreSQL
-  - JasperReports
-  - Nginx
-  - Git
-  - Docker
-  - REST API
+  - Angular
+  - Midtrans
 ---
 
-- Conceptualized and maintained high-performance backend application modules using Java and the Spring Boot framework to ensure core financial scalability.
-- Executed secure integration frameworks with the Ministry of Finance (Kemenkeu) for automating real-time electronic stamp duty (e-Materai) processing.
-- Analyzed and optimized complex relational database queries and established strategic data indexing plans within PostgreSQL and Microsoft SQL Server.
-- Built and managed automated end-to-end data pipelines to collect operational statistics and generate precise financial reporting using JasperReports.
-- Managed on-premise server deployment architectures by configuring Nginx as a reverse proxy, safeguarding environments through SSL/TLS encryption and OAuth2.
-- Engineered backend solutions for the **Pemulihan Ekonomi Nasional (PEN)** COVID-19 relief initiative, the **Agunan Bank Online** platform, and the **Surety Bond Online** system.
+- Acted as the primary engineer responsible for the architectural design and full-cycle development of enterprise-grade B2B and B2C general insurance platforms.
+- Architected a highly decoupled frontend-backend infrastructure using Angular and Spring Boot to ensure seamless scalability for retail and corporate clients.
+- Designed robust integration layers connecting core systems with third-party platforms, including Midtrans payment gateways for real-time premium collections.
+- Formulated Technical Design Documents (TDDs) to translate complex business requirements into clear engineering specifications.

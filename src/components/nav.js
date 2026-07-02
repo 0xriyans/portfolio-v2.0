@@ -9,37 +9,36 @@ import { useScrollDirection, usePrefersReducedMotion, useOnClickOutside } from '
 import { Menu } from '@components';
 import { IconLogo } from '@components/icons';
 
-const liquidBlobAnim = keyframes`
-  0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-  50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-  100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+const scanlineAnim = keyframes`
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 `;
 
 const StyledHeader = styled.header`
   ${({ theme }) => theme.mixins.flexBetween};
   position: fixed;
   top: 0;
+  left: 0;
   z-index: 11;
   padding: 0px 50px;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: transparent;
   filter: none !important;
   pointer-events: auto !important;
   user-select: auto !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  @media (max-width: 768px) {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   transition: var(--transition);
 
   @media (max-width: 1080px) {
     padding: 0 40px;
   }
   @media (max-width: 768px) {
-    padding: 0 25px;
+    top: 5px;
+    left: 1%;
+    width: 98%;
+    padding: 0 15px;
+    position: absolute; /* Stop floating on mobile */
+    background-color: transparent !important;
+    backdrop-filter: none !important;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -49,9 +48,8 @@ const StyledHeader = styled.header`
       css`
         height: var(--nav-scroll-height);
         transform: translateY(0px);
-        background-color: rgba(255, 255, 255, 0.1);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        background-color: rgba(9, 10, 15, 0.85);
+        backdrop-filter: blur(10px);
       `};
 
     ${props =>
@@ -60,7 +58,6 @@ const StyledHeader = styled.header`
       css`
         height: var(--nav-scroll-height);
         transform: translateY(calc(var(--nav-scroll-height) * -1));
-        box-shadow: 0 10px 30px -10px var(--navy-shadow);
       `};
   }
 `;
@@ -71,36 +68,24 @@ const StyledNav = styled.nav`
   width: 100%;
   color: var(--lightest-slate);
   font-family: var(--font-mono);
-  counter-reset: item 0;
   z-index: 12;
 
   .logo {
     ${({ theme }) => theme.mixins.flexCenter};
 
     a {
-      color: var(--navy);
-      width: 48px;
-      height: 48px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, var(--yellow), var(--pink));
-      animation: ${liquidBlobAnim} 4s ease-in-out infinite;
+      color: var(--green, #00ff66);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: var(--fz-xl);
+      letter-spacing: 0.1em;
       transition: var(--transition);
-      box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+      text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
 
       &:hover,
       &:focus {
-        background: linear-gradient(135deg, var(--pink), var(--yellow));
-        transform: scale(1.1);
-        box-shadow: 0 6px 15px rgba(255, 77, 109, 0.5);
-      }
-
-      svg {
-        fill: none;
-        width: 60%;
-        height: 60%;
-        user-select: none;
+        color: var(--white);
+        text-shadow: 0 0 15px rgba(0, 255, 102, 0.8);
       }
     }
   }
@@ -121,74 +106,77 @@ const StyledLinks = styled.div`
     list-style: none;
 
     li {
-      margin: 0 5px;
+      margin: 0 10px;
       position: relative;
-      counter-increment: item 1;
-      font-size: var(--fz-md);
+      font-size: var(--fz-xs);
+      letter-spacing: 0.1em;
 
       a {
         padding: 10px;
-
-        &:before {
-          content: '0' counter(item) '.';
-          margin-right: 5px;
-          color: var(--yellow);
-          font-size: var(--fz-xxs);
-          text-align: right;
+        transition: var(--transition);
+        position: relative;
+        color: var(--light-slate);
+        
+        &:hover,
+        &:focus {
+          color: var(--white);
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
         }
       }
     }
   }
 
   .resume-button {
-    ${({ theme }) => theme.mixins.smallButton};
-    margin-left: 15px;
-    font-size: var(--fz-sm);
-  }
-  .theme-button {
-    ${({ theme }) => theme.mixins.smallButton};
-    margin-left: 15px;
-    font-size: var(--fz-xl);
-    padding: 0.5rem 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: 1px solid var(--yellow);
+    margin-left: 20px;
+    padding: 8px 16px;
+    font-size: var(--fz-xs);
+    font-family: var(--font-mono);
+    color: var(--dark-navy, #020c1b);
+    background-color: var(--green, #00ff66);
+    border: 1px solid var(--green, #00ff66);
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: var(--transition);
+    text-decoration: none;
+    box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
 
     &:hover,
     &:focus {
-      background: var(--yellow-tint);
+      background-color: transparent;
+      color: var(--green, #00ff66);
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.6);
+      outline: none;
     }
   }
 `;
 
 const StyledLanguageDropdown = styled.div`
   position: relative;
-  display: inline-block;
-  margin-left: 10px;
 
   .dropdown-btn {
     display: flex;
+    gap: 5px;
     align-items: center;
-    gap: 8px;
+    padding: 6px 12px;
     background: transparent;
-    border: 1px solid var(--yellow);
-    padding: 0.5rem 0.75rem;
-    border-radius: var(--border-radius);
+    border: 1px solid var(--blue);
+    border-radius: 2px;
     cursor: pointer;
     transition: var(--transition);
 
-    &:hover,
-    &:focus {
-      background: var(--yellow-tint);
+    .lang-text {
+      font-family: var(--font-mono);
+      font-size: var(--fz-xs);
+      color: var(--blue);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
     }
 
-    img {
-      width: 24px;
-      height: 16px;
-      object-fit: cover;
-      border-radius: 2px;
+    &:hover, &:focus {
+      background: rgba(0, 255, 102, 0.1);
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
     }
   }
 
@@ -198,11 +186,12 @@ const StyledLanguageDropdown = styled.div`
     right: 0;
     top: 100%;
     margin-top: 5px;
-    background-color: var(--light-navy);
-    min-width: 100px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
+    background-color: rgba(2, 10, 20, 0.95);
+    border: 1px solid var(--blue);
+    min-width: 80px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 255, 102, 0.2);
     z-index: 100;
-    border-radius: var(--border-radius);
+    border-radius: 2px;
     overflow: hidden;
 
     &.show {
@@ -212,31 +201,32 @@ const StyledLanguageDropdown = styled.div`
     a {
       display: flex;
       align-items: center;
-      gap: 10px;
-      color: var(--lightest-slate);
+      justify-content: center;
       padding: 10px 15px;
       text-decoration: none;
-      font-family: var(--font-mono);
-      font-size: var(--fz-sm);
       transition: var(--transition);
 
-      img {
-        width: 20px;
-        height: 14px;
-        object-fit: cover;
-        border-radius: 2px;
+      .lang-text {
+        font-family: var(--font-mono);
+        font-size: var(--fz-xs);
+        color: var(--blue);
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        white-space: nowrap;
       }
 
       &:hover,
       &:focus {
-        background-color: var(--navy);
-        color: var(--yellow);
+        background-color: var(--blue);
+        .lang-text {
+          color: var(--navy);
+        }
       }
     }
   }
 `;
 
-const Nav = ({ isHome, toggleTheme, themeMode }) => {
+const Nav = ({ isHome }) => {
   const [isMounted, setIsMounted] = useState(!isHome);
   const scrollDirection = useScrollDirection('down');
   const [scrolledToTop, setScrolledToTop] = useState(true);
@@ -276,11 +266,11 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
     <div className="logo" tabIndex="-1">
       {isHome ? (
         <a href="/" aria-label="home">
-          <IconLogo />
+          {"< RIYAN />"}
         </a>
       ) : (
         <Link to="/" aria-label="home">
-          <IconLogo />
+          {"< RIYAN />"}
         </Link>
       )}
     </div>
@@ -289,18 +279,13 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
   const ResumeLink = (
     <a
       className="resume-button"
-      href="/Riyan Sugiarto Resume.pdf"
+      href="mailto:ryansgrt23@gmail.com"
       target="_blank"
       rel="noopener noreferrer">
-      {t('Resume')}
+      HIRE_ME [ON]
     </a>
   );
 
-  const ThemeToggle = (
-    <button className="theme-button" onClick={toggleTheme} aria-label="Toggle Theme">
-      {themeMode === 'light' ? '🌙' : '☀️'}
-    </button>
-  );
 
   const flags = {
     id: { src: 'https://flagcdn.com/w80/id.png', label: 'ID' },
@@ -312,14 +297,12 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
   const LanguageSwitcher = (
     <StyledLanguageDropdown ref={dropdownRef}>
       <button className="dropdown-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
-        <img src={flags[language]?.src || flags.en.src} alt={language} />
-        <span style={{ fontSize: '10px', color: 'var(--light-slate)' }}>▼</span>
+        <span className="lang-text">[ {flags[language]?.label || 'EN'} ]</span>
       </button>
       <div className={`dropdown-content ${dropdownOpen ? 'show' : ''}`}>
         {languages.map(lng => (
           <Link key={lng} to={originalPath} language={lng} onClick={() => setDropdownOpen(false)}>
-            <img src={flags[lng]?.src} alt={lng} />
-            <span>{flags[lng]?.label}</span>
+            <span className="lang-text">[ {flags[lng]?.label} ]</span>
           </Link>
         ))}
       </div>
@@ -350,12 +333,12 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
                     ))}
                 </ol>
                 <div>{ResumeLink}</div>
-                <div style={{ marginLeft: '10px', marginRight: '10px' }}>{ThemeToggle}</div>
+
               </StyledLinks>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 {LanguageSwitcher}
-                <Menu toggleTheme={toggleTheme} themeMode={themeMode} />
+                <Menu />
               </div>
             </div>
           </>
@@ -369,7 +352,7 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
               )}
             </TransitionGroup>
 
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
               <StyledLinks>
                 <ol>
                   <TransitionGroup component={null}>
@@ -401,20 +384,7 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
                   )}
                 </TransitionGroup>
 
-                <TransitionGroup component={null}>
-                  {isMounted && (
-                    <CSSTransition classNames={fadeDownClass} timeout={timeout}>
-                      <div
-                        style={{
-                          transitionDelay: `${isHome ? (navLinks.length + 1) * 100 : 0}ms`,
-                          marginLeft: '10px',
-                          marginRight: '10px',
-                        }}>
-                        {ThemeToggle}
-                      </div>
-                    </CSSTransition>
-                  )}
-                </TransitionGroup>
+
               </StyledLinks>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -434,7 +404,7 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
                 <TransitionGroup component={null}>
                   {isMounted && (
                     <CSSTransition classNames={fadeClass} timeout={timeout}>
-                      <Menu toggleTheme={toggleTheme} themeMode={themeMode} />
+                      <Menu />
                     </CSSTransition>
                   )}
                 </TransitionGroup>
@@ -449,8 +419,6 @@ const Nav = ({ isHome, toggleTheme, themeMode }) => {
 
 Nav.propTypes = {
   isHome: PropTypes.bool,
-  toggleTheme: PropTypes.func,
-  themeMode: PropTypes.string,
 };
 
 export default Nav;

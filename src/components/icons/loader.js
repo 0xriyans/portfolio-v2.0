@@ -19,7 +19,7 @@ const IconLoader = () => (
     <g>
       <path
         className="logo-outline"
-        stroke="var(--yellow)"
+        stroke="var(--blue)"
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"

@@ -1,12 +1,13 @@
 import { css } from 'styled-components';
 
 const button = css`
-  color: var(--yellow);
-  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--pink);
+  background-color: rgba(184, 255, 0, 0.05);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--yellow);
+  border: 1px solid var(--pink);
   border-radius: var(--border-radius);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
   font-size: var(--fz-xs);
   font-family: var(--font-mono);
   line-height: 1;
@@ -18,9 +19,10 @@ const button = css`
   &:hover,
   &:focus,
   &:active {
-    background-color: var(--yellow);
-    color: #ffffff;
-    border-color: var(--yellow);
+    background-color: rgba(184, 255, 0, 0.15);
+    color: var(--pink);
+    border-color: var(--pink);
+    box-shadow: 0 0 10px var(--pink), inset 0 0 10px var(--pink);
     outline: none;
   }
   &:after {
@@ -62,17 +64,18 @@ const mixins = {
     text-decoration-skip-ink: auto;
     position: relative;
     transition: var(--transition);
-    color: var(--yellow);
+    color: var(--blue);
     &:hover,
     &:focus,
     &:active {
-      color: var(--yellow);
+      color: var(--blue);
       outline: 0;
+      text-shadow: 0 0 8px var(--blue);
       &:after {
         width: 100%;
       }
       & > * {
-        color: var(--yellow) !important;
+        color: var(--blue) !important;
         transition: var(--transition);
       }
     }
@@ -83,21 +86,23 @@ const mixins = {
       height: 1px;
       position: relative;
       bottom: 0.37em;
-      background-color: var(--yellow);
+      background-color: var(--blue);
       transition: var(--transition);
-      opacity: 0.5;
+      opacity: 0.8;
+      box-shadow: 0 0 5px var(--blue);
     }
   `,
 
   button,
 
   smallButton: css`
-    color: var(--yellow);
-    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--pink);
+    background-color: rgba(184, 255, 0, 0.05);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--yellow);
+    border: 1px solid var(--pink);
     border-radius: var(--border-radius);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
     padding: 0.75rem 1rem;
     font-size: var(--fz-xs);
     font-family: var(--font-mono);
@@ -108,9 +113,10 @@ const mixins = {
     &:hover,
     &:focus,
     &:active {
-      background-color: var(--yellow);
-      color: #ffffff;
-      border-color: var(--yellow);
+      background-color: rgba(184, 255, 0, 0.15);
+      color: var(--pink);
+      border-color: var(--pink);
+      box-shadow: 0 0 10px var(--pink), inset 0 0 10px var(--pink);
       outline: none;
     }
     &:after {
@@ -119,12 +125,13 @@ const mixins = {
   `,
 
   bigButton: css`
-    color: var(--yellow);
-    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--pink);
+    background-color: rgba(184, 255, 0, 0.05);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--yellow);
+    border: 1px solid var(--pink);
     border-radius: var(--border-radius);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
     padding: 1.25rem 1.75rem;
     font-size: var(--fz-sm);
     font-family: var(--font-mono);
@@ -135,9 +142,10 @@ const mixins = {
     &:hover,
     &:focus,
     &:active {
-      background-color: var(--yellow);
-      color: #ffffff;
-      border-color: var(--yellow);
+      background-color: rgba(184, 255, 0, 0.15);
+      color: var(--pink);
+      border-color: var(--pink);
+      box-shadow: 0 0 10px var(--pink), inset 0 0 10px var(--pink);
       outline: none;
     }
     &:after {
@@ -146,22 +154,23 @@ const mixins = {
   `,
 
   glassmorphism: css`
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.05);
+    background: rgba(5, 5, 5, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 0;
+    border: 1px solid rgba(0, 255, 102, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 102, 0.1);
     position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
   `,
 
   boxShadow: css`
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
     transition: var(--transition);
 
     &:hover,
     &:focus {
-      box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(0, 240, 255, 0.2);
     }
   `,
 
@@ -175,10 +184,12 @@ const mixins = {
       padding-left: 30px;
       margin-bottom: 10px;
       &:before {
-        content: '▹';
+        content: '>';
         position: absolute;
         left: 0;
-        color: var(--yellow);
+        color: var(--pink);
+        font-family: var(--font-mono);
+        text-shadow: 0 0 5px rgba(184, 255, 0, 0.8);
       }
     }
   `,

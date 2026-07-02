@@ -1,16 +1,20 @@
 {
-  "About": "About",
-  "Experience": "Experience",
+  "About": "SYS.WHOAMI",
+  "Experience": "SYS.EXEC_LOG",
   "Work": "Work",
   "Contact": "Contact",
   "Resume": "Resume",
   "Featured Project": "Featured Project",
   "Learn More": "Learn More",
-  "Some Things I’ve Built": "Some Things I’ve Built",
-  "Where I’ve Worked": "Where I’ve Worked",
+  "Some Things I’ve Built": "SYS.DEPLOYED_MODULES",
+  "Where I’ve Worked": "SYS.EXEC_LOG",
   "Get In Touch": "Get In Touch",
   "Say Hello": "Say Hello",
   "Language": "Language",
-  "about_p1": "Hello! I'm <strong>Riyan Sugiarto</strong>, a <strong>dedicated Backend Engineer</strong> with over 5 years of experience architecting secure, <strong>high-performance core systems</strong> for the telecommunications and financial industries.",
-  "about_p2": "My expertise lies in <strong>designing scalable microservices</strong>, modernizing complex legacy infrastructures, and <strong>optimizing large-scale databases</strong>. I am deeply passionate about driving business growth by slashing operational costs, maximizing system efficiency, and seamlessly integrating <strong>smart AI pipelines</strong>—such as OCR and biometrics—to build intelligent, <strong>automated workflows</strong>."
+  "hero_desc": "Software Engineer with over 5 years of experience building secure, high-performance core systems. My specialty lies in enterprise-scale System Design and Backend Engineering, but I am equally highly capable of crafting modern, interactive Frontend experiences.",
+  "about_p1": "Hello! I'm <strong>Riyan Sugiarto</strong>, a <strong>Software Engineer</strong> heavily focused on <strong>System Design</strong> and <strong>Backend Architecture</strong>. I have over 5 years of experience architecting secure, <strong>enterprise-scale core systems</strong> for the telecommunications and financial industries.",
+  "about_p2": "My core expertise lies in <strong>designing scalable microservices</strong>, modernizing complex legacy infrastructures, and <strong>optimizing large-scale databases</strong>. While my heart is in the backend, I am <strong>highly proficient in Frontend development</strong>, allowing me to deliver end-to-end <strong>Full-Stack</strong> solutions. I am deeply passionate about slashing operational costs, maximizing performance, and building automated workflows.",
+  "About Me": "SYS.WHOAMI",
+  "Other Noteworthy Projects": "SYS.AUXILIARY_MODULES",
+  "view the archive": ">> ACCESS_ARCHIVE_LOGS"
 }

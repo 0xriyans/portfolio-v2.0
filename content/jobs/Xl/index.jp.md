@@ -1,27 +1,18 @@
 ---
 date: '2022-01-01'
-title: 'API開発者'
-company: 'XLSMART Telecom'
-location: 'インドネシア、ジャカルタ'
-range: '2022年 - 2023年'
-url: 'https://www.xlaxiata.co.id/'
+title: 'API Developer'
+company: 'XL Axiata'
+location: 'Jakarta, Indonesia'
+range: '2022 - 2023'
+url: 'https://www.xl.co.id/'
 tech:
   - Spring Boot
-  - TIBCO
   - Solace
-  - K6 Load Testing
-  - Kibana (ELK)
-  - Git
-  - Docker
-  - REST API
-  - PostgreSQL
-  - GCP
-  - GKE
+  - Redis
+  - K6
 ---
 
-- レガシー SOAR（TIBCO）インフラストラクチャから Spring Boot および Spring Cloud を使用した分散型マイクロサービスフレームワークへのアーキテクチャ移行を主導。
-- コア RESTful API の開発ライフサイクル全体を管理し、API ゲートウェイレイヤーでのプロキシルール、セキュリティ制限、およびレート制限メトリクスを構成。
-- 通信モジュール間での非同期通信のための Solace メッセージブローカーを使用して、低遅延のイベント駆動型サービス相互作用メカニズムを設計。
-- ピークトラフィック下でのシステム耐久性を分析し、API 応答時間を最適化するため、K6 を使用した高負荷ストレステストとパフォーマンスチューニングを実行。
-- マイクロサービス全体で構造化されたアプリケーションロギング戦略を設計し、リアルタイムのログストリームと異常検出に Kibana（ELK Stack）を利用。
-- 数百万のアクティブユーザーにリアルタイムのサブスクリプション詳細とネットワークアラートを提供するため、**Info Paket**、**Info Quota**、**インシデント通知**の高スループットマイクロサービスを開発。
+- Spearheaded the massive architectural migration of legacy SOAR (TIBCO) infrastructure to a decentralized microservices framework using Spring Boot.
+- Engineered low-latency, event-driven service interaction mechanisms using Solace message brokers across high-traffic telecommunications modules.
+- Managed the full development lifecycle of core RESTful APIs, configuring proxy rules and rate-limiting metrics at the API Gateway layer.
+- Executed high-load stress testing and performance tuning using K6 to identify processing bottlenecks under peak traffic.

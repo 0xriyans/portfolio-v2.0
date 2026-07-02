@@ -5,7 +5,7 @@ import TransitionStyles from './TransitionStyles';
 import PrismStyles from './PrismStyles';
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
 
   ${TransitionStyles};
   ${fonts};
@@ -15,10 +15,15 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     width: 100%;
     scroll-behavior: smooth;
+    overflow-x: hidden;
 
     @media (max-width: 768px) {
       scroll-behavior: auto;
     }
+  }
+
+  body {
+    overflow-x: hidden;
   }
 
   *,
@@ -30,11 +35,12 @@ const GlobalStyle = createGlobalStyle`
   ::selection {
     background-color: var(--pink);
     color: var(--white);
+    text-shadow: 0 0 5px var(--white);
   }
 
   /* Provide basic, default focus styles.*/
   :focus {
-    outline: 2px dashed var(--yellow);
+    outline: 2px dashed var(--blue);
     outline-offset: 3px;
   }
 
@@ -53,31 +59,57 @@ const GlobalStyle = createGlobalStyle`
     focus.
   */
   :focus-visible {
-    outline: 2px dashed var(--yellow);
+    outline: 2px dashed var(--blue);
     outline-offset: 3px;
   }
 
   /* Scrollbar Styles */
   html {
     scrollbar-width: thin;
-    scrollbar-color: var(--slate) var(--navy);
+    scrollbar-color: var(--pink) rgba(9, 10, 15, 0.95);
   }
   body::-webkit-scrollbar {
-    width: 12px;
+    width: 8px;
   }
   body::-webkit-scrollbar-track {
-    background: var(--navy);
+    background: rgba(9, 10, 15, 0.95);
+    border-left: 1px solid rgba(0, 255, 102, 0.2);
   }
   body::-webkit-scrollbar-thumb {
-    background-color: var(--slate);
-    border: 3px solid var(--navy);
-    border-radius: 10px;
+    background-color: var(--pink);
+    border-radius: 0;
+    box-shadow: inset 0 0 5px rgba(184, 255, 0, 0.5);
+  }
+  body::-webkit-scrollbar-thumb:hover {
+    background-color: var(--blue);
+    box-shadow: inset 0 0 5px rgba(0, 255, 102, 0.8);
   }
 
   @keyframes neonBorder {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+  }
+
+  @keyframes crt-flicker {
+    0% { opacity: 0.98; }
+    50% { opacity: 1; }
+    100% { opacity: 0.98; }
+  }
+
+  @keyframes scanline-scroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100vh; }
+  }
+
+  @keyframes expand-line {
+    0% { width: 0; opacity: 0; }
+    100% { width: 300px; opacity: 1; }
+  }
+
+  @keyframes neon-glow-pulse {
+    0%, 100% { text-shadow: 0 0 5px rgba(0, 255, 102, 0.2), 0 0 10px rgba(0, 255, 102, 0.1); }
+    50% { text-shadow: 0 0 10px rgba(0, 255, 102, 0.6), 0 0 20px rgba(0, 255, 102, 0.4); }
   }
 
   body {
@@ -87,7 +119,10 @@ const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    background-color: transparent;
+    background-color: var(--navy);
+    background-image: 
+      radial-gradient(circle at center, rgba(0, 255, 102, 0.05) 0%, rgba(5, 5, 5, 0.95) 100%),
+      url('https://grainy-gradients.vercel.app/noise.svg');
     color: var(--white);
     font-family: var(--font-sans);
     font-size: var(--fz-xl);
@@ -115,6 +150,22 @@ const GlobalStyle = createGlobalStyle`
         user-select: none;
       }
     }
+
+    &::after {
+      content: " ";
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      z-index: 9999;
+      background-size: 100% 3px, 3px 100%;
+      pointer-events: none;
+      opacity: 0.15;
+      animation: scanline-scroll 8s linear infinite;
+    }
   }
 
   #root {
@@ -122,6 +173,7 @@ const GlobalStyle = createGlobalStyle`
     display: grid;
     grid-template-rows: 1fr auto;
     grid-template-columns: 100%;
+    animation: crt-flicker 0.15s infinite;
   }
 
   main {
@@ -178,6 +230,7 @@ const GlobalStyle = createGlobalStyle`
   h6 {
     margin: 0 0 10px 0;
     font-weight: 700;
+    font-family: var(--font-heading);
     color: var(--lightest-slate);
     line-height: 1.1;
   }
@@ -186,12 +239,14 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     font-size: clamp(40px, 8vw, 80px);
     font-weight: 800;
+    text-shadow: 0 0 10px rgba(0, 255, 102, 0.5), 0 0 20px rgba(0, 255, 102, 0.3);
   }
 
   .medium-heading {
     margin: 0;
     font-size: clamp(40px, 8vw, 60px);
     font-weight: 700;
+    text-shadow: 0 0 5px rgba(184, 255, 0, 0.5);
   }
 
   .numbered-heading {
@@ -201,18 +256,28 @@ const GlobalStyle = createGlobalStyle`
     margin: 10px 0 40px;
     width: 100%;
     font-size: clamp(26px, 5vw, var(--fz-heading));
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: 0.1em;
     white-space: nowrap;
+    animation: neon-glow-pulse 3s infinite alternate;
+
+    @media (max-width: 480px) {
+      white-space: normal;
+      flex-wrap: wrap;
+    }
 
     &:before {
       position: relative;
       bottom: 4px;
       counter-increment: section;
-      content: '0' counter(section) '.';
+      content: 'root:~# ';
       margin-right: 10px;
-      color: var(--yellow);
+      color: var(--blue);
       font-family: var(--font-mono);
       font-size: clamp(var(--fz-md), 3vw, var(--fz-xl));
       font-weight: 400;
+      text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
 
       @media (max-width: 480px) {
         margin-bottom: -3px;
@@ -228,7 +293,9 @@ const GlobalStyle = createGlobalStyle`
       width: 300px;
       height: 1px;
       margin-left: 20px;
-      background-color: var(--lightest-navy);
+      background-color: var(--pink);
+      box-shadow: 0 0 10px var(--pink);
+      animation: expand-line 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 
       @media (max-width: 1080px) {
         width: 200px;
@@ -276,7 +343,8 @@ const GlobalStyle = createGlobalStyle`
 
     &:hover,
     &:focus {
-      color: var(--yellow);
+      color: var(--blue);
+      text-shadow: 0 0 5px var(--blue);
     }
 
     &.inline-link {
@@ -340,14 +408,14 @@ const GlobalStyle = createGlobalStyle`
           content: '▹';
           position: absolute;
           left: 0;
-          color: var(--yellow);
+          color: var(--blue);
         }
       }
     }
   }
 
   blockquote {
-    border-left-color: var(--yellow);
+    border-left-color: var(--blue);
     border-left-style: solid;
     border-left-width: 1px;
     margin-left: 0px;
@@ -387,7 +455,7 @@ const GlobalStyle = createGlobalStyle`
 
     &:focus,
     &:active {
-      background-color: var(--yellow);
+      background-color: var(--blue);
       color: var(--navy);
       top: 0;
       left: 0;
@@ -399,18 +467,18 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #logo {
-    color: var(--yellow);
+    color: var(--blue);
   }
 
   .overline {
-    color: var(--yellow);
+    color: var(--blue);
     font-family: var(--font-mono);
     font-size: var(--fz-md);
     font-weight: 400;
   }
 
   .subtitle {
-    color: var(--yellow);
+    color: var(--blue);
     margin: 0 0 20px 0;
     font-size: var(--fz-md);
     font-family: var(--font-mono);
@@ -433,7 +501,7 @@ const GlobalStyle = createGlobalStyle`
     display: flex;
     align-items: center;
     margin-bottom: 50px;
-    color: var(--yellow);
+    color: var(--blue);
 
     .arrow {
       display: block;

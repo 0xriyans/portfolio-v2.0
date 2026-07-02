@@ -50,19 +50,18 @@ const StyledCredit = styled.div`
     padding: 10px;
   }
 
-  .github-stats {
-    margin-top: 10px;
-
-    & > span {
-      display: inline-flex;
-      align-items: center;
-      margin: 0 7px;
-    }
-    svg {
-      display: inline-block;
-      margin-right: 5px;
-      width: 14px;
-      height: 14px;
+  .sys-log {
+    color: var(--pink);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    opacity: 0.7;
+    letter-spacing: 2px;
+    margin-top: 20px;
+    transition: var(--transition);
+    
+    &:hover {
+      opacity: 1;
+      text-shadow: 0 0 8px rgba(184, 255, 0, 0.8);
     }
   }
 `;
@@ -104,7 +103,8 @@ const Footer = () => {
         </ul>
       </StyledSocialLinks>
 
-      
+      <StyledCredit>
+      </StyledCredit>
     </StyledFooter>
   );
 };

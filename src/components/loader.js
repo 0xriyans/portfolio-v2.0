@@ -2,11 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import anime from 'animejs';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { IconLoader } from '@components/icons';
+
+const blink = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+`;
 
 const StyledLoader = styled.div`
   ${({ theme }) => theme.mixins.flexCenter};
+  flex-direction: column;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -14,18 +20,51 @@ const StyledLoader = styled.div`
   right: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, var(--light-navy) 0%, var(--navy) 100%);
+  background-color: #050505;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.05) 2px, rgba(0, 240, 255, 0.05) 4px);
   z-index: 99;
 
-  .logo-wrapper {
-    width: 100px;
-    opacity: 1;
-    svg {
-      display: block;
-      width: 100%;
+  .boot-text {
+    margin-top: 20px;
+    color: var(--light-slate);
+    font-family: var(--font-mono);
+    font-size: var(--fz-sm);
+    line-height: 1.5;
+    text-align: left;
+    width: 300px;
+    
+    p {
+      margin: 0;
+      opacity: 0; /* Animated by anime.js */
+    }
+
+    .highlight {
+      color: var(--pink);
+      text-shadow: 0 0 8px rgba(184, 255, 0, 0.8);
+      margin-top: 10px;
+    }
+    
+    .cursor {
+      display: inline-block;
+      animation: ${blink} 1s step-end infinite;
+    }
+  }
+
+  .progress-container {
+    margin-top: 20px;
+    width: 250px;
+    height: 4px;
+    background: rgba(0, 255, 102, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+
+    .progress-bar {
       height: 100%;
-      margin: 0 auto;
-      user-select: none;
+      width: 0%;
+      background: var(--blue);
+      box-shadow: 0 0 10px var(--blue);
     }
   }
 `;
@@ -40,29 +79,23 @@ const Loader = ({ finishLoading }) => {
 
     loader
       .add({
-        targets: '.logo-outline',
-        delay: 300,
-        duration: 1000,
-        easing: 'easeInOutQuart',
-        strokeDashoffset: [anime.setDashoffset, 0],
+        targets: '.boot-text p',
+        delay: anime.stagger(150),
+        duration: 300,
+        opacity: [0, 1],
+        translateX: [-10, 0],
+        easing: 'easeOutExpo',
       })
       .add({
-        targets: '#liquid-rect',
-        y: [100, 0],
-        height: [0, 100],
-        duration: 1200,
-        easing: 'easeInOutCubic',
-      })
-      .add({
-        targets: '#logo',
-        scale: [1, 1.05, 1],
+        targets: '.progress-bar',
+        width: ['0%', '100%'],
         duration: 500,
-        easing: 'easeOutBack',
-      }, '-=400')
+        easing: 'easeInOutExpo',
+      }, '+=100')
       .add({
         targets: '.loader',
-        delay: 300,
-        duration: 400,
+        delay: 150,
+        duration: 300,
         easing: 'easeInOutQuart',
         opacity: 0,
         zIndex: -1,
@@ -78,8 +111,13 @@ const Loader = ({ finishLoading }) => {
   return (
     <StyledLoader className="loader" isMounted={isMounted}>
       <Helmet bodyAttributes={{ class: `hidden` }} />
-      <div className="logo-wrapper">
-        <IconLoader />
+      <div className="boot-text">
+        <p>{`> INITIALIZING_NEURAL_LINK... OK`}</p>
+        <p>{`> BYPASSING_MAINFRAME_SECURITY... OK`}</p>
+        <p className="highlight">{`> SYS.BOOT_SEQ // INITIATED `}<span className="cursor">_</span></p>
+      </div>
+      <div className="progress-container">
+        <div className="progress-bar"></div>
       </div>
     </StyledLoader>
   );

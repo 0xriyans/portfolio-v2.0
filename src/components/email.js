@@ -16,7 +16,7 @@ const StyledLinkWrapper = styled.div`
     width: 1px;
     height: 90px;
     margin: 0 auto;
-    background-color: var(--light-slate);
+    background-color: var(--blue);
   }
 
   a {
@@ -28,9 +28,13 @@ const StyledLinkWrapper = styled.div`
     letter-spacing: 0.1em;
     writing-mode: vertical-rl;
 
+    color: var(--light-slate);
+
     &:hover,
     &:focus {
       transform: translateY(-3px);
+      color: var(--pink);
+      text-shadow: 0 0 8px rgba(184, 255, 0, 0.8);
     }
   }
 `;

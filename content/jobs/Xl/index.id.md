@@ -1,27 +1,18 @@
 ---
 date: '2022-01-01'
 title: 'API Developer'
-company: 'XLSMART Telecom'
+company: 'XL Axiata'
 location: 'Jakarta, Indonesia'
 range: '2022 - 2023'
-url: 'https://www.xlaxiata.co.id/'
+url: 'https://www.xl.co.id/'
 tech:
   - Spring Boot
-  - TIBCO
   - Solace
-  - K6 Load Testing
-  - Kibana (ELK)
-  - Git
-  - Docker
-  - REST API
-  - PostgreSQL
-  - GCP
-  - GKE
+  - Redis
+  - K6
 ---
 
-- Memimpin migrasi arsitektur infrastruktur SOAR (TIBCO) lawas ke _framework microservices_ terdesentralisasi menggunakan Spring Boot dan Spring Cloud.
-- Mengelola siklus pengembangan penuh API RESTful inti, mengonfigurasi aturan _proxy_, pembatasan keamanan, dan metrik _rate-limiting_ pada lapisan API Gateway.
-- Merancang mekanisme interaksi layanan _event-driven_ berlatensi rendah menggunakan _broker_ pesan Solace untuk komunikasi asinkron lintas modul telekomunikasi.
-- Melaksanakan pengujian beban tinggi (_stress testing_) dan penyetelan kinerja menggunakan K6 untuk menganalisis ketahanan sistem di bawah lalu lintas puncak.
-- Mendesain strategi pencatatan log aplikasi terstruktur lintas _microservices_, memanfaatkan Kibana (ELK Stack) untuk pemantauan log _real-time_ dan deteksi anomali.
-- Mengembangkan _microservices_ berkapasitas tinggi untuk **Info Paket**, **Info Kuota**, dan **Notifikasi Insiden** guna menyajikan detail langganan _real-time_ dan peringatan jaringan kepada jutaan pengguna aktif.
+- Spearheaded the massive architectural migration of legacy SOAR (TIBCO) infrastructure to a decentralized microservices framework using Spring Boot.
+- Engineered low-latency, event-driven service interaction mechanisms using Solace message brokers across high-traffic telecommunications modules.
+- Managed the full development lifecycle of core RESTful APIs, configuring proxy rules and rate-limiting metrics at the API Gateway layer.
+- Executed high-load stress testing and performance tuning using K6 to identify processing bottlenecks under peak traffic.

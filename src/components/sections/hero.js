@@ -5,136 +5,175 @@ import styled, { keyframes } from 'styled-components';
 import { navDelay, loaderDelay } from '@utils';
 import { usePrefersReducedMotion } from '@hooks';
 
-const textLiquidAnim = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-`;
-
-const mobileBreath = keyframes`
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-  100% { transform: translateY(0); }
+const blinkCaret = keyframes`
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
 `;
 
 const StyledHeroSection = styled.section`
   ${({ theme }) => theme.mixins.flexCenter};
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   min-height: 100vh;
-  padding: 0;
+  padding: 100px 0 50px; // Added padding top to prevent overlap with navbar and bottom for safety
   position: relative;
+  z-index: 1;
 
-  @media (max-width: 480px) {
-    padding-top: 0;
-  }
-
-  h1 {
-    margin: 0 0 30px 4px;
-    color: var(--yellow);
+  &::before, &::after {
+    content: '+';
+    position: absolute;
+    color: var(--blue);
+    font-size: 24px;
     font-family: var(--font-mono);
-    font-size: clamp(var(--fz-sm), 5vw, var(--fz-md));
+    opacity: 0.5;
+  }
+  &::before { top: 20%; left: 5%; }
+  &::after { bottom: 20%; right: 5%; }
+
+  .sys-label {
+    margin: 0 0 20px 4px;
+    color: var(--pink);
+    font-family: var(--font-mono);
+    font-size: clamp(var(--fz-sm), 2vw, var(--fz-md));
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.2em;
+    animation: ${blinkCaret} 2s steps(2, start) infinite;
+
+    &::before {
+      content: '[ ';
+      color: var(--blue);
+    }
+    &::after {
+      content: ' ]';
+      color: var(--blue);
+    }
   }
 
-  h2 {
-    /* Liquid Font Effect for the Name */
-    background: linear-gradient(
-      -45deg,
-      var(--light-slate), 
-      var(--blue), 
-      var(--yellow), 
-      var(--light-slate)
-    );
-    background-size: 300% 300%;
-    animation: ${textLiquidAnim} 8s ease infinite;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
+  .huge-name {
+    margin: 0;
+    font-size: clamp(40px, 8vw, 70px); // Reduced max size from 80px to 70px
+    font-family: var(--font-heading);
+    font-weight: 900;
+    line-height: 1.1; // Better line height for the stroke
+    color: transparent;
+    -webkit-text-stroke: 2px var(--blue);
+    text-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+    text-transform: uppercase;
+    position: relative;
+    letter-spacing: 0.02em;
+    animation: textGlitch 4s infinite alternate;
+
+    &:hover {
+      color: var(--blue);
+      text-shadow: 0 0 30px rgba(0, 255, 102, 0.8);
+      -webkit-text-stroke: 0;
+      animation: none;
+      transition: all 0.2s ease;
+    }
+    
     @media (max-width: 768px) {
-      animation: ${mobileBreath} 4s ease-in-out infinite;
-      background-size: 100% 100%;
-      display: inline-block;
+      -webkit-text-stroke: 1px var(--blue);
+    }
+  }
+
+  @keyframes textGlitch {
+    0%, 6%, 100% {
+      transform: translate(0);
+      text-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+    }
+    2% {
+      transform: translate(-4px, 2px);
+      text-shadow: 3px 0 var(--pink), -3px 0 var(--blue);
+    }
+    4% {
+      transform: translate(4px, -2px);
+      text-shadow: -3px 0 var(--pink), 3px 0 var(--blue);
     }
   }
 
   h3 {
     margin-top: 10px;
-    line-height: 1.1;
-    /* Liquid Font Effect for the Subheading */
-    background: linear-gradient(
-      -45deg,
-      var(--yellow), 
-      var(--pink), 
-      var(--blue), 
-      var(--yellow)  
-    );
-    background-size: 300% 300%;
-    animation: ${textLiquidAnim} 8s ease infinite reverse;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
-    @media (max-width: 768px) {
-      animation: ${mobileBreath} 5s ease-in-out infinite 1s;
-      background-size: 100% 100%;
-      display: inline-block;
-    }
-  }
+    color: var(--white);
+    font-size: clamp(14px, 2.5vw, 20px); // Slightly smaller subtitle
+    font-family: var(--font-mono);
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+    letter-spacing: 0.05em;
 
-  h2.big-heading, h3.big-heading {
-    @media (max-width: 480px) {
-      font-size: clamp(32px, 10vw, 40px);
-      line-height: 1.1;
+    span {
+      color: var(--pink);
+      text-shadow: 0 0 10px rgba(184, 255, 0, 0.5);
     }
   }
 
   p {
-    margin: 30px 0 0;
+    margin: 30px auto 0;
     max-width: 600px;
-    font-size: var(--fz-xl);
+    font-size: var(--fz-md);
     line-height: 1.6;
     color: var(--light-slate); 
-    font-weight: 600;
+    font-family: var(--font-mono);
+    position: relative;
+    padding: 20px 30px;
+    background: transparent;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: none;
 
     @media (max-width: 480px) {
       font-size: var(--fz-md);
-      margin-top: 20px;
+      padding: 15px 20px;
     }
   }
 
   .email-link {
     ${({ theme }) => theme.mixins.bigButton};
-    margin-top: 50px;
-
-    @media (max-width: 480px) {
-      margin-top: 30px;
-    }
-    background: var(--yellow);
-    color: #ffffff;
+    margin-top: 40px; // Reduced margin from 50px
+    color: var(--navy);
+    background-color: var(--blue);
     border: none;
-    border-radius: 30px; 
-    box-shadow: 0 10px 30px -10px var(--yellow-tint);
+    font-family: var(--font-mono);
+    font-size: var(--fz-md);
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    border-radius: 0;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 15px 30px;
+    box-shadow: 0 0 20px rgba(0, 255, 102, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.5);
     transition: var(--transition);
-    font-weight: 600;
-    padding: 1.25rem 2.25rem;
 
-    &:hover,
-    &:focus,
-    &:active {
-      background: var(--pink);
-      color: #ffffff;
-      box-shadow: 0 15px 40px -10px rgba(255, 77, 109, 0.4);
-      transform: translateY(-3px);
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+      transition: all 0.4s ease;
     }
+    
+    &:hover,
+    &:focus {
+      background-color: var(--pink);
+      color: var(--white);
+      box-shadow: 0 0 30px rgba(184, 255, 0, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.6);
+      transform: translateY(-3px);
+
+      &::before {
+        left: 100%;
+      }
+    }
+  }
 `;
 
 const Hero = () => {
   const [isMounted, setIsMounted] = useState(false);
-  const prefersReducedMotion = usePrefersReducedMotion();
   const { t } = useTranslation();
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -145,21 +184,21 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, []);
 
-  const one = <h1>{t('Hi, my name is')}</h1>;
-  const two = <h2 className="big-heading">Riyan Sugiarto.</h2>;
-  const three = <h3 className="big-heading">{t('Building impactful solutions.')}</h3>;
+  const one = <div className="sys-label">SYS.BOOT_SEQ // OVERRIDE_ACTIVE</div>;
+  const two = <h1 className="huge-name">RIYAN<br/>SUGIARTO</h1>;
+  const three = (
+    <h3 className="medium-heading">
+      {t('SOFTWARE ENGINEER')}
+    </h3>
+  );
   const four = (
-    <>
-      <p>
-        {t(
-          'I\'m a backend software engineer with over 5 years of experience building secure, high-traffic core systems in the telecom and insurance sectors. I specialize in system design and automating complex workflows through smart AI services like document scanning, face verification, and voice features.',
-        )}
-      </p>
-    </>
+    <p>
+      {t('hero_desc')}
+    </p>
   );
   const five = (
     <a className="email-link" href="mailto:ryansgrt23@gmail.com" target="_blank" rel="noreferrer">
-      {t('Hire me as a freelancer')}
+      [ EXPLORE ARCHITECTURE ]
     </a>
   );
 
@@ -167,22 +206,31 @@ const Hero = () => {
 
   return (
     <StyledHeroSection>
-      {prefersReducedMotion ? (
-        <>
-          {items.map((item, i) => (
-            <div key={i}>{item}</div>
-          ))}
-        </>
-      ) : (
-        <TransitionGroup component={null}>
-          {isMounted &&
-            items.map((item, i) => (
-              <CSSTransition key={i} classNames="fadeup" timeout={loaderDelay}>
-                <div style={{ transitionDelay: `${i + 1}00ms` }}>{item}</div>
-              </CSSTransition>
+      <div 
+        style={{ 
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}
+      >
+        {prefersReducedMotion ? (
+          <>
+            {items.map((item, i) => (
+              <div key={i}>{item}</div>
             ))}
-        </TransitionGroup>
-      )}
+          </>
+        ) : (
+          <TransitionGroup component={null}>
+            {isMounted &&
+              items.map((item, i) => (
+                <CSSTransition key={i} classNames="fadeup" timeout={loaderDelay}>
+                  <div style={{ transitionDelay: `${i + 1}00ms`, transform: 'translateZ(30px)' }}>{item}</div>
+                </CSSTransition>
+              ))}
+          </TransitionGroup>
+        )}
+      </div>
     </StyledHeroSection>
   );
 };

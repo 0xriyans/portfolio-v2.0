@@ -17,66 +17,45 @@ const StyledFloatingContainer = styled.div`
 `;
 
 const StyledFloatingBtn = styled.a`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--yellow), var(--pink));
-  color: var(--navy);
+  width: 45px;
+  height: 45px;
+  border: 1px solid var(--blue);
+  background: rgba(0, 255, 102, 0.1);
+  backdrop-filter: blur(5px);
+  color: var(--blue);
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
   text-decoration: none;
-  font-size: 20px;
+  font-family: var(--font-mono);
+  font-size: var(--fz-sm);
+  font-weight: 600;
   transition: var(--transition);
   cursor: pointer;
-
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+  
   &:hover,
   &:focus {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(255, 77, 109, 0.6);
-  }
-
-  &.theme-btn {
-    background: var(--light-navy);
-    border: 1px solid var(--yellow);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+    background: rgba(0, 255, 102, 0.2);
+    color: var(--white);
+    box-shadow: 0 0 15px rgba(0, 255, 102, 0.5);
   }
 `;
 
-const FloatingMobileButton = ({ toggleTheme, themeMode }) => (
+const FloatingMobileButton = () => (
   <StyledFloatingContainer>
-    <StyledFloatingBtn
-      as="button"
-      className="theme-btn"
-      onClick={toggleTheme}
-      aria-label="Toggle Theme">
-      {themeMode === 'light' ? (
-        <span role="img" aria-label="moon">
-          🌙
-        </span>
-      ) : (
-        <span role="img" aria-label="sun">
-          ☀️
-        </span>
-      )}
-    </StyledFloatingBtn>
-
     <StyledFloatingBtn
       href="/Riyan Sugiarto Resume.pdf"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Download Resume">
-      <span role="img" aria-label="document">
-        📄
-      </span>
+      CV
     </StyledFloatingBtn>
   </StyledFloatingContainer>
 );
 
-FloatingMobileButton.propTypes = {
-  toggleTheme: PropTypes.func.isRequired,
-  themeMode: PropTypes.string.isRequired,
-};
+FloatingMobileButton.propTypes = {};
 
 export default FloatingMobileButton;

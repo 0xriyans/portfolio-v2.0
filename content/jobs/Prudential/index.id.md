@@ -8,18 +8,11 @@ url: 'https://www.prudential.co.id/'
 tech:
   - Quarkus
   - Apache Flink
-  - Apache Kafka
   - IBM BPM
   - Couchbase
-  - Git
-  - Docker
-  - REST API
-  - PostgreSQL
 ---
 
-- Memimpin migrasi arsitektur layanan pemrosesan aliran data (_stream-processing_) dari ketergantungan Apache Flink yang berat ke _runtime_ Quarkus yang ringan, berhasil memangkas penggunaan memori _cloud_ secara drastis.
-- Merancang jalur pipa data ETL berkecepatan tinggi menggunakan Apache Kafka untuk menangani transaksi operasi SPAJ secara _real-time_ dengan toleransi data hilang nol persen (_zero-loss_).
-- Mengembangkan lapisan integrasi yang menghubungkan pemrosesan _streaming real-time_ dengan IBM BPM dan BRMS untuk mengotomatisasi alur pemrosesan polis asuransi dan logika bisnis secara penuh.
-- Memimpin integrasi layanan AI pihak ketiga untuk verifikasi identitas otomatis pada sistem e-KYC, memastikan proses pendaftaran nasabah (_onboarding_) yang sangat aman dan _touchless_.
-- Memodelkan lingkungan retensi data berkinerja tinggi menggunakan arsitektur _hybrid_ antara tabel relasional PostgreSQL dan dokumen NoSQL Couchbase.
-- Membangun API e-KYC untuk **PruServices** dan mengeksekusi migrasi _framework_ inti untuk **Pruhub**, menanamkan mekanisme deteksi penipuan (_fraud detection_) pada mesin perutean finansial.
+- Directed the architectural conversion of stream-processing services from Apache Flink to lightweight Quarkus runtimes, achieving massive reductions in cloud memory overhead.
+- Designed high-velocity ETL data streaming pipelines utilizing Apache Kafka to handle real-time transactional operations with strict zero-loss data constraints.
+- Developed integration layers connecting real-time streaming runtimes with IBM BPM and BRMS to automate complex policy processing and decision-making logic.
+- Modeled high-performance, resilient data retention environments utilizing a hybrid of PostgreSQL and Couchbase NoSQL.

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import sr from '@utils/sr';
 import { srConfig } from '@config';
 import { Icon } from '@components/icons';
@@ -113,7 +113,7 @@ const StyledProject = styled.li`
 
   .project-overline {
     margin: 10px 0;
-    color: var(--yellow);
+    color: var(--blue);
     font-family: var(--font-mono);
     font-size: var(--fz-xs);
     font-weight: 400;
@@ -146,23 +146,68 @@ const StyledProject = styled.li`
   }
 
   .project-description {
-    ${({ theme }) => theme.mixins.glassmorphism};
+    background: rgba(2, 10, 20, 0.95);
+    border: 1px solid rgba(0, 255, 102, 0.2);
+    border-top: 2px solid var(--blue);
     position: relative;
     z-index: 2;
-    padding: 30px;
+    padding: 25px;
     color: var(--light-slate);
-    font-size: var(--fz-lg);
+    font-size: var(--fz-sm); /* Smaller text like a log */
+    font-family: var(--font-mono);
+    border-radius: 0;
+    transition: var(--transition);
+
+    &::before {
+      content: 'SYS_LOG_OUTPUT...';
+      display: block;
+      margin-bottom: 15px;
+      color: var(--blue);
+      font-size: var(--fz-xxs);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      opacity: 0.7;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    &:hover {
+      border-color: rgba(0, 255, 102, 0.5);
+      border-top-color: var(--pink);
+      background: rgba(2, 10, 20, 1);
+      box-shadow: 0 5px 20px rgba(0, 255, 102, 0.1);
+      
+      &::before {
+        color: var(--pink);
+      }
+    }
 
     @media (max-width: 768px) {
       padding: 20px 0;
-      background-color: transparent;
-      box-shadow: none;
+      background: transparent;
       border: none;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-
+      &::before, &::after {
+        display: none;
+      }
       &:hover {
         box-shadow: none;
+        background: transparent;
       }
     }
 
@@ -171,7 +216,7 @@ const StyledProject = styled.li`
     }
 
     strong {
-      color: var(--lightest-slate);
+      color: var(--blue); /* Highlight bold text with matrix green */
       font-weight: 600;
     }
   }
@@ -192,36 +237,34 @@ const StyledProject = styled.li`
     }
 
     li {
-      position: relative;
-      padding: 6px 16px;
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 50px;
-      color: var(--lightest-slate);
       font-family: var(--font-mono);
-      font-size: var(--fz-xxs);
-      line-height: 1.4;
-      transition: all 0.3s ease;
+      font-size: var(--fz-xs);
+      color: var(--blue); 
+      background: rgba(2, 10, 20, 0.8);
+      padding: 4px 10px;
+      border: 1px solid rgba(0, 255, 102, 0.2);
+      border-radius: 2px;
+      transition: var(--transition);
       display: inline-flex;
       align-items: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      cursor: default;
 
-      @media (min-width: 768px) {
-        font-size: var(--fz-xs);
-        backdrop-filter: blur(10px);
+      &::before {
+        content: '>>';
+        color: var(--pink);
+        margin-right: 6px;
+        font-weight: 700;
       }
 
       &:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(168, 85, 247, 0.2) 0%,
-          rgba(236, 72, 153, 0.2) 100%
-        );
-        border-color: var(--pink);
-        color: var(--white);
+        color: var(--navy);
+        background: var(--blue);
+        border-color: var(--blue);
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 255, 102, 0.4);
+        
+        &::before {
+          color: var(--navy);
+        }
       }
     }
   }
@@ -279,34 +322,61 @@ const StyledProject = styled.li`
     a {
       width: 100%;
       height: 100%;
-      border-radius: var(--border-radius);
+      border-radius: 0;
+      clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
       vertical-align: middle;
       overflow: hidden;
       display: block;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 20%;
+        background: linear-gradient(to bottom, rgba(184, 255, 0, 0) 0%, rgba(184, 255, 0, 0.4) 50%, rgba(184, 255, 0, 0) 100%);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 2;
+      }
 
       &:hover,
       &:focus {
         outline: 0;
+        box-shadow: 0 0 30px rgba(184, 255, 0, 0.5);
+
+        &::after {
+          opacity: 1;
+          animation: scanlineSweep 2s linear infinite;
+        }
 
         .img {
           transform: scale(1.05);
+          filter: none;
         }
       }
     }
 
     .img {
-      border-radius: var(--border-radius);
+      border-radius: 0;
       transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+      filter: none;
 
       @media (max-width: 768px) {
         object-fit: cover;
         width: 100%;
         height: 100%;
         filter: none;
-        border-radius: 0;
       }
     }
   }
+`;
+
+const scanlineSweep = keyframes`
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(500%); }
 `;
 
 const Featured = () => {
@@ -372,10 +442,10 @@ const Featured = () => {
               <StyledProject key={i} ref={el => (revealProjects.current[i] = el)}>
                 <div className="project-content">
                   <div>
-                    <p className="project-overline">{t('Featured Project')}</p>
+                    <p className="project-overline">{t('SYS.MODULE // FEATURED')}</p>
 
                     <h3 className="project-title">
-                      <a href={external}>{title}</a>
+                      <a href={external}>{`> RUN: ${title}.exe`}</a>
                     </h3>
 
                     <div

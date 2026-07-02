@@ -3,7 +3,7 @@ import { Link, useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { srConfig } from '@config';
 import sr from '@utils/sr';
 import { Icon } from '@components/icons';
@@ -13,6 +13,7 @@ const StyledProjectsSection = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 0 !important;
 
   h2 {
     font-size: clamp(24px, 5vw, var(--fz-heading));
@@ -54,7 +55,19 @@ const StyledProject = styled.li`
     &:hover,
     &:focus-within {
       .project-inner {
-        transform: translateY(-7px);
+        background-color: rgba(184, 255, 0, 0.05);
+        border-color: var(--pink);
+        box-shadow: inset 0 0 30px rgba(184, 255, 0, 0.2), 0 0 20px rgba(184, 255, 0, 0.4);
+        transform: translateY(-5px);
+        
+        &::before, &::after {
+          opacity: 1;
+          transform: scale(1.3);
+        }
+      }
+      .project-image::after {
+        opacity: 1;
+        animation: scanlineSweep 2s linear infinite;
       }
     }
   }
@@ -66,6 +79,8 @@ const StyledProject = styled.li`
 
   .project-inner {
     ${({ theme }) => theme.mixins.glassmorphism};
+    background-image: radial-gradient(rgba(0, 255, 102, 0.15) 1px, transparent 1px);
+    background-size: 10px 10px;
     ${({ theme }) => theme.mixins.flexBetween};
     flex-direction: column;
     align-items: flex-start;
@@ -73,14 +88,53 @@ const StyledProject = styled.li`
     height: 100%;
     padding: 2rem 1.75rem;
     transition: var(--transition);
+
+    &::before, &::after {
+      content: '';
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      border: 2px solid transparent;
+      transition: var(--transition);
+      opacity: 0;
+      z-index: 10;
+    }
+
+    &::before {
+      top: 5px;
+      left: 5px;
+      border-top-color: var(--pink);
+      border-left-color: var(--pink);
+    }
+
+    &::after {
+      bottom: 25px;
+      right: 5px;
+      border-bottom-color: var(--pink);
+      border-right-color: var(--pink);
+    }
   }
 
   .project-image {
     width: 100%;
     margin-bottom: 25px;
-    border-radius: var(--border-radius);
+    position: relative;
     overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
     ${({ theme }) => theme.mixins.boxShadow};
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 20%;
+      background: linear-gradient(to bottom, rgba(0, 255, 102, 0) 0%, rgba(0, 255, 102, 0.4) 50%, rgba(0, 255, 102, 0) 100%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
 
     .img {
       width: 100%;
@@ -98,11 +152,11 @@ const StyledProject = styled.li`
     margin-bottom: 35px;
 
     .folder {
-      color: var(--yellow);
-      svg {
-        width: 40px;
-        height: 40px;
-      }
+      color: var(--pink);
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1;
     }
 
     .project-links {
@@ -172,31 +226,45 @@ const StyledProject = styled.li`
     align-items: flex-end;
 
     li {
-      position: relative;
-      padding: 4px 12px;
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 50px;
-      color: var(--lightest-slate);
       font-family: var(--font-mono);
-      font-size: var(--fz-xxs);
-      line-height: 1.4;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
+      font-size: var(--fz-xs);
+      color: var(--light-slate);
+      background: rgba(0, 255, 102, 0.05);
+      padding: 6px 10px;
+      border: 1px solid rgba(0, 255, 102, 0.2);
+      border-left: 3px solid var(--blue);
+      border-radius: 0;
+      transition: var(--transition);
+      display: inline-block;
+
+      &::before {
+        content: '>';
+        margin-right: 5px;
+        color: var(--blue);
+        opacity: 0.5;
+        transition: var(--transition);
+      }
 
       &:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(168, 85, 247, 0.2) 0%,
-          rgba(236, 72, 153, 0.2) 100%
-        );
-        border-color: var(--pink);
         color: var(--white);
-        transform: translateY(-2px);
+        border-color: var(--pink);
+        border-left-color: var(--pink);
+        background: rgba(184, 255, 0, 0.15);
+        transform: translateX(5px);
+        box-shadow: 0 0 15px rgba(184, 255, 0, 0.5);
+        
+        &::before {
+          opacity: 1;
+          color: var(--pink);
+        }
       }
     }
   }
+`;
+
+const scanlineSweep = keyframes`
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(500%); }
 `;
 
 const Projects = () => {
@@ -280,7 +348,7 @@ const Projects = () => {
             style={image ? { marginBottom: '20px', justifyContent: 'flex-end' } : {}}>
             {!image && (
               <div className="folder">
-                <Icon name="Folder" />
+                &gt;_
               </div>
             )}
             <div className="project-links">
@@ -304,7 +372,7 @@ const Projects = () => {
 
           <h3 className="project-title">
             <a href={external} target="_blank" rel="noreferrer">
-              {title}
+              {`> RUN: ${title}.exe`}
             </a>
           </h3>
 

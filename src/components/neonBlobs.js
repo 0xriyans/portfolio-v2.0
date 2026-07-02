@@ -59,7 +59,7 @@ const Blob1 = styled(Blob)`
   left: -10%;
   width: 50vw;
   height: 50vw;
-  background: radial-gradient(circle, rgba(0, 242, 254, 0.8) 0%, rgba(0, 242, 254, 0) 70%);
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.8) 0%, rgba(0, 240, 255, 0) 70%);
   animation-name: ${move1};
   animation-duration: 25s;
 `;
@@ -69,7 +69,7 @@ const Blob2 = styled(Blob)`
   right: -10%;
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, rgba(254, 9, 121, 0.6) 0%, rgba(254, 9, 121, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 0, 60, 0.6) 0%, rgba(255, 0, 60, 0) 70%);
   animation-name: ${move2};
   animation-duration: 30s;
 `;
@@ -79,66 +79,21 @@ const Blob3 = styled(Blob)`
   left: 30%;
   width: 45vw;
   height: 45vw;
-  background: radial-gradient(circle, rgba(138, 43, 226, 0.5) 0%, rgba(138, 43, 226, 0) 70%);
+  background: radial-gradient(circle, rgba(188, 19, 254, 0.5) 0%, rgba(188, 19, 254, 0) 70%);
   animation-name: ${move3};
   animation-duration: 35s;
 `;
 
-const MouseMagnet = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 40vw;
-  height: 40vw;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 242, 254, 0.3) 0%, rgba(0, 242, 254, 0) 60%);
-  filter: blur(100px);
-  pointer-events: none;
-  z-index: 1;
-  transform: translate(-50%, -50%);
-  will-change: transform;
-`;
+
 
 const NeonBlobs = () => {
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-    
-    const magnet = document.getElementById('mouse-magnet');
-    if (!magnet) return;
-    
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let magnetX = mouseX;
-    let magnetY = mouseY;
-    
-    const handleMouseMove = (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    };
-    
-    let frameId;
-    const animateMagnet = () => {
-      magnetX += (mouseX - magnetX) * 0.03; // Smooth lazy follow
-      magnetY += (mouseY - magnetY) * 0.03;
-      if (magnet) {
-        magnet.style.transform = `translate(calc(${magnetX}px - 50%), calc(${magnetY}px - 50%))`;
-      }
-      frameId = requestAnimationFrame(animateMagnet);
-    };
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    frameId = requestAnimationFrame(animateMagnet);
-    
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(frameId);
-    };
+    // Parallax logic removed as requested
   }, []);
 
   return (
     <BlobsContainer>
       <NoiseOverlay />
-      <MouseMagnet id="mouse-magnet" />
       <Blob1 />
       <Blob2 />
       <Blob3 />
