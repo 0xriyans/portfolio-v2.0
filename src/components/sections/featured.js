@@ -120,8 +120,9 @@ const StyledProject = styled.li`
   }
 
   .project-title {
-    color: var(--lightest-slate);
-    font-size: clamp(24px, 5vw, 28px);
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: clamp(20px, 4vw, 24px);
     word-break: break-word;
 
     @media (min-width: 768px) {
@@ -155,6 +156,10 @@ const StyledProject = styled.li`
     font-size: var(--fz-sm);
     font-family: var(--font-mono);
     transition: var(--transition);
+
+    p {
+      font-family: var(--font-mono);
+    }
 
     &::after {
       content: 'sys_log.sh';

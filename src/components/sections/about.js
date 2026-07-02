@@ -40,7 +40,7 @@ const StyledAboutSection = styled.section`
     @media (max-width: 768px) {
       display: flex;
       flex-direction: column;
-      padding: 30px;
+      padding: 0;
     }
   }
 `;
@@ -129,6 +129,10 @@ const StyledText = styled.div`
   ${({ theme }) => theme.mixins.glassmorphism};
   padding: 60px 30px 30px;
   font-family: var(--font-mono);
+
+  @media (max-width: 768px) {
+    padding: 50px 20px 20px;
+  }
 
   &::after {
     content: 'cat about.txt';
@@ -221,7 +225,7 @@ const StyledSkills = styled.div`
   }
 
   .card-title {
-    font-family: var(--font-heading);
+    font-family: var(--font-mono);
     color: var(--white);
     font-size: var(--fz-md);
     font-weight: 600;
@@ -296,6 +300,7 @@ const StyledPic = styled.div`
   @media (max-width: 768px) {
     margin: 0 auto 40px;
     width: 70%;
+    max-width: 300px;
     order: -1;
   }
 
@@ -412,48 +417,48 @@ const About = () => {
 
   const techCore = [
     {
-      title: 'Backend & Architecture',
-      skills: 'Java, Spring Boot, Quarkus, System Design, Microservices',
+      title: t('tech_backend_title'),
+      skills: t('tech_backend_skills'),
       version: 'v.Core',
       icon: <FaServer />,
       integrity: 99,
       color: 'var(--green, #00ff66)'
     },
     {
-      title: 'Frontend Experiences',
-      skills: 'React, Angular, TypeScript, Tailwind CSS, Web Perf',
+      title: t('tech_frontend_title'),
+      skills: t('tech_frontend_skills'),
       version: 'v.UI',
       icon: <FaDesktop />,
       integrity: 92,
       color: 'var(--pink, #b8ff00)'
     },
     {
-      title: 'Data & Messaging',
-      skills: 'PostgreSQL, MongoDB, Kafka, RabbitMQ, Redis',
+      title: t('tech_data_title'),
+      skills: t('tech_data_skills'),
       version: 'v.Data',
       icon: <FaDatabase />,
       integrity: 97,
       color: 'var(--green, #00ff66)'
     },
     {
-      title: 'Cloud & DevOps',
-      skills: 'Kubernetes, AWS, Docker, CI/CD, Nginx, Shell',
+      title: t('tech_cloud_title'),
+      skills: t('tech_cloud_skills'),
       version: 'v.Ops',
       icon: <FaAws />,
       integrity: 95,
       color: 'var(--pink, #b8ff00)'
     },
     {
-      title: 'Observability & QA',
-      skills: 'ELK Stack, SonarQube, K6, JMeter, TDD',
+      title: t('tech_observability_title'),
+      skills: t('tech_observability_skills'),
       version: 'v.Mon',
       icon: <SiElasticsearch />,
       integrity: 94,
       color: 'var(--green, #00ff66)'
     },
     {
-      title: 'Enterprise Integration',
-      skills: 'AI (OCR/Biometric), IBM BPM, GraphQL, REST APIs',
+      title: t('tech_enterprise_title'),
+      skills: t('tech_enterprise_skills'),
       version: 'v.Sync',
       icon: <FaNetworkWired />,
       integrity: 91,

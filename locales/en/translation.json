@@ -16,5 +16,17 @@
   "about_p2": "My core expertise lies in <strong>designing scalable microservices</strong>, modernizing complex legacy infrastructures, and <strong>optimizing large-scale databases</strong>. While my heart is in the backend, I am <strong>highly proficient in Frontend development</strong>, allowing me to deliver end-to-end <strong>Full-Stack</strong> solutions. I am deeply passionate about slashing operational costs, maximizing performance, and building automated workflows.",
   "About Me": "SYS.WHOAMI",
   "Other Noteworthy Projects": "SYS.AUXILIARY_MODULES",
-  "view the archive": ">> ACCESS_ARCHIVE_LOGS"
+  "view the archive": ">> ACCESS_ARCHIVE_LOGS",
+  "tech_backend_title": "Backend & Architecture",
+  "tech_backend_skills": "Java, Spring Boot, Quarkus, System Design, Microservices",
+  "tech_frontend_title": "Frontend Experiences",
+  "tech_frontend_skills": "React, Angular, TypeScript, Tailwind CSS, Web Perf",
+  "tech_data_title": "Data & Messaging",
+  "tech_data_skills": "PostgreSQL, MongoDB, Kafka, RabbitMQ, Redis",
+  "tech_cloud_title": "Cloud & DevOps",
+  "tech_cloud_skills": "Kubernetes, AWS, Docker, CI/CD, Nginx, Shell",
+  "tech_observability_title": "Observability & QA",
+  "tech_observability_skills": "ELK Stack, SonarQube, K6, JMeter, TDD",
+  "tech_enterprise_title": "Enterprise Integration",
+  "tech_enterprise_skills": "AI (OCR/Biometric), IBM BPM, GraphQL, REST APIs"
 }

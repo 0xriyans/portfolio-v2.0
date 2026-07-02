@@ -159,8 +159,9 @@ const StyledProject = styled.li`
 
   .project-title {
     margin: 0 0 10px;
-    color: var(--lightest-slate);
-    font-size: var(--fz-xxl);
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 20px;
     word-break: break-word;
 
     @media (max-width: 480px) {
@@ -185,10 +186,16 @@ const StyledProject = styled.li`
 
   .project-description {
     color: var(--light-slate);
-    font-size: 17px;
+    font-size: 15px;
+    font-family: var(--font-mono);
+    line-height: 1.6;
 
     a {
       ${({ theme }) => theme.mixins.inlineLink};
+    }
+
+    p {
+      font-family: var(--font-mono);
     }
   }
 
@@ -205,34 +212,32 @@ const StyledProject = styled.li`
     li {
       font-family: var(--font-mono);
       font-size: var(--fz-xs);
-      color: var(--light-slate);
-      background: rgba(0, 255, 102, 0.05);
-      padding: 6px 10px;
+      color: var(--blue); 
+      background: rgba(2, 10, 20, 0.8);
+      padding: 4px 10px;
       border: 1px solid rgba(0, 255, 102, 0.2);
-      border-left: 3px solid var(--blue);
-      border-radius: 0;
+      border-radius: 2px;
       transition: var(--transition);
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
 
       &::before {
-        content: '>';
-        margin-right: 5px;
-        color: var(--blue);
-        opacity: 0.5;
+        content: '>>';
+        color: var(--pink);
+        margin-right: 6px;
+        font-weight: 700;
         transition: var(--transition);
       }
 
       &:hover {
-        color: var(--white);
-        border-color: var(--pink);
-        border-left-color: var(--pink);
-        background: rgba(184, 255, 0, 0.15);
-        transform: translateX(5px);
-        box-shadow: 0 0 15px rgba(184, 255, 0, 0.5);
+        color: var(--navy);
+        background: var(--blue);
+        border-color: var(--blue);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 255, 102, 0.4);
         
         &::before {
-          opacity: 1;
-          color: var(--pink);
+          color: var(--navy);
         }
       }
     }

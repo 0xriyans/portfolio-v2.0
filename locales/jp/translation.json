@@ -26,5 +26,17 @@
   "view the archive": "アーカイブを見る",
   "Show": "表示件数を",
   "More": "増やす",
-  "Less": "減らす"
+  "Less": "減らす",
+  "tech_backend_title": "バックエンドアーキテクチャ",
+  "tech_backend_skills": "Java, Spring Boot, Quarkus, システム設計, マイクロサービス",
+  "tech_frontend_title": "フロントエンド開発",
+  "tech_frontend_skills": "React, Angular, TypeScript, Tailwind CSS, Web Perf",
+  "tech_data_title": "データ通信・メッセージング",
+  "tech_data_skills": "PostgreSQL, MongoDB, Kafka, RabbitMQ, Redis",
+  "tech_cloud_title": "クラウド・DevOps",
+  "tech_cloud_skills": "Kubernetes, AWS, Docker, CI/CD, Nginx, Shell",
+  "tech_observability_title": "監視・QA",
+  "tech_observability_skills": "ELK Stack, SonarQube, K6, JMeter, TDD",
+  "tech_enterprise_title": "エンタープライズ統合",
+  "tech_enterprise_skills": "AI (OCR/Biometric), IBM BPM, GraphQL, REST APIs"
 }

@@ -26,5 +26,17 @@
   "view the archive": ">> ACCESS_ARCHIVE_LOGS",
   "Show": "Tampilkan",
   "More": "Lebih Banyak",
-  "Less": "Lebih Sedikit"
+  "Less": "Lebih Sedikit",
+  "tech_backend_title": "Arsitektur & Backend",
+  "tech_backend_skills": "Java, Spring Boot, Quarkus, System Design, Microservices",
+  "tech_frontend_title": "Pengalaman Frontend",
+  "tech_frontend_skills": "React, Angular, TypeScript, Tailwind CSS, Web Perf",
+  "tech_data_title": "Data & Pesan",
+  "tech_data_skills": "PostgreSQL, MongoDB, Kafka, RabbitMQ, Redis",
+  "tech_cloud_title": "Cloud & DevOps",
+  "tech_cloud_skills": "Kubernetes, AWS, Docker, CI/CD, Nginx, Shell",
+  "tech_observability_title": "Observability & QA",
+  "tech_observability_skills": "ELK Stack, SonarQube, K6, JMeter, TDD",
+  "tech_enterprise_title": "Integrasi Enterprise",
+  "tech_enterprise_skills": "AI (OCR/Biometric), IBM BPM, GraphQL, REST APIs"
 }
