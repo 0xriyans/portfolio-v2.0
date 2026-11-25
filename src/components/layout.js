@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
 import { Head, Loader, Nav, Social, Email, Footer, MatrixRain, ScrollProgress } from '@components';
 import { usePrefersReducedMotion } from '@hooks';
+import { BootProvider } from '@utils/bootContext';
 import { GlobalStyle, theme } from '@styles';
 
 const StyledContent = styled.div`
@@ -67,6 +68,8 @@ const Layout = ({ children, location }) => {
     handleExternalLinks();
   }, [showBoot, location.hash]);
 
+  const bootDone = !isHome || !showBoot || prefersReducedMotion;
+
   return (
     <>
       <Head />
@@ -83,16 +86,18 @@ const Layout = ({ children, location }) => {
 
           {showBoot && isHome && <Loader finishLoading={() => setShowBoot(false)} />}
 
-          <StyledContent>
-            <Nav isHome={isHome} />
-            <Social isHome={isHome} />
-            <Email isHome={isHome} />
+          <BootProvider bootDone={bootDone}>
+            <StyledContent>
+              <Nav isHome={isHome} />
+              <Social isHome={isHome} />
+              <Email isHome={isHome} />
 
-            <div id="content">
-              {children}
-              <Footer />
-            </div>
-          </StyledContent>
+              <div id="content">
+                {children}
+                <Footer />
+              </div>
+            </StyledContent>
+          </BootProvider>
         </ThemeProvider>
       </div>
     </>

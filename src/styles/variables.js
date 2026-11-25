@@ -13,7 +13,7 @@ const variables = css`
     --light-slate: #d1d5db;
     --lightest-slate: #f3f4f6;
     --white: #ffffff;
-    
+
     /* Neon Accents */
     --yellow: #fdee00; /* Cyber Yellow */
     --yellow-tint: rgba(253, 238, 0, 0.1);
@@ -39,7 +39,8 @@ const variables = css`
     /* Fonts */
     --font-heading: 'Orbitron', 'M PLUS 1 Code', sans-serif;
     --font-sans: 'Rajdhani', 'JetBrains Mono', 'M PLUS 1 Code', sans-serif;
-    --font-mono: 'Share Tech Mono', 'Space Grotesk', 'Fira Code', 'Fira Mono', 'M PLUS 1 Code', monospace;
+    --font-mono: 'Share Tech Mono', 'Space Grotesk', 'Fira Code', 'Fira Mono', 'M PLUS 1 Code',
+      monospace;
 
     --fz-xxs: 12px;
     --fz-xs: 13px;
@@ -58,8 +59,10 @@ const variables = css`
     --tab-height: 42px;
     --tab-width: 120px;
 
-    --easing: cubic-bezier(0.23, 1, 0.32, 1);
-    --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    --easing: cubic-bezier(0.22, 1, 0.36, 1);
+    --transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-micro: 180ms;
+    --dur-entrance: 600ms;
 
     --hamburger-width: 30px;
 

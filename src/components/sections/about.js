@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StaticImage } from 'gatsby-plugin-image';
 import { useTranslation } from 'gatsby-plugin-react-i18next';
-import styled from 'styled-components';
-import { FaServer, FaDatabase, FaNetworkWired, FaDocker } from 'react-icons/fa';
+import styled, { keyframes, css } from 'styled-components';
+import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
+import CountUp from '../CountUp';
+
+const drawStroke = keyframes`
+  to {
+    stroke-dashoffset: 0;
+  }
+`;
 
 const StyledAboutSection = styled.section`
-  max-width: 960px;
+  max-width: 980px;
 
   .inner {
     display: grid;
@@ -15,7 +23,7 @@ const StyledAboutSection = styled.section`
     @media (max-width: 768px) {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 28px;
     }
   }
 `;
@@ -34,7 +42,7 @@ const StyledText = styled.div`
   }
 
   p {
-    line-height: 1.65;
+    line-height: 1.7;
     margin-bottom: 18px;
     color: var(--light-slate);
     font-size: var(--fz-md);
@@ -43,6 +51,45 @@ const StyledText = styled.div`
   strong {
     color: var(--green);
     font-weight: 600;
+  }
+
+  .annot-wrap {
+    position: relative;
+    display: inline-block;
+    padding: 0 3px;
+    color: var(--white);
+    font-weight: 600;
+    z-index: 1;
+  }
+
+  .annot-brackets {
+    position: relative;
+    display: inline-block;
+    padding: 2px 10px;
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+  }
+
+  svg.annot-svg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .annot-stroke {
+    stroke-dasharray: 420;
+    stroke-dashoffset: ${({ active, reduced }) => (active || reduced ? 0 : 420)};
+    ${({ active, reduced }) =>
+    active &&
+      !reduced &&
+      css`
+        animation: ${drawStroke} ${MOTION.duration.annotation}ms ${MOTION.easing.css} forwards;
+      `}
   }
 `;
 
@@ -112,7 +159,7 @@ const StyledVerifiedMetrics = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  margin: 10px 0 20px;
+  margin: 10px 0 0;
 
   @media (max-width: 900px) {
     grid-template-columns: repeat(2, 1fr);
@@ -140,11 +187,11 @@ const StyledVerifiedMetrics = styled.div`
 
     .metric-value {
       font-family: var(--font-mono);
-      font-size: clamp(20px, 2.2vw, 24px);
+      font-size: clamp(19px, 2.2vw, 22px);
       font-weight: 700;
       color: var(--green);
       font-variant-numeric: tabular-nums;
-      line-height: 1.2;
+      line-height: 1.25;
     }
 
     .metric-desc {
@@ -163,137 +210,83 @@ const StyledVerifiedMetrics = styled.div`
   }
 `;
 
-const StyledSkills = styled.div`
-  grid-column: 1 / -1;
-  margin-top: 10px;
-
-  .skills-heading {
-    margin-bottom: 24px;
-    font-family: var(--font-mono);
-    color: var(--white);
-    font-size: var(--fz-md);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    display: flex;
-    align-items: center;
-
-    &::after {
-      content: '';
-      display: block;
-      height: 1px;
-      flex: 1;
-      background-color: rgba(0, 255, 102, 0.2);
-      margin-left: 20px;
-    }
-  }
-
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .skill-card {
-    background: #0d1117;
-    border: 1px solid rgba(0, 255, 102, 0.2);
-    border-radius: 6px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), border-color 180ms ease;
-
-    &:hover {
-      border-color: var(--green);
-      transform: translateY(-2px);
-    }
-  }
-
-  .card-top {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    .icon {
-      color: var(--green);
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-    }
-
-    .card-title {
-      font-family: var(--font-mono);
-      color: var(--white);
-      font-size: var(--fz-sm);
-      font-weight: 600;
-    }
-  }
-
-  .card-skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-
-    .skill-tag {
-      background: rgba(2, 12, 27, 0.7);
-      border: 1px solid rgba(0, 255, 102, 0.22);
-      color: var(--light-slate);
-      padding: 5px 10px;
-      border-radius: 3px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      display: inline-flex;
-      align-items: center;
-
-      &::before {
-        content: '>';
-        color: var(--green);
-        margin-right: 6px;
-        font-weight: 700;
-      }
-    }
-  }
-`;
-
 const About = () => {
   const { t } = useTranslation();
-
-  const stackGroups = [
-    {
-      title: t('tech_backend_title'),
-      skills: t('tech_backend_skills'),
-      icon: <FaServer />,
-    },
-    {
-      title: t('tech_streaming_title'),
-      skills: t('tech_streaming_skills'),
-      icon: <FaNetworkWired />,
-    },
-    {
-      title: t('tech_data_title'),
-      skills: t('tech_data_skills'),
-      icon: <FaDatabase />,
-    },
-    {
-      title: t('tech_infra_title'),
-      skills: t('tech_infra_skills'),
-      icon: <FaDocker />,
-    },
-  ];
+  const textRef = useRef(null);
+  const metricsRef = useRef(null);
+  const textInView = useInViewOnce(textRef, MOTION.trigger.viewport);
+  const metricsInView = useInViewOnce(metricsRef, MOTION.trigger.viewport);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
     <StyledAboutSection id="about">
       <h2 className="numbered-heading">{t('About Me')}</h2>
 
       <div className="inner">
-        <StyledText>
+        <StyledText ref={textRef} active={textInView} reduced={prefersReducedMotion}>
           <div className="text">
-            <p dangerouslySetInnerHTML={{ __html: t('about_p1') }} />
-            <p dangerouslySetInnerHTML={{ __html: t('about_p2') }} />
+            <p>
+              Hello! I&apos;m <strong>Riyan Sugiarto</strong>, a{' '}
+              <span className="annot-wrap">
+                Backend Software Engineer
+                <svg
+                  className="annot-svg"
+                  viewBox="0 0 220 26"
+                  preserveAspectRatio="none"
+                  aria-hidden="true">
+                  <path
+                    className="annot-stroke"
+                    d="M 2 24 L 218 24"
+                    fill="none"
+                    stroke="#00ff66"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>{' '}
+              based in Jakarta, Indonesia with <strong>6+ years</strong> of experience building
+              enterprise systems across insurance, banking guarantees, and telecom.
+            </p>
+
+            <p>
+              My core stack centers on{' '}
+              <span className="annot-wrap">
+                Java, Spring Boot &amp; Kafka
+                <svg
+                  className="annot-svg"
+                  viewBox="0 0 220 26"
+                  preserveAspectRatio="none"
+                  aria-hidden="true">
+                  <path
+                    className="annot-stroke"
+                    d="M 0 13 L 220 13"
+                    fill="none"
+                    stroke="rgba(0, 255, 102, 0.16)"
+                    strokeWidth="24"
+                  />
+                </svg>
+              </span>{' '}
+              alongside <strong>Quarkus</strong>, <strong>PostgreSQL</strong>, and full-stack
+              delivery with <strong>Angular</strong> at Askrindo and <strong>MSIG Life</strong>. I
+              optimize for{' '}
+              <span className="annot-brackets">
+                Zero-Loss &amp; ACID
+                <svg
+                  className="annot-svg"
+                  viewBox="0 0 180 28"
+                  preserveAspectRatio="none"
+                  aria-hidden="true">
+                  <path
+                    className="annot-stroke"
+                    d="M 10 2 L 2 2 L 2 26 L 10 26 M 170 2 L 178 2 L 178 26 L 170 26"
+                    fill="none"
+                    stroke="#00ff66"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </span>{' '}
+              consistency in production.
+            </p>
           </div>
         </StyledText>
 
@@ -310,10 +303,12 @@ const About = () => {
           </div>
         </StyledPic>
 
-        <StyledVerifiedMetrics aria-label="Verified engineering metrics">
+        <StyledVerifiedMetrics ref={metricsRef} aria-label="Verified engineering metrics">
           <div className="metric-card">
             <div className="metric-label">EXPERIENCE</div>
-            <div className="metric-value">6+ Years</div>
+            <div className="metric-value">
+              <CountUp to={6} suffix="+ Years" active={metricsInView} minCh={7} />
+            </div>
             <div className="metric-desc">
               Backend &amp; Full-Stack engineering across insurance, credit guarantees, and telecom.
             </div>
@@ -321,51 +316,39 @@ const About = () => {
 
           <div className="metric-card">
             <div className="metric-label">PRUHUB // MEMORY</div>
-            <div className="metric-value">60%+ Drop</div>
+            <div className="metric-value">
+              <CountUp to={60} suffix="%+ Drop" active={metricsInView} minCh={8} />
+            </div>
             <div className="metric-desc">
-              Container memory reduced from &gt;1.5 GB to &lt;300 MB in Flink-to-Quarkus migration.
+              Container memory from &gt;
+              <CountUp to={1.5} decimals={1} active={metricsInView} minCh={3} /> GB to &lt;
+              <CountUp to={300} active={metricsInView} minCh={3} /> MB in Flink-to-Quarkus
+              migration.
             </div>
           </div>
 
           <div className="metric-card">
             <div className="metric-label">PRUHUB // WITHDRAWAL</div>
-            <div className="metric-value">2 Days → Real-Time</div>
+            <div className="metric-value">
+              <CountUp to={2} suffix=" Days → Real-Time" active={metricsInView} minCh={14} />
+            </div>
             <div className="metric-desc">
-              Zero-loss Apache Kafka streaming with manual offset commit &amp; PostgreSQL ACID
-              ledger.
+              Zero-loss Apache Kafka with manual offset commit &amp; PostgreSQL ACID ledger.
             </div>
           </div>
 
           <div className="metric-card">
             <div className="metric-label">ASKRINDO // MIDTRANS</div>
-            <div className="metric-value">2-Layer Lock</div>
+            <div className="metric-value">
+              EX <CountUp to={30} suffix="s Lock" active={metricsInView} minCh={7} />
+            </div>
             <div className="metric-desc">
               Redis <code>SET lock:pay:&#123;order_id&#125; NX EX 30</code> + DB{' '}
-              <code>SELECT ... FOR UPDATE</code>, idempotent HTTP 200.
+              <code>SELECT ... FOR UPDATE</code>, idempotent HTTP{' '}
+              <CountUp to={200} active={metricsInView} minCh={3} />.
             </div>
           </div>
         </StyledVerifiedMetrics>
-
-        <StyledSkills id="stack">
-          <h3 className="skills-heading">[ CORE_STACK ]</h3>
-          <div className="skills-grid">
-            {stackGroups.map((group, i) => (
-              <div className="skill-card" key={i}>
-                <div className="card-top">
-                  <div className="icon">{group.icon}</div>
-                  <div className="card-title">{group.title}</div>
-                </div>
-                <div className="card-skills">
-                  {group.skills.split(', ').map((skill, idx) => (
-                    <span key={idx} className="skill-tag">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </StyledSkills>
       </div>
     </StyledAboutSection>
   );

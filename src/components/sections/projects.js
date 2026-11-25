@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link, useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import styled from 'styled-components';
 import { Icon } from '@components/icons';
+import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
 import ProjectDiagram from '../ProjectDiagram';
 
 const StyledProjectsSection = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 0 !important;
-  max-width: 1000px;
+  padding-top: 20px !important;
+  max-width: 1040px;
 
   h2 {
-    font-size: clamp(20px, 4vw, 26px);
+    font-size: clamp(20px, 4vw, 24px);
     font-family: var(--font-mono);
     text-align: center;
   }
@@ -32,7 +34,7 @@ const StyledProjectsSection = styled.section`
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-gap: 24px;
     position: relative;
-    margin-top: 40px;
+    margin-top: 36px;
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
@@ -42,46 +44,52 @@ const StyledProjectsSection = styled.section`
 
 const StyledProject = styled.li`
   position: relative;
-  cursor: default;
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  transform: translate3d(0, ${({ visible }) => (visible ? '0px' : `${MOTION.rise.projects}px`)}, 0);
+  transition: ${({ reduced, delay }) =>
+    reduced
+      ? 'none'
+      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${delay}ms, transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${delay}ms`};
 
   .project-inner {
-    ${({ theme }) => theme.mixins.glassmorphism};
+    background: #0d1117;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     position: relative;
     height: 100%;
-    padding: 55px 1.5rem 1.75rem;
+    padding: 20px;
+    border-radius: 6px;
     border: 1px solid rgba(0, 255, 102, 0.22);
-    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease;
+    transition: transform ${MOTION.duration.micro}ms ${MOTION.easing.css},
+      border-color ${MOTION.duration.micro}ms ease, box-shadow ${MOTION.duration.micro}ms ease;
 
-    &::after {
-      content: 'module.sys';
-    }
-
-    &:hover {
-      border-color: var(--green);
-      transform: translateY(-4px);
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        border-color: var(--green);
+        box-shadow: 0 8px 24px rgba(0, 255, 102, 0.14);
+        transform: translate3d(0, -4px, 0);
+      }
     }
   }
 
   .project-image {
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     position: relative;
     overflow: hidden;
     border-radius: 4px;
 
     .img {
       width: 100%;
-      height: 190px;
+      height: 185px;
       object-fit: cover;
     }
   }
 
   .project-top {
     ${({ theme }) => theme.mixins.flexBetween};
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 
     .company-badge {
       color: var(--pink);
@@ -112,7 +120,7 @@ const StyledProject = styled.li`
     margin: 0 0 10px;
     color: var(--white);
     font-family: var(--font-mono);
-    font-size: 18px;
+    font-size: 17px;
     word-break: break-word;
 
     a {
@@ -125,44 +133,31 @@ const StyledProject = styled.li`
 
   .project-description {
     color: var(--light-slate);
-    font-size: 15px;
+    font-size: 14.5px;
     font-family: var(--font-sans);
     line-height: 1.55;
 
     a {
       ${({ theme }) => theme.mixins.inlineLink};
     }
-
-    p {
-      font-family: var(--font-sans);
-    }
   }
 
   .project-tech-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     padding: 0;
-    margin: 18px 0 0;
+    margin: 16px 0 0;
     list-style: none;
 
     li {
       font-family: var(--font-mono);
       font-size: 11px;
       color: var(--green);
-      background: rgba(2, 10, 20, 0.8);
-      padding: 4px 9px;
+      background: rgba(2, 10, 20, 0.85);
+      padding: 3px 8px;
       border: 1px solid rgba(0, 255, 102, 0.2);
       border-radius: 2px;
-      display: inline-flex;
-      align-items: center;
-
-      &::before {
-        content: '>>';
-        color: var(--pink);
-        margin-right: 5px;
-        font-weight: 700;
-      }
     }
   }
 `;
@@ -202,6 +197,9 @@ const Projects = () => {
 
   const { language } = useI18next();
   const { t } = useTranslation();
+  const gridRef = useRef(null);
+  const inView = useInViewOnce(gridRef, MOTION.trigger.viewport);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const projects = data.projects.edges.filter(
     ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
@@ -215,16 +213,21 @@ const Projects = () => {
         {t('view the archive')}
       </Link>
 
-      <ul className="projects-grid">
+      <ul className="projects-grid" ref={gridRef}>
         {projects &&
           projects.map(({ node }, i) => {
             const { frontmatter, html } = node;
             const { github, external, title, company, tech, cover, diagram } = frontmatter;
             const image = cover ? getImage(cover) : null;
             const href = external || github || null;
+            const visible = prefersReducedMotion || inView;
 
             return (
-              <StyledProject key={i}>
+              <StyledProject
+                key={i}
+                visible={visible}
+                reduced={prefersReducedMotion}
+                delay={i * MOTION.stagger.projects}>
                 <div className="project-inner">
                   <header style={{ width: '100%' }}>
                     <div className="project-image">
@@ -252,7 +255,6 @@ const Projects = () => {
                             <a
                               href={external}
                               aria-label="External Link"
-                              className="external"
                               target="_blank"
                               rel="noreferrer">
                               <Icon name="External" />

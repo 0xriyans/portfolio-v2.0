@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
+import { usePrefersReducedMotion } from '@hooks';
+
+const flowDash = keyframes`
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+`;
 
 const DiagramFrame = styled.div`
   width: 100%;
   height: 100%;
-  min-height: ${({ compact }) => (compact ? '190px' : '300px')};
+  min-height: ${({ compact }) => (compact ? '190px' : '240px')};
   background: #070c0a;
   border: 1px solid rgba(0, 255, 102, 0.28);
   border-radius: 4px;
@@ -21,8 +31,20 @@ const DiagramFrame = styled.div`
     display: block;
   }
 
+  .flow-line {
+    stroke-dasharray: 6 6;
+    ${({ animateFlow }) =>
+    animateFlow
+      ? css`
+            animation: ${flowDash} 1.6s linear infinite;
+          `
+      : css`
+            stroke-dasharray: none;
+          `}
+  }
+
   @media (max-width: 768px) {
-    min-height: ${({ compact }) => (compact ? '180px' : '220px')};
+    min-height: ${({ compact }) => (compact ? '180px' : '200px')};
   }
 `;
 
@@ -129,6 +151,33 @@ const DIAGRAMS = {
 };
 
 const ProjectDiagram = ({ type, title, compact = false }) => {
+  const frameRef = useRef(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setInView(false);
+      return;
+    }
+    const el = frameRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0]) {
+          setInView(entries[0].isIntersecting);
+        }
+      },
+      { threshold: 0.1 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  const animateFlow = inView && !prefersReducedMotion;
+
   const cfg = DIAGRAMS[type] || {
     header: `ARCH // ${(title || 'PRODUCTION SYSTEM').toUpperCase()}`,
     badge: 'PRODUCTION ARCHITECTURE',
@@ -142,7 +191,12 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
   };
 
   return (
-    <DiagramFrame compact={compact} role="img" aria-label={`${title} architecture diagram`}>
+    <DiagramFrame
+      ref={frameRef}
+      compact={compact}
+      animateFlow={animateFlow}
+      role="img"
+      aria-label={`${title} architecture diagram`}>
       <svg viewBox="0 0 640 300" preserveAspectRatio="xMidYMid meet">
         <defs>
           <pattern
@@ -217,6 +271,7 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
           return (
             <line
               key={idx}
+              className="flow-line"
               x1={x1}
               y1={y}
               x2={x2}

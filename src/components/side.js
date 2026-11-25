@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import styled from 'styled-components';
-import { loaderDelay } from '@utils';
 import { usePrefersReducedMotion } from '@hooks';
+import { useBootStatus } from '@utils/bootContext';
+import { MOTION } from '@styles/motionTokens';
 
 const StyledSideElement = styled.div`
   width: 40px;
@@ -13,6 +13,12 @@ const StyledSideElement = styled.div`
   right: ${props => (props.orientation === 'left' ? 'auto' : '40px')};
   z-index: 10;
   color: var(--light-slate);
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  transform: translateY(${({ visible }) => (visible ? '0px' : '12px')});
+  transition: ${({ immediate }) =>
+    immediate
+      ? 'none'
+      : `opacity 280ms ${MOTION.easing.css} 700ms, transform 280ms ${MOTION.easing.css} 700ms`};
 
   @media (max-width: 1080px) {
     left: ${props => (props.orientation === 'left' ? '20px' : 'auto')};
@@ -25,30 +31,16 @@ const StyledSideElement = styled.div`
 `;
 
 const Side = ({ children, isHome, orientation }) => {
-  const [isMounted, setIsMounted] = useState(!isHome);
   const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (!isHome || prefersReducedMotion) {
-      return;
-    }
-    const timeout = setTimeout(() => setIsMounted(true), loaderDelay);
-    return () => clearTimeout(timeout);
-  }, []);
+  const { bootDone } = useBootStatus();
+  const visible = prefersReducedMotion || !isHome || bootDone;
 
   return (
-    <StyledSideElement orientation={orientation}>
-      {prefersReducedMotion ? (
-        <>{children}</>
-      ) : (
-        <TransitionGroup component={null}>
-          {isMounted && (
-            <CSSTransition classNames={isHome ? 'fade' : ''} timeout={isHome ? loaderDelay : 0}>
-              {children}
-            </CSSTransition>
-          )}
-        </TransitionGroup>
-      )}
+    <StyledSideElement
+      orientation={orientation}
+      visible={visible}
+      immediate={prefersReducedMotion || !isHome}>
+      {children}
     </StyledSideElement>
   );
 };

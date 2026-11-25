@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'gatsby';
 import { useTranslation } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
+import gsap from 'gsap';
+import { usePrefersReducedMotion } from '@hooks';
+import { useBootStatus } from '@utils/bootContext';
+import { MOTION } from '@styles/motionTokens';
 import TerminalTyping from '../TerminalTyping';
 
 const StyledHeroSection = styled.section`
@@ -11,7 +15,7 @@ const StyledHeroSection = styled.section`
   align-items: center;
   text-align: center;
   min-height: 100vh;
-  padding: 100px 0 50px;
+  padding: 80px 0 50px;
   z-index: 1;
 
   &::before,
@@ -24,21 +28,33 @@ const StyledHeroSection = styled.section`
     opacity: 0.4;
   }
   &::before {
-    top: 20%;
+    top: 18%;
     left: 5%;
   }
   &::after {
-    bottom: 20%;
+    bottom: 18%;
     right: 5%;
+  }
+
+  .hero-stack {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .sys-label {
     margin: 0 0 20px 4px;
     color: var(--pink);
     font-family: var(--font-mono);
-    font-size: clamp(var(--fz-sm), 2vw, var(--fz-md));
+    font-size: clamp(11px, 2vw, var(--fz-md));
     font-weight: 600;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.16em;
+
+    @media (max-width: 480px) {
+      letter-spacing: 0.08em;
+      font-size: 11px;
+    }
 
     &::before {
       content: '[ ';
@@ -52,7 +68,7 @@ const StyledHeroSection = styled.section`
 
   .huge-name {
     margin: 0;
-    font-size: clamp(38px, 7.5vw, 68px);
+    font-size: clamp(36px, 7.5vw, 68px);
     font-family: var(--font-mono);
     font-weight: 700;
     line-height: 1.1;
@@ -60,6 +76,15 @@ const StyledHeroSection = styled.section`
     text-shadow: 0 0 18px rgba(0, 255, 102, 0.25);
     text-transform: uppercase;
     letter-spacing: 0.04em;
+  }
+
+  .name-line {
+    display: block;
+  }
+
+  .hero-char {
+    display: inline-block;
+    will-change: transform, opacity, filter;
   }
 
   h2.role-heading {
@@ -82,7 +107,7 @@ const StyledHeroSection = styled.section`
 
   .explore-link {
     ${({ theme }) => theme.mixins.bigButton};
-    margin-top: 34px;
+    margin-top: 30px;
     color: var(--navy);
     background-color: var(--green);
     border: 1px solid var(--green);
@@ -94,8 +119,8 @@ const StyledHeroSection = styled.section`
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
     padding: 15px 30px;
     box-shadow: 0 0 18px rgba(0, 255, 102, 0.35);
-    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), background-color 180ms ease,
-      color 180ms ease;
+    transition: transform ${MOTION.duration.micro}ms ${MOTION.easing.css},
+      background-color ${MOTION.duration.micro}ms ease, color ${MOTION.duration.micro}ms ease;
 
     &:hover,
     &:focus {
@@ -106,28 +131,86 @@ const StyledHeroSection = styled.section`
   }
 `;
 
+const splitChars = text =>
+  text.split('').map((ch, idx) => (
+    <span key={idx} className="hero-char" aria-hidden="true">
+      {ch === ' ' ? '\u00A0' : ch}
+    </span>
+  ));
+
 const Hero = () => {
   const { t } = useTranslation();
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const { bootDone } = useBootStatus();
+  const containerRef = useRef(null);
+  const hasPlayedRef = useRef(false);
+
+  useEffect(() => {
+    if (prefersReducedMotion || !bootDone || hasPlayedRef.current) {
+      return;
+    }
+
+    hasPlayedRef.current = true;
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: MOTION.easing.gsap } });
+      const blurFrom = `blur(${MOTION.blur.start}px)`;
+
+      // Whole hero sequence strictly within 1000ms
+      tl.fromTo(
+        '.hero-label',
+        { opacity: 0, y: MOTION.rise.default, filter: blurFrom },
+        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45 },
+        0,
+      )
+        .fromTo(
+          '.hero-char',
+          { opacity: 0, y: MOTION.rise.default, filter: blurFrom },
+          {
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.42,
+            stagger: MOTION.stagger.letter / 1000,
+          },
+          0.08,
+        )
+        .fromTo(
+          '.hero-role',
+          { opacity: 0, y: MOTION.rise.default, filter: blurFrom },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45 },
+          0.22,
+        )
+        .fromTo(
+          '.hero-terminal',
+          { opacity: 0, y: MOTION.rise.default, filter: blurFrom },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.4 },
+          0.28,
+        )
+        .fromTo(
+          '.hero-cta',
+          { opacity: 0, y: MOTION.rise.default, filter: blurFrom },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45 },
+          0.42,
+        );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [bootDone, prefersReducedMotion]);
 
   return (
-    <StyledHeroSection id="hero">
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}>
-        <div className="sys-label">SYS.BOOT_SEQ // OVERRIDE_ACTIVE</div>
-        <h1 className="huge-name">
-          RIYAN
-          <br />
-          SUGIARTO
+    <StyledHeroSection id="hero" ref={containerRef}>
+      <div className="hero-stack">
+        <div className="sys-label hero-label">SYS.BOOT_SEQ // OVERRIDE_ACTIVE</div>
+        <h1 className="huge-name" aria-label="RIYAN SUGIARTO">
+          <span className="name-line">{splitChars('RIYAN')}</span>
+          <span className="name-line">{splitChars('SUGIARTO')}</span>
         </h1>
-        <h2 className="role-heading">Backend Software Engineer</h2>
-        <p className="hero-summary">{t('hero_desc')}</p>
-        <TerminalTyping />
-        <Link className="explore-link" to="/#projects">
+        <h2 className="role-heading hero-role">Backend Software Engineer</h2>
+        <p className="hero-summary hero-role">{t('hero_desc')}</p>
+        <div className="hero-terminal">
+          <TerminalTyping active={bootDone} delayMs={260} />
+        </div>
+        <Link className="explore-link hero-cta" to="/#architecture">
           [ EXPLORE ARCHITECTURE ]
         </Link>
       </div>

@@ -229,7 +229,8 @@ const GlobalStyle = createGlobalStyle`
     white-space: nowrap;
 
     @media (max-width: 480px) {
-      font-size: clamp(15px, 4.2vw, 19px);
+      font-size: clamp(14px, 3.8vw, 18px);
+      white-space: normal;
     }
 
     &:before {

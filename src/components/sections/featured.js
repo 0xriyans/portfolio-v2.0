@@ -1,127 +1,131 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import styled from 'styled-components';
 import { Icon } from '@components/icons';
+import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
 import ProjectDiagram from '../ProjectDiagram';
+
+const StyledFeaturedSection = styled.section`
+  max-width: 1040px;
+`;
 
 const StyledProjectsGrid = styled.ul`
   ${({ theme }) => theme.mixins.resetList};
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-gap: 32px;
+  align-items: start;
+  margin-top: 40px;
 
-  a {
-    position: relative;
-    z-index: 1;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-gap: 24px;
   }
 `;
 
 const StyledProject = styled.li`
   position: relative;
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(12, 1fr);
-  align-items: center;
+  background: #0d1117;
+  border: 1px solid rgba(0, 255, 102, 0.24);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  transform: translate3d(0, ${({ visible }) => (visible ? '0px' : `${MOTION.rise.projects}px`)}, 0);
+  transition: ${({ reduced, delay }) =>
+    reduced
+      ? 'none'
+      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${delay}ms, transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${delay}ms, border-color ${MOTION.duration.micro}ms ease, box-shadow ${MOTION.duration.micro}ms ease`};
 
-  @media (max-width: 768px) {
-    display: flex;
-    flex-direction: column-reverse;
-    ${({ theme }) => theme.mixins.glassmorphism};
-    padding: 0;
-    overflow: hidden;
+  @media (min-width: 769px) {
+    &:nth-child(even) {
+      margin-top: 56px;
+    }
   }
 
-  &:not(:last-of-type) {
-    margin-bottom: 90px;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border-color: var(--green);
+      box-shadow: 0 8px 28px rgba(0, 255, 102, 0.16);
+      transform: translate3d(0, -4px, 0);
+    }
+  }
+
+  .project-media {
+    width: 100%;
+    height: 220px;
+    border-bottom: 1px solid rgba(0, 255, 102, 0.2);
+    background: #070c0a;
+    overflow: hidden;
 
     @media (max-width: 768px) {
-      margin-bottom: 60px;
+      height: 200px;
     }
-  }
 
-  &:nth-of-type(odd) {
-    .project-content {
-      grid-column: 7 / -1;
-      text-align: right;
-
-      @media (max-width: 1080px) {
-        grid-column: 5 / -1;
-      }
-      @media (max-width: 768px) {
-        grid-column: 1 / -1;
-        padding: 32px 28px 24px;
-        text-align: left;
-      }
-      @media (max-width: 480px) {
-        padding: 24px 20px 20px;
-      }
+    a,
+    .media-box {
+      display: block;
+      width: 100%;
+      height: 100%;
     }
-    .project-tech-list {
-      justify-content: flex-end;
 
-      @media (max-width: 768px) {
-        justify-content: flex-start;
-      }
-    }
-    .project-links {
-      justify-content: flex-end;
-      margin-left: 0;
-      margin-right: -10px;
-
-      @media (max-width: 768px) {
-        justify-content: flex-start;
-        margin-left: -10px;
-        margin-right: 0;
-      }
-    }
-    .project-image {
-      grid-column: 1 / 8;
-
-      @media (max-width: 768px) {
-        grid-column: 1 / -1;
-      }
+    .img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
 
   .project-content {
-    position: relative;
-    grid-column: 1 / 7;
-    grid-row: 1 / -1;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+  }
 
-    @media (max-width: 1080px) {
-      grid-column: 1 / 9;
-    }
-
-    @media (max-width: 768px) {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      height: 100%;
-      padding: 30px;
-      z-index: 5;
-    }
-
-    @media (max-width: 480px) {
-      padding: 24px 20px 20px;
-    }
+  .project-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
   }
 
   .project-overline {
-    margin: 10px 0;
-    color: var(--green);
+    margin: 0;
+    color: var(--pink);
     font-family: var(--font-mono);
-    font-size: var(--fz-xs);
-    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .project-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--light-slate);
+
+    a {
+      display: inline-flex;
+      padding: 4px;
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
   }
 
   .project-title {
+    margin: 0 0 12px;
     color: var(--white);
     font-family: var(--font-mono);
-    font-size: clamp(20px, 3.2vw, 24px);
-    word-break: break-word;
-
-    @media (min-width: 768px) {
-      margin: 0 0 18px;
-    }
+    font-size: 19px;
+    line-height: 1.3;
 
     a {
       color: var(--white);
@@ -132,33 +136,11 @@ const StyledProject = styled.li`
   }
 
   .project-description {
-    ${({ theme }) => theme.mixins.glassmorphism};
-    padding: 55px 25px 25px;
-    position: relative;
-    z-index: 2;
     color: var(--light-slate);
-    font-size: var(--fz-md);
+    font-size: var(--fz-sm);
     font-family: var(--font-sans);
     line-height: 1.6;
-
-    &::after {
-      content: 'sys_log.sh';
-    }
-
-    @media (max-width: 768px) {
-      padding: 16px 0;
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      &::before,
-      &::after {
-        display: none;
-      }
-    }
-
-    a {
-      ${({ theme }) => theme.mixins.inlineLink};
-    }
+    margin-bottom: 16px;
 
     strong {
       color: var(--green);
@@ -166,7 +148,7 @@ const StyledProject = styled.li`
     }
 
     code {
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--green);
       background: rgba(0, 255, 102, 0.08);
       padding: 1px 5px;
@@ -177,96 +159,19 @@ const StyledProject = styled.li`
   .project-tech-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    position: relative;
-    z-index: 2;
-    margin: 22px 0 10px;
+    gap: 6px;
+    margin: 0;
     padding: 0;
     list-style: none;
 
-    @media (max-width: 768px) {
-      margin: 15px 0 10px;
-      justify-content: flex-start;
-    }
-
     li {
       font-family: var(--font-mono);
-      font-size: var(--fz-xs);
+      font-size: 11px;
       color: var(--green);
       background: rgba(2, 10, 20, 0.85);
-      padding: 4px 10px;
-      border: 1px solid rgba(0, 255, 102, 0.25);
+      padding: 3px 8px;
+      border: 1px solid rgba(0, 255, 102, 0.22);
       border-radius: 2px;
-      display: inline-flex;
-      align-items: center;
-
-      &::before {
-        content: '>>';
-        color: var(--pink);
-        margin-right: 6px;
-        font-weight: 700;
-      }
-    }
-  }
-
-  .project-links {
-    display: flex;
-    align-items: center;
-    position: relative;
-    margin-top: 10px;
-    margin-left: -10px;
-    color: var(--lightest-slate);
-
-    a {
-      ${({ theme }) => theme.mixins.flexCenter};
-      padding: 10px;
-
-      &.external {
-        svg {
-          width: 22px;
-          height: 22px;
-          margin-top: -4px;
-        }
-      }
-
-      svg {
-        width: 20px;
-        height: 20px;
-      }
-    }
-  }
-
-  .project-image {
-    grid-column: 6 / -1;
-    grid-row: 1 / -1;
-    position: relative;
-    z-index: 1;
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid rgba(0, 255, 102, 0.25);
-    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease;
-
-    &:hover {
-      border-color: var(--green);
-      transform: translateY(-4px);
-    }
-
-    @media (max-width: 768px) {
-      width: 100%;
-      min-height: 210px;
-    }
-
-    .media-link,
-    .media-box {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .img {
-      width: 100%;
-      height: 100%;
-      display: block;
     }
   }
 `;
@@ -286,6 +191,7 @@ const Featured = () => {
             fileAbsolutePath
             frontmatter {
               title
+              company
               diagram
               cover {
                 childImageSharp {
@@ -305,33 +211,76 @@ const Featured = () => {
 
   const { language } = useI18next();
   const { t } = useTranslation();
+  const gridRef = useRef(null);
+  const inView = useInViewOnce(gridRef, MOTION.trigger.viewport);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   const featuredProjects = data.featured.edges.filter(
     ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
   );
 
   return (
-    <section id="projects">
-      <h2 className="numbered-heading">{t('Some Things I’ve Built')}</h2>
+    <StyledFeaturedSection id="projects">
+      <h2 className="numbered-heading">[ 05 // PROJECTS ]</h2>
 
-      <StyledProjectsGrid>
+      <StyledProjectsGrid ref={gridRef}>
         {featuredProjects &&
           featuredProjects.map(({ node }, i) => {
             const { frontmatter, html } = node;
-            const { external, title, tech, github, cover, diagram } = frontmatter;
+            const { external, title, company, tech, github, cover, diagram } = frontmatter;
             const image = cover ? getImage(cover) : null;
             const href = external || github || null;
+            const visible = prefersReducedMotion || inView;
 
             const media = image ? (
               <GatsbyImage image={image} alt={title} className="img" />
             ) : (
-              <ProjectDiagram type={diagram} title={title} />
+              <ProjectDiagram type={diagram} title={title} compact />
             );
 
             return (
-              <StyledProject key={i}>
+              <StyledProject
+                key={i}
+                visible={visible}
+                reduced={prefersReducedMotion}
+                delay={i * MOTION.stagger.projects}>
+                <div className="project-media">
+                  {href ? (
+                    <a href={href} target="_blank" rel="noreferrer" aria-label={title}>
+                      {media}
+                    </a>
+                  ) : (
+                    <div className="media-box">{media}</div>
+                  )}
+                </div>
+
                 <div className="project-content">
                   <div>
-                    <p className="project-overline">{t('Featured Project')}</p>
+                    <div className="project-top">
+                      <p className="project-overline">{company || t('Featured Project')}</p>
+                      {(github || external) && (
+                        <div className="project-links">
+                          {github && (
+                            <a
+                              href={github}
+                              aria-label="GitHub Link"
+                              target="_blank"
+                              rel="noreferrer">
+                              <Icon name="GitHub" />
+                            </a>
+                          )}
+                          {external && (
+                            <a
+                              href={external}
+                              aria-label="External Link"
+                              target="_blank"
+                              rel="noreferrer">
+                              <Icon name="External" />
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
 
                     <h3 className="project-title">
                       {href ? (
@@ -347,55 +296,21 @@ const Featured = () => {
                       className="project-description"
                       dangerouslySetInnerHTML={{ __html: html }}
                     />
-
-                    {tech && tech.length > 0 && (
-                      <ul className="project-tech-list">
-                        {tech.map((item, idx) => (
-                          <li key={idx}>{item}</li>
-                        ))}
-                      </ul>
-                    )}
-
-                    {(github || external) && (
-                      <div className="project-links">
-                        {github && (
-                          <a
-                            href={github}
-                            aria-label="GitHub Link"
-                            target="_blank"
-                            rel="noreferrer">
-                            <Icon name="GitHub" />
-                          </a>
-                        )}
-                        {external && (
-                          <a
-                            href={external}
-                            aria-label="External Link"
-                            className="external"
-                            target="_blank"
-                            rel="noreferrer">
-                            <Icon name="External" />
-                          </a>
-                        )}
-                      </div>
-                    )}
                   </div>
-                </div>
 
-                <div className="project-image">
-                  {href ? (
-                    <a className="media-link" href={href} target="_blank" rel="noreferrer">
-                      {media}
-                    </a>
-                  ) : (
-                    <div className="media-box">{media}</div>
+                  {tech && tech.length > 0 && (
+                    <ul className="project-tech-list">
+                      {tech.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               </StyledProject>
             );
           })}
       </StyledProjectsGrid>
-    </section>
+    </StyledFeaturedSection>
   );
 };
 
