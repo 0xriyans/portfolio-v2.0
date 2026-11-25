@@ -7,7 +7,7 @@ import { usePrefersReducedMotion } from '@hooks';
 const TabularSpan = styled.span`
   display: inline-block;
   font-variant-numeric: tabular-nums;
-  min-width: ${({ minCh }) => (minCh ? `${minCh}ch` : 'auto')};
+  min-width: ${({ $minCh }) => ($minCh ? `${$minCh}ch` : 'auto')};
 `;
 
 const CountUp = ({
@@ -60,7 +60,7 @@ const CountUp = ({
   const formatted = Number(value).toFixed(decimals);
 
   return (
-    <TabularSpan minCh={minCh}>
+    <TabularSpan $minCh={minCh}>
       {prefix}
       {formatted}
       {suffix}

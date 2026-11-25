@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { useI18next } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
+import CountUp from '@components/CountUp';
+import { useInViewOnce } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
 
 const StyledJobsSection = styled.section`
   max-width: 1120px;
@@ -23,6 +26,18 @@ const StyledEntryCard = styled.article`
   grid-template-columns: 72px minmax(0, 1fr);
   gap: 20px;
   align-items: start;
+  opacity: ${({ $inView }) => ($inView ? 1 : 0)};
+  transform: translateY(${({ $inView }) => ($inView ? 0 : MOTION.rise.timeline)}px);
+  transition:
+    opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${({ $delayMs }) => $delayMs || 0}ms,
+    transform ${MOTION.duration.entrance}ms ${MOTION.easing.css}
+      ${({ $delayMs }) => $delayMs || 0}ms;
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 
   @media (max-width: 680px) {
     grid-template-columns: 1fr;
@@ -142,7 +157,7 @@ const Jobs = () => {
     query {
       jobs: allMarkdownRemark(
         filter: { fileAbsolutePath: { regex: "/jobs/" } }
-        sort: { fields: [frontmatter___date], order: DESC }
+        sort: { frontmatter: { date: DESC } }
       ) {
         edges {
           node {
@@ -165,6 +180,8 @@ const Jobs = () => {
   `);
 
   const { language } = useI18next();
+  const listRef = useRef(null);
+  const inView = useInViewOnce(listRef, MOTION.trigger.viewport);
   const jobsData = data.jobs.edges.filter(({ node }) =>
     node.fileAbsolutePath.includes(`.${language}.md`),
   );
@@ -187,7 +204,11 @@ const Jobs = () => {
       return (
         <div className="verified-metrics-strip">
           <span className="verified-pill">
-            Container Memory: <strong>&gt;1.5 GB &rarr; &lt;300 MB (60%+ reduction)</strong>
+            Container Memory:{' '}
+            <strong>
+              &gt;1.5 GB &rarr; &lt;300 MB (
+              <CountUp to={60} suffix="%+" active={inView} minCh={3} /> reduction)
+            </strong>
           </span>
           <span className="verified-pill">
             Withdrawal: <strong>2 Business Days &rarr; Real-Time</strong>
@@ -208,7 +229,12 @@ const Jobs = () => {
         Indonesia&apos;s insurance, credit guarantee, and telecommunications leaders.
       </p>
 
-      <div className="experience-list" role="list" aria-label="Work experience entries">
+      <div
+        className="experience-list"
+        ref={listRef}
+        role="list"
+        aria-label="Work experience entries"
+      >
         {jobsData &&
           jobsData.map(({ node }, i) => {
             const { frontmatter, html } = node;
@@ -216,7 +242,12 @@ const Jobs = () => {
             const num = String(i + 1).padStart(2, '0');
 
             return (
-              <StyledEntryCard key={`${date}-${i}`} role="listitem">
+              <StyledEntryCard
+                key={`${date}-${i}`}
+                role="listitem"
+                $inView={inView}
+                $delayMs={i * MOTION.stagger.default}
+              >
                 <div className="entry-num" aria-hidden="true">
                   {num}
                 </div>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import SeoHead from '@components/head';
 import Layout from '@components/layout';
 
 const StyledMainContainer = styled.main`
@@ -30,7 +30,6 @@ const StyledHomeButton = styled(Link)`
 
 const NotFoundPage = ({ location }) => (
   <Layout location={location}>
-    <Helmet title="Page Not Found" />
     <StyledMainContainer className="fillHeight">
       <StyledTitle>404</StyledTitle>
       <StyledSubtitle>Page Not Found</StyledSubtitle>
@@ -44,3 +43,19 @@ NotFoundPage.propTypes = {
 };
 
 export default NotFoundPage;
+
+export const Head = ({ location, pageContext }) => (
+  <SeoHead
+    title="Page Not Found"
+    pathname={location.pathname}
+    language={
+      (pageContext && (pageContext.language || (pageContext.i18n && pageContext.i18n.language))) ||
+      'en'
+    }
+  />
+);
+
+Head.propTypes = {
+  location: PropTypes.object.isRequired,
+  pageContext: PropTypes.object,
+};

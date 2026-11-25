@@ -2,6 +2,7 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import SeoHead from '@components/head';
 import Layout from '@components/layout';
 import Hero from '@components/sections/hero';
 import LazySection from '@components/LazySection';
@@ -31,7 +32,8 @@ const IndexPage = ({ location }) => (
         rootMargin="40px 0px"
         maxWidth={1120}
         minHeight={720}
-        heading="Projects">
+        heading="Projects"
+      >
         <LazyFeatured />
       </LazySection>
       <LazySection maxWidth={1120} minHeight={520}>
@@ -62,8 +64,23 @@ IndexPage.propTypes = {
 
 export default IndexPage;
 
+export const Head = ({ location, pageContext }) => (
+  <SeoHead
+    pathname={location.pathname}
+    language={
+      (pageContext && (pageContext.language || (pageContext.i18n && pageContext.i18n.language))) ||
+      'en'
+    }
+  />
+);
+
+Head.propTypes = {
+  location: PropTypes.object.isRequired,
+  pageContext: PropTypes.object,
+};
+
 export const query = graphql`
-  query($language: String!) {
+  query ($language: String!) {
     locales: allLocale(filter: { language: { eq: $language } }) {
       edges {
         node {

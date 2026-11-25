@@ -5,9 +5,10 @@ import styled from 'styled-components';
 const DiagramFrame = styled.div`
   width: 100%;
   height: 100%;
-  min-height: ${({ compact }) => (compact ? '200px' : '240px')};
+  min-height: ${({ $compact }) => ($compact ? '200px' : '240px')};
   background-color: #091538;
-  background-image: linear-gradient(rgba(34, 57, 111, 0.32) 1px, transparent 1px),
+  background-image:
+    linear-gradient(rgba(34, 57, 111, 0.32) 1px, transparent 1px),
     linear-gradient(90deg, rgba(34, 57, 111, 0.32) 1px, transparent 1px);
   background-size: 24px 24px;
   border-radius: 14px;
@@ -24,7 +25,7 @@ const DiagramFrame = styled.div`
   }
 
   @media (max-width: 768px) {
-    min-height: ${({ compact }) => (compact ? '180px' : '200px')};
+    min-height: ${({ $compact }) => ($compact ? '180px' : '200px')};
   }
 `;
 
@@ -144,7 +145,7 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
   };
 
   return (
-    <DiagramFrame compact={compact} role="img" aria-label={`${title} architecture diagram`}>
+    <DiagramFrame $compact={compact} role="img" aria-label={`${title} architecture diagram`}>
       <svg viewBox="0 0 640 290" preserveAspectRatio="xMidYMid meet">
         <defs>
           <marker
@@ -154,7 +155,8 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
             refY="5"
             markerWidth="6"
             markerHeight="6"
-            orient="auto-start-reverse">
+            orient="auto-start-reverse"
+          >
             <path d="M 0 1 L 10 5 L 0 9 z" fill="#FCF1D0" />
           </marker>
         </defs>
@@ -168,7 +170,8 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
           fontFamily="Calibre, Inter, sans-serif"
           fontSize="12"
           fontWeight="600"
-          letterSpacing="0.03em">
+          letterSpacing="0.03em"
+        >
           {cfg.header}
         </text>
 
@@ -189,7 +192,8 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
           fill="#FCF1D0"
           fontFamily="Calibre, Inter, sans-serif"
           fontSize="11.5"
-          fontWeight="600">
+          fontWeight="600"
+        >
           {cfg.badge}
         </text>
 
@@ -233,7 +237,8 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
               fill="#FCF1D0"
               fontFamily="Calibre, Inter, sans-serif"
               fontSize="12.5"
-              fontWeight="600">
+              fontWeight="600"
+            >
               {node.title}
             </text>
             <text
@@ -242,7 +247,8 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
               textAnchor="middle"
               fill="#98A9CC"
               fontFamily="Calibre, Inter, sans-serif"
-              fontSize="11">
+              fontSize="11"
+            >
               {node.sub}
             </text>
           </g>
@@ -256,7 +262,8 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
           textAnchor="middle"
           fill="#D5DCEB"
           fontFamily="Calibre, Inter, sans-serif"
-          fontSize="11.5">
+          fontSize="11.5"
+        >
           {cfg.footer}
         </text>
       </svg>

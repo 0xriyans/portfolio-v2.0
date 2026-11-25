@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Helmet } from 'react-helmet';
 import { Link, useI18next } from 'gatsby-plugin-react-i18next';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -66,8 +65,8 @@ const StyledSidebar = styled.aside`
     border-left: 1px solid var(--border);
     box-shadow: -12px 0 36px rgba(1, 7, 54, 0.85);
     z-index: 55;
-    transform: translateX(${props => (props.menuOpen ? 0 : 105)}%);
-    visibility: ${props => (props.menuOpen ? 'visible' : 'hidden')};
+    transform: translateX(${props => (props.$menuOpen ? 0 : 105)}%);
+    visibility: ${props => (props.$menuOpen ? 'visible' : 'hidden')};
   }
 
   nav {
@@ -165,23 +164,28 @@ const Menu = ({ tabIndex = 0 }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+    document.body.classList.toggle('blur', menuOpen);
+    return () => document.body.classList.remove('blur');
+  }, [menuOpen]);
+
   return (
     <StyledMenu ref={wrapperRef}>
-      <Helmet>
-        <body className={menuOpen ? 'blur' : ''} />
-      </Helmet>
-
       <MenuPillButton
         type="button"
         onClick={() => setMenuOpen(prev => !prev)}
         ref={buttonRef}
         tabIndex={tabIndex}
         aria-expanded={menuOpen}
-        aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+      >
         {menuOpen ? 'Close' : 'Menu'}
       </MenuPillButton>
 
-      <StyledSidebar menuOpen={menuOpen} aria-hidden={!menuOpen} tabIndex={menuOpen ? 1 : -1}>
+      <StyledSidebar $menuOpen={menuOpen} aria-hidden={!menuOpen} tabIndex={menuOpen ? 1 : -1}>
         <nav>
           <ol>
             {MOBILE_ITEMS.map(({ url, label }) => (
@@ -200,7 +204,8 @@ const Menu = ({ tabIndex = 0 }) => {
                 to={originalPath}
                 language={lng}
                 className={language === lng ? 'current' : ''}
-                onClick={() => setMenuOpen(false)}>
+                onClick={() => setMenuOpen(false)}
+              >
                 {lng.toUpperCase()}
               </Link>
             ))}
@@ -211,7 +216,8 @@ const Menu = ({ tabIndex = 0 }) => {
             href={`mailto:${email}`}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setMenuOpen(false)}>
+            onClick={() => setMenuOpen(false)}
+          >
             Hire Me
           </a>
         </nav>

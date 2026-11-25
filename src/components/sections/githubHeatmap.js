@@ -1,8 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
+import { useInViewOnce } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
 
-const GREEN_SCALE = ['#132554', '#0e4429', '#006d32', '#26a641', '#39d353'];
+const PALETTE_SCALE = [
+  'rgba(34, 57, 111, 0.28)',
+  '#22396F',
+  'rgba(252, 241, 208, 0.35)',
+  'rgba(252, 241, 208, 0.65)',
+  '#FCF1D0',
+];
 
 const StyledGithubSection = styled.section`
   max-width: 1120px;
@@ -128,6 +136,18 @@ const Cell = styled.button`
   border: 1px solid rgba(252, 241, 208, 0.08);
   border-radius: 3px;
   cursor: pointer;
+  opacity: ${({ $inView }) => ($inView ? 1 : 0)};
+  transform: scale(${({ $inView }) => ($inView ? 1 : 0.85)});
+  transition:
+    opacity 220ms ${MOTION.easing.css} ${({ $delayMs }) => $delayMs || 0}ms,
+    transform 220ms ${MOTION.easing.css} ${({ $delayMs }) => $delayMs || 0}ms,
+    border-color ${MOTION.duration.micro}ms ${MOTION.easing.css};
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+    transition: border-color ${MOTION.duration.micro}ms ${MOTION.easing.css};
+  }
 
   &:hover,
   &:focus-visible {
@@ -137,6 +157,8 @@ const Cell = styled.button`
 `;
 
 const GithubHeatmap = () => {
+  const gridRef = useRef(null);
+  const inView = useInViewOnce(gridRef, MOTION.trigger.viewport);
   const staticData = useStaticQuery(graphql`
     query {
       githubActivity {
@@ -241,16 +263,18 @@ const GithubHeatmap = () => {
                 className="profile-link"
                 href="https://github.com/0xriyans"
                 target="_blank"
-                rel="noreferrer">
+                rel="noreferrer"
+              >
                 github.com/0xriyans
               </a>
             </div>
 
-            <div className="grid-scroll">
+            <div className="grid-scroll" ref={gridRef}>
               <div
                 className="weeks-grid"
                 role="grid"
-                aria-label="0xriyans 12-month GitHub contributions">
+                aria-label="0xriyans 12-month GitHub contributions"
+              >
                 {weeks.map((week, wIdx) => (
                   <div className="week-col" key={wIdx} role="row">
                     {week.map((day, dIdx) => {
@@ -262,11 +286,15 @@ const GithubHeatmap = () => {
                       const tipText = `${day.count} contribution${day.count === 1 ? '' : 's'} on ${
                         day.date
                       }`;
+                      const maxDiag = Math.max(weeks.length + 6, 1);
+                      const delayMs = Math.round(((wIdx + dIdx) / maxDiag) * 580);
                       return (
                         <Cell
                           key={day.date}
                           type="button"
-                          style={{ backgroundColor: GREEN_SCALE[day.level] || GREEN_SCALE[0] }}
+                          $inView={inView}
+                          $delayMs={delayMs}
+                          style={{ backgroundColor: PALETTE_SCALE[day.level] || PALETTE_SCALE[0] }}
                           aria-label={tipText}
                           title={tipText}
                           onMouseEnter={() => setSelectedTip(tipText)}
@@ -286,7 +314,7 @@ const GithubHeatmap = () => {
               </div>
               <div className="legend" aria-hidden="true">
                 <span>Less</span>
-                {GREEN_SCALE.map(color => (
+                {PALETTE_SCALE.map(color => (
                   <span key={color} className="swatch" style={{ backgroundColor: color }} />
                 ))}
                 <span>More</span>

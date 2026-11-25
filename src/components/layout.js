@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
-import Head from '@components/head';
 import Nav from '@components/nav';
 import Footer from '@components/footer';
-import { theme } from '@styles';
+import { GlobalStyle, theme } from '@styles';
 
 const StyledContent = styled.div`
   display: flex;
@@ -37,26 +36,23 @@ const Layout = ({ children, location }) => {
   }, [location.hash]);
 
   return (
-    <>
-      <Head />
+    <div id="root">
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <a className="skip-to-content" href="#content">
+          Skip to Content
+        </a>
 
-      <div id="root">
-        <ThemeProvider theme={theme}>
-          <a className="skip-to-content" href="#content">
-            Skip to Content
-          </a>
+        <StyledContent>
+          <Nav isHome={isHome} />
 
-          <StyledContent>
-            <Nav isHome={isHome} />
-
-            <div id="content">
-              {children}
-              <Footer />
-            </div>
-          </StyledContent>
-        </ThemeProvider>
-      </div>
-    </>
+          <div id="content">
+            {children}
+            <Footer />
+          </div>
+        </StyledContent>
+      </ThemeProvider>
+    </div>
   );
 };
 

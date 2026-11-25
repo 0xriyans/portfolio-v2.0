@@ -2,18 +2,23 @@ import { css } from 'styled-components';
 
 const variables = css`
   :root {
-    /* Midnight Navy & Warm Cream Palette (Option A) */
-    --bg: #010736;
-    --surface: #0d1c42;
-    --surface-elevated: #142758;
-    --surface-2: #22396f;
-    --border: rgba(34, 57, 111, 0.9);
+    /* Midnight Navy & Warm Cream Palette */
+    --color-bg: #010736;
+    --color-surface: #0d1c42;
+    --color-accent: #22396f;
+    --color-cream: #fcf1d0;
+
+    --bg: var(--color-bg);
+    --surface: var(--color-surface);
+    --surface-elevated: #0d1c42;
+    --surface-2: var(--color-accent);
+    --border: var(--color-accent);
     --border-soft: rgba(252, 241, 208, 0.14);
-    --cream: #fcf1d0;
-    --on-cream: #010736;
-    --text-primary: #fcf1d0;
-    --text-secondary: #d5dceb;
-    --text-muted: #98a9cc;
+    --cream: var(--color-cream);
+    --on-cream: var(--color-bg);
+    --text-primary: var(--color-cream);
+    --text-secondary: rgba(252, 241, 208, 0.84);
+    --text-muted: rgba(252, 241, 208, 0.62);
 
     /* Compatibility tokens mapped cleanly to Option A (no neon/terminal colors) */
     --dark-navy: #010736;

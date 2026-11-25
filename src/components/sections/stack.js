@@ -1,5 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import styled, { keyframes } from 'styled-components';
+import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
 
 const CORE_CARDS = [
   {
@@ -115,6 +118,63 @@ const STACK_GROUPS = [
 
 const EXPLORING_ITEMS = ['Solidity', 'Ethereum', 'Web3.js'];
 
+const MARQUEE_ROW_1 = [
+  'Python',
+  'TypeScript',
+  'JavaScript',
+  'SQL',
+  'Spring Cloud',
+  'FastAPI',
+  'Node.js',
+  'Express',
+  'Google Gemini',
+  'Anthropic',
+  'OpenAI API',
+  'LangChain',
+  'Hugging Face',
+  'Ollama',
+  'RAG & Agents',
+];
+
+const MARQUEE_ROW_2 = [
+  'React',
+  'Next.js',
+  'Tailwind CSS',
+  'Vite',
+  'Angular',
+  'SQL Server',
+  'MongoDB',
+  'Redis',
+  'SQLModel',
+  'RabbitMQ',
+  'Couchbase',
+  'MySQL',
+  'Oracle',
+  'AWS',
+  'SonarQube',
+  'JUnit',
+  'Git',
+  'Postman',
+];
+
+const marqueeLeft = keyframes`
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+`;
+
+const marqueeRight = keyframes`
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+`;
+
 const StyledStackSection = styled.section`
   max-width: 1120px;
 
@@ -146,6 +206,52 @@ const StyledStackSection = styled.section`
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
     }
+  }
+
+  .marquee-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #010736 6%, #010736 94%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #010736 6%, #010736 94%, transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    gap: 10px;
+    will-change: transform;
+
+    &.row-1 {
+      animation: ${marqueeLeft} ${MOTION.marquee.speedPrimary} linear infinite;
+    }
+
+    &.row-2 {
+      animation: ${marqueeRight} ${MOTION.marquee.speedSecondary} linear infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+  }
+
+  .marquee-wrap:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .marquee-chip {
+    padding: 7px 15px;
+    font-size: var(--fz-xs);
+    font-weight: 500;
+    color: var(--cream);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
   }
 
   .group-card {
@@ -243,9 +349,45 @@ const FanCard = styled.div`
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 14px 28px rgba(1, 7, 54, 0.45);
-  z-index: ${({ index }) => 4 - Math.abs(index - 3) + 1};
-  transform: ${({ offsetX, offsetY, angle }) =>
-    `translate3d(${offsetX}px, ${offsetY}px, 0) rotate(${angle}deg)`};
+  z-index: ${({ $index }) => 4 - Math.abs($index - 3) + 1};
+  transform: ${({ $offsetX, $offsetY, $angle }) =>
+    `translate3d(${$offsetX}px, ${$offsetY}px, 0) rotate(${$angle}deg)`};
+  transition:
+    box-shadow ${MOTION.duration.micro}ms ${MOTION.easing.css},
+    border-color ${MOTION.duration.micro}ms ${MOTION.easing.css};
+
+  .card-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 10px);
+    transform: translateX(-50%) translateY(4px);
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity ${MOTION.duration.micro}ms ${MOTION.easing.css},
+      transform ${MOTION.duration.micro}ms ${MOTION.easing.css};
+    z-index: 20;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      z-index: 15;
+      border-color: rgba(252, 241, 208, 0.55);
+      box-shadow: 0 22px 38px rgba(1, 7, 54, 0.65);
+
+      .card-tooltip {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+  }
 
   .card-badge {
     align-self: flex-end;
@@ -299,65 +441,154 @@ const FanCard = styled.div`
   }
 `;
 
-const Stack = () => (
-  <StyledStackSection id="stack">
-    <span className="section-kicker">Core capabilities</span>
-    <h2 className="section-heading">Technology Stack</h2>
-    <p className="section-intro">
-      Core backend specialization in Java, Spring Boot / Spring Cloud, Quarkus, Apache Kafka,
-      PostgreSQL, Kubernetes, and Docker — paired with end-to-end delivery across frontend, data,
-      and applied AI workflows.
-    </p>
+const Stack = () => {
+  const fanRef = useRef(null);
+  const fanInView = useInViewOnce(fanRef, MOTION.trigger.viewport);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
-    <div className="fan-stage" aria-label="Core backend stack cards">
-      {CORE_CARDS.map((card, i) => (
-        <FanCard
-          key={card.name}
-          index={i}
-          offsetX={card.offsetX}
-          offsetY={card.offsetY}
-          angle={card.angle}>
-          <span className="card-badge">{card.badge}</span>
-          <div className="card-icon" aria-hidden="true">
-            <span>{card.glyph}</span>
-          </div>
-          <div>
-            <div className="card-name">{card.name}</div>
-            <div className="card-note">{card.note}</div>
-          </div>
-        </FanCard>
-      ))}
-    </div>
+  useEffect(() => {
+    if (!fanInView || prefersReducedMotion) {
+      return undefined;
+    }
+    if (typeof window !== 'undefined' && window.innerWidth <= 860) {
+      return undefined;
+    }
 
-    <div className="groups-grid" aria-label="Full stack capabilities by category">
-      {STACK_GROUPS.map(group => (
-        <div className="group-card" key={group.label}>
-          <h3>{group.label}</h3>
-          <div className="chip-list">
-            {group.items.map(item => (
-              <span className="chip" key={item}>
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
+    const stage = fanRef.current;
+    if (!stage) {
+      return undefined;
+    }
+    const cards = Array.from(stage.querySelectorAll('[data-fan-card]'));
+    if (!cards.length) {
+      return undefined;
+    }
 
-    <div className="exploring-box" aria-label="Currently exploring technologies">
-      <div className="exploring-meta">
-        <span className="exploring-tag">Exploring (not production mastered)</span>
-        <p>Currently exploring: autonomous AI agent workflows &amp; Web3 fundamentals.</p>
-      </div>
-      <div className="exploring-chips">
-        {EXPLORING_ITEMS.map(item => (
-          <span className="chip" key={item}>
-            {item}
-          </span>
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        cards,
+        { x: 0, y: 0, rotation: 0 },
+        {
+          x: i => CORE_CARDS[i].offsetX,
+          y: i => CORE_CARDS[i].offsetY,
+          rotation: i => CORE_CARDS[i].angle,
+          duration: MOTION.duration.fan / 1000,
+          stagger: MOTION.stagger.fan / 1000,
+          ease: MOTION.easing.gsap,
+        },
+      );
+    }, stage);
+
+    return () => ctx.revert();
+  }, [fanInView, prefersReducedMotion]);
+
+  return (
+    <StyledStackSection id="stack">
+      <span className="section-kicker">Core capabilities</span>
+      <h2 className="section-heading">Technology Stack</h2>
+      <p className="section-intro">
+        Core backend specialization in Java, Spring Boot / Spring Cloud, Quarkus, Apache Kafka,
+        PostgreSQL, Kubernetes, and Docker — paired with end-to-end delivery across frontend, data,
+        and applied AI workflows.
+      </p>
+
+      <div className="fan-stage" ref={fanRef} aria-label="Core backend stack cards">
+        {CORE_CARDS.map((card, i) => (
+          <FanCard
+            key={card.name}
+            data-fan-card
+            $index={i}
+            $offsetX={card.offsetX}
+            $offsetY={card.offsetY}
+            $angle={card.angle}
+            onMouseEnter={e => {
+              if (
+                !prefersReducedMotion &&
+                typeof window !== 'undefined' &&
+                window.innerWidth > 860
+              ) {
+                gsap.to(e.currentTarget, {
+                  y: card.offsetY - MOTION.rise.fanHover,
+                  duration: MOTION.duration.micro / 1000,
+                  ease: MOTION.easing.gsap,
+                });
+              }
+            }}
+            onMouseLeave={e => {
+              if (
+                !prefersReducedMotion &&
+                typeof window !== 'undefined' &&
+                window.innerWidth > 860
+              ) {
+                gsap.to(e.currentTarget, {
+                  y: card.offsetY,
+                  duration: MOTION.duration.micro / 1000,
+                  ease: MOTION.easing.gsap,
+                });
+              }
+            }}
+          >
+            <span className="card-tooltip">
+              {card.name} — {card.note}
+            </span>
+            <span className="card-badge">{card.badge}</span>
+            <div className="card-icon" aria-hidden="true">
+              <span>{card.glyph}</span>
+            </div>
+            <div>
+              <div className="card-name">{card.name}</div>
+              <div className="card-note">{card.note}</div>
+            </div>
+          </FanCard>
         ))}
       </div>
-    </div>
-  </StyledStackSection>
-);
+
+      <div className="marquee-wrap" aria-label="Profile technologies marquee">
+        <div className="marquee-track row-1">
+          {[...MARQUEE_ROW_1, ...MARQUEE_ROW_1].map((item, idx) => (
+            <span className="marquee-chip" key={`r1-${idx}-${item}`}>
+              {item}
+            </span>
+          ))}
+        </div>
+        <div className="marquee-track row-2">
+          {[...MARQUEE_ROW_2, ...MARQUEE_ROW_2].map((item, idx) => (
+            <span className="marquee-chip" key={`r2-${idx}-${item}`}>
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="groups-grid" aria-label="Full stack capabilities by category">
+        {STACK_GROUPS.map(group => (
+          <div className="group-card" key={group.label}>
+            <h3>{group.label}</h3>
+            <div className="chip-list">
+              {group.items.map(item => (
+                <span className="chip" key={item}>
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="exploring-box" aria-label="Currently exploring technologies">
+        <div className="exploring-meta">
+          <span className="exploring-tag">Exploring (not production mastered)</span>
+          <p>Currently exploring: autonomous AI agent workflows &amp; Web3 fundamentals.</p>
+        </div>
+        <div className="exploring-chips">
+          {EXPLORING_ITEMS.map(item => (
+            <span className="chip" key={item}>
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    </StyledStackSection>
+  );
+};
 
 export default Stack;

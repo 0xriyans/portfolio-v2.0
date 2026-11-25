@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
 import { email, freelance, socialMedia } from '@config';
 import { Icon } from '@components/icons';
+import { usePrefersReducedMotion } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
+
+// Configurable form backend endpoint (set your Formspree / API endpoint when ready)
+const CONTACT_ENDPOINT = '';
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const StyledContactSection = styled.section`
   max-width: 1120px;
@@ -47,15 +53,24 @@ const ContactCard = styled.a`
   gap: 14px;
   padding: 24px 26px;
   border-radius: var(--radius-card);
-  border: 1px solid ${({ active }) => (active ? 'var(--cream)' : 'var(--border)')};
-  background: ${({ active }) => (active ? 'var(--cream)' : 'var(--surface)')};
-  color: ${({ active }) => (active ? 'var(--on-cream)' : 'var(--cream)')};
+  border: 1px solid ${({ $active }) => ($active ? 'var(--cream)' : 'var(--border)')};
+  background: ${({ $active }) => ($active ? 'var(--cream)' : 'var(--surface)')};
+  color: ${({ $active }) => ($active ? 'var(--on-cream)' : 'var(--cream)')};
   text-decoration: none;
+  transition:
+    background ${MOTION.duration.rotatorStep}ms ${MOTION.easing.css},
+    color ${MOTION.duration.rotatorStep}ms ${MOTION.easing.css},
+    border-color ${MOTION.duration.rotatorStep}ms ${MOTION.easing.css},
+    transform ${MOTION.duration.rotatorStep}ms ${MOTION.easing.css};
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 
   &:hover,
   &:focus-visible {
     border-color: var(--cream);
-    color: ${({ active }) => (active ? 'var(--on-cream)' : 'var(--cream)')};
+    color: ${({ $active }) => ($active ? 'var(--on-cream)' : 'var(--cream)')};
   }
 
   .card-top {
@@ -69,7 +84,7 @@ const ContactCard = styled.a`
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: ${({ active }) => (active ? '#22396F' : 'var(--text-muted)')};
+    color: ${({ $active }) => ($active ? '#22396F' : 'var(--text-muted)')};
   }
 
   .card-icon {
@@ -85,7 +100,7 @@ const ContactCard = styled.a`
 
   .card-sub {
     font-size: var(--fz-sm);
-    color: ${({ active }) => (active ? '#0D1C42' : 'var(--text-secondary)')};
+    color: ${({ $active }) => ($active ? '#0D1C42' : 'var(--text-secondary)')};
     word-break: break-word;
   }
 `;
@@ -114,7 +129,7 @@ const FreelanceBar = styled.div`
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #4ade80;
+      background: var(--cream);
     }
   }
 
@@ -295,21 +310,82 @@ const Contact = () => {
   ];
 
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
   const [senderName, setSenderName] = useState('');
   const [senderEmail, setSenderEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [submitState, setSubmitState] = useState('idle');
   const [feedback, setFeedback] = useState('');
 
-  const handleSubmit = e => {
+  useEffect(() => {
+    if (paused || prefersReducedMotion) {
+      return undefined;
+    }
+    const timer = setInterval(() => {
+      setSelectedIdx(prev => (prev + 1) % cards.length);
+    }, MOTION.duration.rotatorInterval);
+    return () => clearInterval(timer);
+  }, [paused, prefersReducedMotion, cards.length]);
+
+  const handleSubmit = async e => {
     e.preventDefault();
-    const subject = encodeURIComponent(
-      `Portfolio Inquiry${senderName ? ` from ${senderName}` : ''}`,
-    );
-    const body = encodeURIComponent(
-      `Name: ${senderName || '-'}\nEmail: ${senderEmail || '-'}\n\n${message}`,
-    );
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    setFeedback('Your email client has been opened.');
+    const trimmedName = senderName.trim();
+    const trimmedEmail = senderEmail.trim();
+    const trimmedMessage = message.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
+      setSubmitState('error');
+      setFeedback('Please fill in your name, email, and message.');
+      return;
+    }
+
+    if (!EMAIL_RE.test(trimmedEmail)) {
+      setSubmitState('error');
+      setFeedback('Please enter a valid email address.');
+      return;
+    }
+
+    if (!CONTACT_ENDPOINT) {
+      setSubmitState('error');
+      setFeedback(
+        `Form backend is not configured yet. Your message is preserved — please email ${email} directly.`,
+      );
+      return;
+    }
+
+    setSubmitState('sending');
+    setFeedback('Sending your message...');
+
+    try {
+      const res = await fetch(CONTACT_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: trimmedName,
+          email: trimmedEmail,
+          message: trimmedMessage,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Request failed (${res.status})`);
+      }
+
+      setSubmitState('success');
+      setFeedback('Message sent successfully. Thank you for reaching out!');
+      setSenderName('');
+      setSenderEmail('');
+      setMessage('');
+    } catch (err) {
+      setSubmitState('error');
+      setFeedback(
+        `Could not deliver message (${err.message}). Your text is preserved — please email ${email} directly.`,
+      );
+    }
   };
 
   return (
@@ -320,15 +396,21 @@ const Contact = () => {
         <p className="contact-intro">{t('contact_intro')}</p>
       </div>
 
-      <CardsGrid>
+      <CardsGrid
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
+      >
         {cards.map((card, idx) => (
           <ContactCard
             key={card.key}
             href={card.href}
-            active={selectedIdx === idx}
+            $active={selectedIdx === idx}
             target={card.key === 'email' ? undefined : '_blank'}
             rel={card.key === 'email' ? undefined : 'noreferrer'}
-            onFocus={() => setSelectedIdx(idx)}>
+            onFocus={() => setSelectedIdx(idx)}
+          >
             <div className="card-top">
               <span className="card-kicker">{card.kicker}</span>
               <span className="card-icon" aria-hidden="true">
@@ -343,13 +425,43 @@ const Contact = () => {
         ))}
       </CardsGrid>
 
+      <div
+        role="tablist"
+        aria-label="Contact card rotator controls"
+        style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 14 }}
+      >
+        {cards.map((card, idx) => (
+          <button
+            key={card.key}
+            type="button"
+            role="tab"
+            aria-selected={selectedIdx === idx}
+            aria-label={`Highlight ${card.title}`}
+            onClick={() => setSelectedIdx(idx)}
+            style={{
+              width: selectedIdx === idx ? 22 : 8,
+              height: 8,
+              borderRadius: 9999,
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              background: selectedIdx === idx ? 'var(--cream)' : 'var(--color-accent)',
+              transition: 'all 200ms cubic-bezier(0.22, 1, 0.36, 1)',
+            }}
+          />
+        ))}
+      </div>
+
       <FreelanceBar>
         <div className="freelance-status">
           <span className="dot" aria-hidden="true" />
           <span>{freelance.status}</span>
         </div>
 
-        <div className="freelance-links" aria-label="Freelance platforms and X profile">
+        <div className="freelance-links" aria-label="Freelance platforms, CV, and X profile">
+          <a href="/Riyan%20Sugiarto%20Resume.pdf" download="Riyan Sugiarto Resume.pdf">
+            <span>Download CV (PDF)</span>
+          </a>
           <a href={freelance.fiverr} target="_blank" rel="noreferrer">
             <Icon name="Fiverr" />
             <span>Fiverr</span>
@@ -378,6 +490,7 @@ const Contact = () => {
             <input
               id="contact-name"
               type="text"
+              required
               placeholder="Riyan / Your name"
               value={senderName}
               onChange={e => setSenderName(e.target.value)}
@@ -389,6 +502,7 @@ const Contact = () => {
             <input
               id="contact-email"
               type="email"
+              required
               placeholder="you@domain.com"
               value={senderEmail}
               onChange={e => setSenderEmail(e.target.value)}
@@ -408,11 +522,19 @@ const Contact = () => {
         </div>
 
         <div className="form-actions">
-          <span className="status-note" aria-live="polite">
-            {feedback || `Direct email: ${email}`}
+          <span
+            className="status-note"
+            role={submitState === 'error' ? 'alert' : 'status'}
+            aria-live="polite"
+          >
+            {feedback || (
+              <>
+                Fallback: <a href={`mailto:${email}`}>{email}</a>
+              </>
+            )}
           </span>
-          <button type="submit" className="submit-btn">
-            Send Message
+          <button type="submit" className="submit-btn" disabled={submitState === 'sending'}>
+            {submitState === 'sending' ? 'Sending...' : 'Send Message'}
           </button>
         </div>
       </ContactFormCard>

@@ -1,9 +1,9 @@
 import React from 'react';
 import { graphql, Link } from 'gatsby';
 import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
 import { useI18next } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
+import SeoHead from '@components/head';
 import Layout from '@components/layout';
 import { Icon } from '@components/icons';
 
@@ -136,8 +136,6 @@ const ArchivePage = ({ location, data }) => {
 
   return (
     <Layout location={location}>
-      <Helmet title="All Production Systems" />
-
       <main>
         <StyledHeader>
           <Link className="back-link" to="/#projects">
@@ -164,16 +162,8 @@ const ArchivePage = ({ location, data }) => {
             <tbody>
               {projects.length > 0 &&
                 projects.map(({ node }, i) => {
-                  const {
-                    date,
-                    github,
-                    external,
-                    ios,
-                    android,
-                    title,
-                    tech,
-                    company,
-                  } = node.frontmatter;
+                  const { date, github, external, ios, android, title, tech, company } =
+                    node.frontmatter;
                   return (
                     <tr key={i}>
                       <td className="year">
@@ -206,7 +196,8 @@ const ArchivePage = ({ location, data }) => {
                               href={external}
                               aria-label="External Link"
                               target="_blank"
-                              rel="noreferrer">
+                              rel="noreferrer"
+                            >
                               <Icon name="External" />
                             </a>
                           )}
@@ -215,7 +206,8 @@ const ArchivePage = ({ location, data }) => {
                               href={github}
                               aria-label="GitHub Link"
                               target="_blank"
-                              rel="noreferrer">
+                              rel="noreferrer"
+                            >
                               <Icon name="GitHub" />
                             </a>
                           )}
@@ -224,7 +216,8 @@ const ArchivePage = ({ location, data }) => {
                               href={ios}
                               aria-label="Apple App Store Link"
                               target="_blank"
-                              rel="noreferrer">
+                              rel="noreferrer"
+                            >
                               <Icon name="AppStore" />
                             </a>
                           )}
@@ -233,7 +226,8 @@ const ArchivePage = ({ location, data }) => {
                               href={android}
                               aria-label="Google Play Store Link"
                               target="_blank"
-                              rel="noreferrer">
+                              rel="noreferrer"
+                            >
                               <Icon name="PlayStore" />
                             </a>
                           )}
@@ -257,6 +251,22 @@ ArchivePage.propTypes = {
 
 export default ArchivePage;
 
+export const Head = ({ location, pageContext }) => (
+  <SeoHead
+    title="All Production Systems"
+    pathname={location.pathname}
+    language={
+      (pageContext && (pageContext.language || (pageContext.i18n && pageContext.i18n.language))) ||
+      'en'
+    }
+  />
+);
+
+Head.propTypes = {
+  location: PropTypes.object.isRequired,
+  pageContext: PropTypes.object,
+};
+
 export const pageQuery = graphql`
   {
     allMarkdownRemark(
@@ -264,7 +274,7 @@ export const pageQuery = graphql`
         fileAbsolutePath: { regex: "/projects|featured/" }
         frontmatter: { showInProjects: { ne: false } }
       }
-      sort: { fields: [frontmatter___date], order: DESC }
+      sort: { frontmatter: { date: DESC } }
     ) {
       edges {
         node {

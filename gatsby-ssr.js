@@ -1,19 +1,5 @@
 /**
- * Remove Gatsby's eager script/fetch preload links so the hero font and HTML
- * win priority before below-the-fold chunks.
+ * Implement Gatsby's SSR (Server Side Rendering) APIs in this file.
+ *
+ * See: https://www.gatsbyjs.org/docs/ssr-apis/
  */
-export const onPreRenderHTML = ({ getHeadComponents, replaceHeadComponents }) => {
-  const headComponents = getHeadComponents();
-  replaceHeadComponents(
-    headComponents.filter(
-      el =>
-        !(
-          el &&
-          el.type === 'link' &&
-          el.props &&
-          el.props.rel === 'preload' &&
-          (el.props.as === 'script' || el.props.as === 'fetch')
-        ),
-    ),
-  );
-};

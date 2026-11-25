@@ -1,5 +1,3 @@
-const config = require('./src/config');
-
 module.exports = {
   siteMetadata: {
     title: 'Riyan Sugiarto — Software Engineer',
@@ -10,7 +8,6 @@ module.exports = {
     twitterUsername: '@0xriyans',
   },
   plugins: [
-    `gatsby-plugin-react-helmet`,
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
@@ -94,7 +91,6 @@ module.exports = {
               maxWidth: 700,
               linkImagesToOriginal: true,
               quality: 90,
-              tracedSVG: { color: config.colors.yellow },
             },
           },
           {

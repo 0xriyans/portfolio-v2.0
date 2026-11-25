@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import { useTranslation } from 'gatsby-plugin-react-i18next';
+import gsap from 'gsap';
 import styled from 'styled-components';
 import { email, freelance, socialMedia } from '@config';
 import { Icon } from '@components/icons';
+import { usePrefersReducedMotion } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
 
 const StyledHeroSection = styled.section`
   min-height: 88vh;
@@ -50,8 +53,8 @@ const StyledHeroSection = styled.section`
     gap: 8px;
     padding: 7px 14px;
     border-radius: var(--radius-pill);
-    background: rgba(252, 241, 208, 0.12);
-    border: 1px solid rgba(252, 241, 208, 0.28);
+    background: var(--color-accent);
+    border: 1px solid var(--color-accent);
     color: var(--cream);
     font-size: var(--fz-xs);
     font-weight: 600;
@@ -60,7 +63,7 @@ const StyledHeroSection = styled.section`
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: #4ade80;
+      background: var(--cream);
     }
 
     &:hover,
@@ -239,6 +242,40 @@ const StyledHeroSection = styled.section`
 
 const Hero = () => {
   const { t } = useTranslation();
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const portraitRef = useRef(null);
+  const nameRef = useRef(null);
+  const headlineRef = useRef(null);
+  const roleRef = useRef(null);
+  const ctaRef = useRef(null);
+
+  useEffect(() => {
+    const targets = [
+      portraitRef.current,
+      nameRef.current,
+      headlineRef.current,
+      roleRef.current,
+      ctaRef.current,
+    ].filter(Boolean);
+
+    if (!targets.length || prefersReducedMotion) {
+      return undefined;
+    }
+
+    const ctx = gsap.context(() => {
+      gsap.from(targets, {
+        opacity: 0,
+        y: MOTION.rise.default,
+        filter: `blur(${MOTION.blur.start}px)`,
+        duration: 0.56,
+        stagger: MOTION.stagger.default / 1000,
+        ease: MOTION.easing.gsap,
+        clearProps: 'transform,opacity,filter',
+      });
+    });
+
+    return () => ctx.revert();
+  }, [prefersReducedMotion]);
 
   return (
     <StyledHeroSection id="hero">
@@ -248,26 +285,40 @@ const Hero = () => {
             <a
               className="status-pill"
               href={`mailto:${email}`}
-              aria-label={`${freelance.status} via ${email}`}>
+              aria-label={`${freelance.status} via ${email}`}
+            >
               <span className="dot" aria-hidden="true" />
               {freelance.status}
             </a>
-            <span className="role-pill">Software Engineer — Jakarta, Indonesia</span>
+            <span className="role-pill" ref={roleRef}>
+              Software Engineer — Jakarta, Indonesia
+            </span>
           </div>
 
-          <p className="hero-name">Riyan Sugiarto</p>
+          <p className="hero-name" ref={nameRef}>
+            Riyan Sugiarto
+          </p>
 
-          <h1 className="hero-headline">{t('hero_headline')}</h1>
+          <h1 className="hero-headline" ref={headlineRef}>
+            {t('hero_headline')}
+          </h1>
 
           <p className="hero-summary">{t('hero_desc')}</p>
 
-          <div className="hero-actions">
+          <div className="hero-actions" ref={ctaRef}>
             <Link className="cta-primary" to="/#projects">
               Explore Selected Work
             </Link>
             <Link className="cta-secondary" to="/#contact">
               Get in Touch
             </Link>
+            <a
+              className="cta-secondary"
+              href="/Riyan%20Sugiarto%20Resume.pdf"
+              download="Riyan Sugiarto Resume.pdf"
+            >
+              Download CV
+            </a>
           </div>
 
           <ul className="social-row" aria-label="Social and freelance links">
@@ -285,7 +336,8 @@ const Hero = () => {
                       href={item.url}
                       aria-label={item.label || item.name}
                       target="_blank"
-                      rel="noopener noreferrer">
+                      rel="noopener noreferrer"
+                    >
                       <Icon name={item.name} />
                       <span>
                         {item.label || (item.name === 'Linkedin' ? 'LinkedIn' : item.name)}
@@ -298,7 +350,7 @@ const Hero = () => {
           </ul>
         </div>
 
-        <aside className="hero-portrait-card" aria-label="Profile portrait">
+        <aside className="hero-portrait-card" ref={portraitRef} aria-label="Profile portrait">
           <div className="portrait-frame">
             <StaticImage
               className="portrait-img"

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link, useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
 import { Icon } from '@components/icons';
+import { useInViewOnce } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
 import ProjectMedia from '../ProjectMedia';
 
 const StyledFeaturedSection = styled.section`
@@ -60,6 +62,33 @@ const StyledProject = styled.li`
   display: flex;
   flex-direction: column;
   box-shadow: 0 12px 32px rgba(1, 7, 54, 0.38);
+  opacity: ${({ $inView }) => ($inView ? 1 : 0)};
+  transform: translateY(${({ $inView }) => ($inView ? 0 : MOTION.rise.projects)}px);
+  transition:
+    opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${({ $delayMs }) => $delayMs || 0}ms,
+    transform ${MOTION.duration.entrance}ms ${MOTION.easing.css}
+      ${({ $delayMs }) => $delayMs || 0}ms,
+    border-color ${MOTION.duration.micro}ms ${MOTION.easing.css},
+    box-shadow ${MOTION.duration.micro}ms ${MOTION.easing.css};
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-${MOTION.rise.hover}px);
+      border-color: rgba(252, 241, 208, 0.45);
+      box-shadow: 0 18px 40px rgba(1, 7, 54, 0.58);
+      transition-delay: 0ms;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+    transition: border-color ${MOTION.duration.micro}ms ${MOTION.easing.css};
+
+    &:hover {
+      transform: none;
+    }
+  }
 
   @media (min-width: 769px) {
     &:nth-child(even) {
@@ -183,7 +212,7 @@ const Featured = () => {
           fileAbsolutePath: { regex: "/featured/" }
           frontmatter: { showInProjects: { ne: false } }
         }
-        sort: { fields: [frontmatter___date], order: ASC }
+        sort: { frontmatter: { date: ASC } }
       ) {
         edges {
           node {
@@ -219,6 +248,8 @@ const Featured = () => {
 
   const { language } = useI18next();
   const { t } = useTranslation();
+  const gridRef = useRef(null);
+  const inView = useInViewOnce(gridRef, MOTION.trigger.viewport);
 
   const featuredProjects = data.featured.edges.filter(
     ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
@@ -241,7 +272,7 @@ const Featured = () => {
         </Link>
       </div>
 
-      <StyledProjectsGrid>
+      <StyledProjectsGrid ref={gridRef}>
         {featuredProjects &&
           featuredProjects.map(({ node }, i) => {
             const { frontmatter, html } = node;
@@ -250,7 +281,7 @@ const Featured = () => {
             const media = <ProjectMedia frontmatter={frontmatter} compact />;
 
             return (
-              <StyledProject key={i}>
+              <StyledProject key={i} $inView={inView} $delayMs={i * MOTION.stagger.projects}>
                 <div className="project-media">
                   {href ? (
                     <a href={href} target="_blank" rel="noreferrer" aria-label={title}>
@@ -272,7 +303,8 @@ const Featured = () => {
                               href={github}
                               aria-label="GitHub Link"
                               target="_blank"
-                              rel="noreferrer">
+                              rel="noreferrer"
+                            >
                               <Icon name="GitHub" />
                             </a>
                           )}
@@ -281,7 +313,8 @@ const Featured = () => {
                               href={external}
                               aria-label="External Link"
                               target="_blank"
-                              rel="noreferrer">
+                              rel="noreferrer"
+                            >
                               <Icon name="External" />
                             </a>
                           )}

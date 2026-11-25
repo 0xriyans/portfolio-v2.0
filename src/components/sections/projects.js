@@ -151,7 +151,7 @@ const Projects = () => {
           fileAbsolutePath: { regex: "/projects/" }
           frontmatter: { showInProjects: { ne: false } }
         }
-        sort: { fields: [frontmatter___date], order: DESC }
+        sort: { frontmatter: { date: DESC } }
       ) {
         edges {
           node {
@@ -229,7 +229,8 @@ const Projects = () => {
                               href={github}
                               aria-label="GitHub Link"
                               target="_blank"
-                              rel="noreferrer">
+                              rel="noreferrer"
+                            >
                               <Icon name="GitHub" />
                             </a>
                           )}
@@ -238,7 +239,8 @@ const Projects = () => {
                               href={external}
                               aria-label="External Link"
                               target="_blank"
-                              rel="noreferrer">
+                              rel="noreferrer"
+                            >
                               <Icon name="External" />
                             </a>
                           )}

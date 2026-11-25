@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { email } from '@config';
 import Menu from '@components/menu';
+import { MOTION } from '@styles/motionTokens';
 
 const SECTION_TARGETS = [
   { id: 'hero', label: 'Home', url: '/#hero' },
@@ -18,10 +19,20 @@ const PillWrapper = styled.header`
   position: fixed;
   top: 18px;
   left: 50%;
-  transform: translate3d(-50%, 0, 0);
+  transform: ${({ $visible }) =>
+    $visible ? 'translate3d(-50%, 0, 0)' : 'translate3d(-50%, -16px, 0)'};
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  pointer-events: ${({ $visible }) => ($visible ? 'auto' : 'none')};
+  transition:
+    transform ${MOTION.duration.pill}ms ${MOTION.easing.css},
+    opacity ${MOTION.duration.pill}ms ${MOTION.easing.css};
   z-index: 50;
-  display: ${({ visible }) => (visible ? 'block' : 'none')};
   max-width: calc(100vw - 24px);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    transform: translate3d(-50%, 0, 0);
+  }
 `;
 
 const PillNav = styled.nav`
@@ -54,17 +65,38 @@ const NavItems = styled.div`
 
   a {
     position: relative;
-    padding: 8px 13px;
+    padding: 8px 13px 11px;
     font-size: var(--fz-sm);
     font-weight: 500;
     color: var(--text-secondary);
     text-decoration: none;
     white-space: nowrap;
     border-radius: var(--radius-pill);
+    transition: color ${MOTION.duration.micro}ms ${MOTION.easing.css};
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--cream);
+      transform: translateX(-50%) scale(0);
+      opacity: 0;
+      transition:
+        transform ${MOTION.duration.scrollSpy}ms ${MOTION.easing.css},
+        opacity ${MOTION.duration.scrollSpy}ms ${MOTION.easing.css};
+    }
 
     &.active {
       color: var(--cream);
-      background: rgba(34, 57, 111, 0.65);
+
+      &::after {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+      }
     }
 
     &:hover,
@@ -163,7 +195,7 @@ const Nav = ({ isHome }) => {
   }, [isHome]);
 
   return (
-    <PillWrapper visible={visible} aria-hidden={!visible}>
+    <PillWrapper $visible={visible} aria-hidden={!visible}>
       <PillNav aria-label="Primary navigation">
         <NavItems>
           {SECTION_TARGETS.map(item => (
@@ -171,7 +203,8 @@ const Nav = ({ isHome }) => {
               key={item.id}
               to={item.url}
               className={isHome && activeId === item.id ? 'active' : ''}
-              onClick={() => setActiveId(item.id)}>
+              onClick={() => setActiveId(item.id)}
+            >
               {item.label}
             </Link>
           ))}
@@ -189,7 +222,8 @@ const Nav = ({ isHome }) => {
               key={lng}
               to={originalPath}
               language={lng}
-              className={language === lng ? 'current' : ''}>
+              className={language === lng ? 'current' : ''}
+            >
               {lng.toUpperCase()}
             </Link>
           ))}

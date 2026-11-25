@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
+import CountUp from '@components/CountUp';
+import { useInViewOnce } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
 
 const StyledAboutSection = styled.section`
   max-width: 1120px;
@@ -69,6 +72,21 @@ const AboutCard = styled.div`
     pointer-events: none;
     overflow: visible;
     z-index: -1;
+
+    path,
+    ellipse {
+      stroke-dasharray: 420;
+      stroke-dashoffset: ${({ $inView }) => ($inView ? 0 : 420)};
+      transition: stroke-dashoffset ${MOTION.duration.annotation}ms ${MOTION.easing.css};
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      path,
+      ellipse {
+        stroke-dashoffset: 0;
+        transition: none;
+      }
+    }
   }
 
   .exploring-note {
@@ -123,117 +141,129 @@ const VerifiedMetricsGrid = styled.div`
   }
 `;
 
-const About = () => (
-  <StyledAboutSection id="about">
-    <span className="section-kicker">Background</span>
-    <h2 className="section-heading">About</h2>
+const About = () => {
+  const aboutRef = useRef(null);
+  const inView = useInViewOnce(aboutRef, MOTION.trigger.viewport);
 
-    <div className="inner">
-      <AboutCard>
-        <p>
-          I&apos;m <strong>Riyan Sugiarto</strong>, a{' '}
-          <span className="annot-underline">
-            Software Engineer
-            <svg
-              className="annot-svg"
-              viewBox="0 0 180 28"
-              preserveAspectRatio="none"
-              aria-hidden="true">
-              <path
-                d="M 2 26 Q 90 23 178 26"
-                fill="none"
-                stroke="#60A5FA"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
-          </span>{' '}
-          based in Jakarta, Indonesia with{' '}
-          <span className="annot-circle">
-            6+ years
-            <svg
-              className="annot-svg"
-              viewBox="0 0 120 40"
-              preserveAspectRatio="none"
-              aria-hidden="true">
-              <ellipse
-                cx="60"
-                cy="20"
-                rx="56"
-                ry="16"
-                fill="none"
-                stroke="#FB923C"
-                strokeWidth="2.5"
-              />
-            </svg>
-          </span>{' '}
-          of experience building enterprise platforms across insurance, credit guarantees, and
-          telecom.
-        </p>
+  return (
+    <StyledAboutSection id="about" ref={aboutRef}>
+      <span className="section-kicker">Background</span>
+      <h2 className="section-heading">About</h2>
 
-        <p>
-          I design{' '}
-          <span className="annot-highlight">
-            backend systems, APIs, and databases
-            <svg
-              className="annot-svg"
-              viewBox="0 0 260 28"
-              preserveAspectRatio="none"
-              aria-hidden="true">
-              <path
-                d="M 0 14 L 260 14"
-                fill="none"
-                stroke="rgba(250, 204, 21, 0.22)"
-                strokeWidth="24"
-                strokeLinecap="round"
-              />
-            </svg>
-          </span>{' '}
-          with <strong>Java</strong>, <strong>Spring Boot / Spring Cloud</strong>,{' '}
-          <strong>Quarkus</strong>, <strong>Apache Kafka</strong>, and <strong>PostgreSQL</strong>,
-          and also ship frontend UIs and applied AI workflows end-to-end so features actually ship.
-        </p>
+      <div className="inner">
+        <AboutCard $inView={inView}>
+          <p>
+            I&apos;m <strong>Riyan Sugiarto</strong>, a{' '}
+            <span className="annot-underline">
+              Software Engineer
+              <svg
+                className="annot-svg"
+                viewBox="0 0 180 28"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M 2 26 Q 90 23 178 26"
+                  fill="none"
+                  stroke="#FCF1D0"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>{' '}
+            based in Jakarta, Indonesia with{' '}
+            <span className="annot-circle">
+              6+ years
+              <svg
+                className="annot-svg"
+                viewBox="0 0 120 40"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <ellipse
+                  cx="60"
+                  cy="20"
+                  rx="56"
+                  ry="16"
+                  fill="none"
+                  stroke="#FCF1D0"
+                  strokeWidth="2.5"
+                />
+              </svg>
+            </span>{' '}
+            of experience building enterprise platforms across insurance, credit guarantees, and
+            telecom.
+          </p>
 
-        <p>
-          Strong believer in maintainable code, concurrency safety, and pragmatic trade-offs over
-          unnecessary infrastructure complexity.
-        </p>
+          <p>
+            I design{' '}
+            <span className="annot-highlight">
+              backend systems, APIs, and databases
+              <svg
+                className="annot-svg"
+                viewBox="0 0 260 28"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M 0 14 L 260 14"
+                  fill="none"
+                  stroke="rgba(34, 57, 111, 0.85)"
+                  strokeWidth="24"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>{' '}
+            with <strong>Java</strong>, <strong>Spring Boot / Spring Cloud</strong>,{' '}
+            <strong>Quarkus</strong>, <strong>Apache Kafka</strong>, and <strong>PostgreSQL</strong>
+            , and also ship frontend UIs and applied AI workflows end-to-end so features actually
+            ship.
+          </p>
 
-        <div className="exploring-note">
-          <strong>Currently exploring:</strong> autonomous AI agent workflows &amp; Web3
-          fundamentals (Solidity, Ethereum, Web3.js).
-        </div>
-      </AboutCard>
+          <p>
+            Strong believer in maintainable code, concurrency safety, and pragmatic trade-offs over
+            unnecessary infrastructure complexity.
+          </p>
 
-      <VerifiedMetricsGrid aria-label="Verified production engineering metrics">
-        <div className="metric-card">
-          <div className="metric-label">Pruhub · Prudential</div>
-          <div className="metric-value">&gt;1.5 GB &rarr; &lt;300 MB (60%+)</div>
-          <div className="metric-desc">
-            Container memory reduction migrating Apache Flink pipelines to Quarkus microservices.
+          <div className="exploring-note">
+            <strong>Currently exploring:</strong> autonomous AI agent workflows &amp; Web3
+            fundamentals (Solidity, Ethereum, Web3.js).
           </div>
-        </div>
+        </AboutCard>
 
-        <div className="metric-card">
-          <div className="metric-label">Pruhub · Withdrawals</div>
-          <div className="metric-value">2 Days &rarr; Real-Time</div>
-          <div className="metric-desc">
-            Zero-loss Apache Kafka with manual offset commits and PostgreSQL ACID ledger.
+        <VerifiedMetricsGrid aria-label="Verified production engineering metrics">
+          <div className="metric-card">
+            <div className="metric-label">Pruhub · Prudential</div>
+            <div className="metric-value">
+              &gt;1.5 GB &rarr; &lt;300 MB (
+              <CountUp to={60} suffix="%+" active={inView} minCh={3} />)
+            </div>
+            <div className="metric-desc">
+              Container memory reduction migrating Apache Flink pipelines to Quarkus microservices.
+            </div>
           </div>
-        </div>
 
-        <div className="metric-card">
-          <div className="metric-label">Portal Bisnis · Askrindo</div>
-          <div className="metric-value">Redis + FOR UPDATE Lock</div>
-          <div className="metric-desc">
-            Midtrans payment concurrency guarded via{' '}
-            <code>SET lock:pay:&#123;order_id&#125; NX EX 30</code> + DB pessimistic lock with
-            idempotent HTTP <code>200</code>.
+          <div className="metric-card">
+            <div className="metric-label">Pruhub · Withdrawals</div>
+            <div className="metric-value">2 Days &rarr; Real-Time</div>
+            <div className="metric-desc">
+              Zero-loss Apache Kafka with manual offset commits and PostgreSQL ACID ledger.
+            </div>
           </div>
-        </div>
-      </VerifiedMetricsGrid>
-    </div>
-  </StyledAboutSection>
-);
+
+          <div className="metric-card">
+            <div className="metric-label">Portal Bisnis · Askrindo</div>
+            <div className="metric-value">Redis + FOR UPDATE Lock</div>
+            <div className="metric-desc">
+              Midtrans payment concurrency guarded via{' '}
+              <code>SET lock:pay:&#123;order_id&#125; NX EX 30</code> + DB pessimistic lock with
+              idempotent HTTP <code>200</code>.
+            </div>
+          </div>
+        </VerifiedMetricsGrid>
+      </div>
+    </StyledAboutSection>
+  );
+};
 
 export default About;
