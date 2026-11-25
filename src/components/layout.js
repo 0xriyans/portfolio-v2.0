@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
-import {
-  Head,
-  Loader,
-  Nav,
-  Social,
-  Email,
-  Footer,
-  MatrixRain,
-  ScrollProgress,
-} from '@components';
+import { Head, Loader, Nav, Social, Email, Footer, MatrixRain, ScrollProgress } from '@components';
+import { usePrefersReducedMotion } from '@hooks';
 import { GlobalStyle, theme } from '@styles';
 
 const StyledContent = styled.div`
@@ -21,13 +13,34 @@ const StyledContent = styled.div`
 
 const Layout = ({ children, location }) => {
   const isHome = ['/', '/id', '/id/', '/jp', '/jp/', '/en', '/en/'].includes(location.pathname);
-  const [isLoading, setIsLoading] = useState(isHome);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [showBoot, setShowBoot] = useState(isHome);
+
+  // Immediately bypass boot on returning visits or reduced motion
+  useEffect(() => {
+    if (!isHome) {
+      setShowBoot(false);
+      return;
+    }
+    try {
+      const seen = window.localStorage.getItem('riyan_boot_seen') === '1';
+      if (seen || prefersReducedMotion) {
+        document.documentElement.classList.add('skip-boot');
+        setShowBoot(false);
+      }
+    } catch (e) {
+      if (prefersReducedMotion) {
+        setShowBoot(false);
+      }
+    }
+  }, [isHome, prefersReducedMotion]);
+
   // Sets target="_blank" rel="noopener noreferrer" on external links
   const handleExternalLinks = () => {
     const allLinks = Array.from(document.querySelectorAll('a'));
     if (allLinks.length > 0) {
       allLinks.forEach(link => {
-        if (link.host !== window.location.host) {
+        if (link.host && link.host !== window.location.host) {
           link.setAttribute('rel', 'noopener noreferrer');
           link.setAttribute('target', '_blank');
         }
@@ -36,12 +49,12 @@ const Layout = ({ children, location }) => {
   };
 
   useEffect(() => {
-    if (isLoading) {
+    if (showBoot) {
       return;
     }
 
     if (location.hash) {
-      const id = location.hash.substring(1); // location.hash without the '#'
+      const id = location.hash.substring(1);
       setTimeout(() => {
         const el = document.getElementById(id);
         if (el) {
@@ -52,7 +65,7 @@ const Layout = ({ children, location }) => {
     }
 
     handleExternalLinks();
-  }, [isLoading]);
+  }, [showBoot, location.hash]);
 
   return (
     <>
@@ -68,20 +81,18 @@ const Layout = ({ children, location }) => {
           <MatrixRain />
           <ScrollProgress />
 
-          {isLoading && isHome ? (
-            <Loader finishLoading={() => setIsLoading(false)} />
-          ) : (
-            <StyledContent>
-              <Nav isHome={isHome} />
-              <Social isHome={isHome} />
-              <Email isHome={isHome} />
+          {showBoot && isHome && <Loader finishLoading={() => setShowBoot(false)} />}
 
-              <div id="content">
-                {children}
-                <Footer />
-              </div>
-            </StyledContent>
-          )}
+          <StyledContent>
+            <Nav isHome={isHome} />
+            <Social isHome={isHome} />
+            <Email isHome={isHome} />
+
+            <div id="content">
+              {children}
+              <Footer />
+            </div>
+          </StyledContent>
         </ThemeProvider>
       </div>
     </>

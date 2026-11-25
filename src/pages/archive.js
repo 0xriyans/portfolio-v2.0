@@ -1,17 +1,14 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useI18next } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
 import { Layout } from '@components';
 import { Icon } from '@components/icons';
-import { usePrefersReducedMotion } from '@hooks';
 
 const StyledTableContainer = styled.div`
-  margin: 100px -20px;
+  margin: 80px -20px;
 
   @media (max-width: 768px) {
     margin: 50px -10px;
@@ -30,13 +27,13 @@ const StyledTableContainer = styled.div`
     tbody tr {
       &:hover,
       &:focus {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(0, 255, 102, 0.06);
       }
     }
 
     th,
     td {
-      padding: 10px;
+      padding: 12px 10px;
       text-align: left;
 
       &:first-child {
@@ -62,20 +59,12 @@ const StyledTableContainer = styled.div`
 
     tr {
       cursor: default;
-
-      td:first-child {
-        border-top-left-radius: var(--border-radius);
-        border-bottom-left-radius: var(--border-radius);
-      }
-      td:last-child {
-        border-top-right-radius: var(--border-radius);
-        border-bottom-right-radius: var(--border-radius);
-      }
     }
 
     td {
       &.year {
         padding-right: 20px;
+        white-space: nowrap;
 
         @media (max-width: 768px) {
           padding-right: 10px;
@@ -87,13 +76,15 @@ const StyledTableContainer = styled.div`
         padding-top: 15px;
         padding-right: 20px;
         color: var(--lightest-slate);
-        font-size: var(--fz-xl);
+        font-family: var(--font-mono);
+        font-size: var(--fz-lg);
         font-weight: 600;
         line-height: 1.25;
       }
 
       &.company {
-        font-size: var(--fz-lg);
+        font-size: var(--fz-md);
+        color: var(--green);
         white-space: nowrap;
       }
 
@@ -135,32 +126,21 @@ const ArchivePage = ({ location, data }) => {
   const projects = data.allMarkdownRemark.edges.filter(
     ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
   );
-  const revealTitle = useRef(null);
-  const revealTable = useRef(null);
-  const revealProjects = useRef([]);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    sr.reveal(revealTitle.current, srConfig());
-    sr.reveal(revealTable.current, srConfig(200, 0));
-    revealProjects.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 10)));
-  }, []);
 
   return (
     <Layout location={location}>
-      <Helmet title="Archive" />
+      <Helmet title="Production Systems" />
 
       <main>
-        <header ref={revealTitle}>
-          <h1 className="big-heading">Archive</h1>
-          <p className="subtitle">A big list of things I’ve worked on</p>
+        <header>
+          <h1 className="big-heading">Production Systems</h1>
+          <p className="subtitle">
+            13 named production systems delivered across Askrindo, MSIG Life, Prudential, and XL
+            Axiata
+          </p>
         </header>
 
-        <StyledTableContainer ref={revealTable}>
+        <StyledTableContainer>
           <table>
             <thead>
               <tr>
@@ -185,8 +165,10 @@ const ArchivePage = ({ location, data }) => {
                     company,
                   } = node.frontmatter;
                   return (
-                    <tr key={i} ref={el => (revealProjects.current[i] = el)}>
-                      <td className="overline year">{`${new Date(date).getFullYear()}`}</td>
+                    <tr key={i}>
+                      <td className="overline year">
+                        {/^\d{4}/.test(date || '') ? new Date(date).getFullYear() : 'Core'}
+                      </td>
 
                       <td className="title">{title}</td>
 
@@ -195,12 +177,14 @@ const ArchivePage = ({ location, data }) => {
                       </td>
 
                       <td className="tech hide-on-mobile">
-                        {tech.length > 0 &&
-                          tech.map((item, i) => (
-                            <span key={i}>
+                        {tech &&
+                          tech.length > 0 &&
+                          tech.map((item, idx) => (
+                            <span key={idx}>
                               {item}
-                              {''}
-                              {i !== tech.length - 1 && <span className="separator">&middot;</span>}
+                              {idx !== tech.length - 1 && (
+                                <span className="separator">&middot;</span>
+                              )}
                             </span>
                           ))}
                       </td>
@@ -208,22 +192,38 @@ const ArchivePage = ({ location, data }) => {
                       <td className="links">
                         <div>
                           {external && (
-                            <a href={external} aria-label="External Link">
+                            <a
+                              href={external}
+                              aria-label="External Link"
+                              target="_blank"
+                              rel="noreferrer">
                               <Icon name="External" />
                             </a>
                           )}
                           {github && (
-                            <a href={github} aria-label="GitHub Link">
+                            <a
+                              href={github}
+                              aria-label="GitHub Link"
+                              target="_blank"
+                              rel="noreferrer">
                               <Icon name="GitHub" />
                             </a>
                           )}
                           {ios && (
-                            <a href={ios} aria-label="Apple App Store Link">
+                            <a
+                              href={ios}
+                              aria-label="Apple App Store Link"
+                              target="_blank"
+                              rel="noreferrer">
                               <Icon name="AppStore" />
                             </a>
                           )}
                           {android && (
-                            <a href={android} aria-label="Google Play Store Link">
+                            <a
+                              href={android}
+                              aria-label="Google Play Store Link"
+                              target="_blank"
+                              rel="noreferrer">
                               <Icon name="PlayStore" />
                             </a>
                           )}
@@ -239,6 +239,7 @@ const ArchivePage = ({ location, data }) => {
     </Layout>
   );
 };
+
 ArchivePage.propTypes = {
   location: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
@@ -249,7 +250,10 @@ export default ArchivePage;
 export const pageQuery = graphql`
   {
     allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/projects/" } }
+      filter: {
+        fileAbsolutePath: { regex: "/projects|featured/" }
+        frontmatter: { showInProjects: { ne: false } }
+      }
       sort: { fields: [frontmatter___date], order: DESC }
     ) {
       edges {

@@ -10,7 +10,7 @@ tech:
   - Tailwind CSS
   - Prisma
 company: 'Personal Project'
-showInProjects: true
+showInProjects: false
 ---
 
 Aplikasi berfokus pada kesehatan yang memungkinkan pengguna memindai dan mengidentifikasi potensi alergen pada makanan mereka. Dilengkapi dengan antarmuka _glassmorphism_ modern dan database bahan makanan yang sangat lengkap.

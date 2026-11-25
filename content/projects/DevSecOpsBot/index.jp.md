@@ -7,7 +7,7 @@ tech:
   - Gemini AI
   - DevSecOps
 cover: './devsecops-bot.png'
-showInProjects: true
+showInProjects: false
 ---
 
 正直に言いましょう。手動でのコードレビューは大変です。開発者にとって、コンテキストを行き来し、何百行ものコードを読み、セキュリティの脆弱性を探すことは非常に疲れます...

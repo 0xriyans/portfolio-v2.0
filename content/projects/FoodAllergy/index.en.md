@@ -10,7 +10,7 @@ tech:
   - Tailwind CSS
   - Prisma
 company: 'Personal Project'
-showInProjects: true
+showInProjects: false
 ---
 
 A health-focused application allowing users to scan and identify potential allergens in their food. Features a modern glassmorphism interface and a comprehensive database of ingredients.

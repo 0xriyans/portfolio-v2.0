@@ -1,157 +1,108 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { Link, useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import styled, { keyframes } from 'styled-components';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
+import styled from 'styled-components';
 import { Icon } from '@components/icons';
-import { usePrefersReducedMotion } from '@hooks';
+import ProjectDiagram from '../ProjectDiagram';
 
 const StyledProjectsSection = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 0 !important;
+  max-width: 1000px;
 
   h2 {
-    font-size: clamp(24px, 5vw, var(--fz-heading));
+    font-size: clamp(20px, 4vw, 26px);
+    font-family: var(--font-mono);
+    text-align: center;
   }
 
   .archive-link {
     font-family: var(--font-mono);
     font-size: var(--fz-sm);
-    &:after {
-      bottom: 0.1em;
-    }
+    margin-top: 8px;
   }
 
   .projects-grid {
     ${({ theme }) => theme.mixins.resetList};
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 15px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-gap: 24px;
     position: relative;
-    margin-top: 50px;
+    margin-top: 40px;
 
-    @media (max-width: 1080px) {
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
     }
-  }
-
-  .more-button {
-    ${({ theme }) => theme.mixins.button};
-    margin: 80px auto 0;
   }
 `;
 
 const StyledProject = styled.li`
   position: relative;
   cursor: default;
-  transition: var(--transition);
-
-  @media (prefers-reduced-motion: no-preference) {
-    &:hover,
-    &:focus-within {
-      .project-inner {
-        background-color: #161b22;
-        border-color: rgba(255, 255, 255, 0.3);
-        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
-        transform: translateY(-5px);
-      }
-      .project-image::after {
-        opacity: 1;
-        animation: scanlineSweep 2s linear infinite;
-      }
-    }
-  }
-
-  a {
-    position: relative;
-    z-index: 1;
-  }
 
   .project-inner {
     ${({ theme }) => theme.mixins.glassmorphism};
-    ${({ theme }) => theme.mixins.flexBetween};
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    justify-content: space-between;
     position: relative;
     height: 100%;
-    padding: 60px 1.75rem 2rem;
-    transition: var(--transition);
+    padding: 55px 1.5rem 1.75rem;
+    border: 1px solid rgba(0, 255, 102, 0.22);
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease;
 
     &::after {
-      content: 'module.exe';
+      content: 'module.sys';
+    }
+
+    &:hover {
+      border-color: var(--green);
+      transform: translateY(-4px);
     }
   }
 
   .project-image {
     width: 100%;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     position: relative;
     overflow: hidden;
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
-    ${({ theme }) => theme.mixins.boxShadow};
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 20%;
-      background: linear-gradient(to bottom, rgba(0, 255, 102, 0) 0%, rgba(0, 255, 102, 0.4) 50%, rgba(0, 255, 102, 0) 100%);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 2;
-    }
+    border-radius: 4px;
 
     .img {
       width: 100%;
-      height: 200px;
+      height: 190px;
       object-fit: cover;
-      transition: var(--transition);
-      &:hover {
-        transform: scale(1.05);
-      }
     }
   }
 
   .project-top {
     ${({ theme }) => theme.mixins.flexBetween};
-    margin-bottom: 35px;
+    margin-bottom: 12px;
 
-    .folder {
+    .company-badge {
       color: var(--pink);
       font-family: var(--font-mono);
-      font-size: 28px;
-      font-weight: 600;
-      line-height: 1;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .project-links {
       display: flex;
       align-items: center;
-      margin-right: -10px;
       color: var(--light-slate);
 
       a {
         ${({ theme }) => theme.mixins.flexCenter};
-        padding: 5px 7px;
-
-        &.external {
-          svg {
-            width: 22px;
-            height: 22px;
-            margin-top: -4px;
-          }
-        }
+        padding: 4px 6px;
 
         svg {
-          width: 20px;
-          height: 20px;
+          width: 18px;
+          height: 18px;
         }
       }
     }
@@ -159,27 +110,15 @@ const StyledProject = styled.li`
 
   .project-title {
     margin: 0 0 10px;
-    color: var(--green);
+    color: var(--white);
     font-family: var(--font-mono);
-    font-size: 20px;
+    font-size: 18px;
     word-break: break-word;
 
-    @media (max-width: 480px) {
-      font-size: var(--fz-xl);
-    }
-
     a {
-      position: static;
-
-      &:before {
-        content: '';
-        display: block;
-        position: absolute;
-        z-index: 0;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
+      color: var(--white);
+      &:hover {
+        color: var(--green);
       }
     }
   }
@@ -187,15 +126,15 @@ const StyledProject = styled.li`
   .project-description {
     color: var(--light-slate);
     font-size: 15px;
-    font-family: var(--font-mono);
-    line-height: 1.6;
+    font-family: var(--font-sans);
+    line-height: 1.55;
 
     a {
       ${({ theme }) => theme.mixins.inlineLink};
     }
 
     p {
-      font-family: var(--font-mono);
+      font-family: var(--font-sans);
     }
   }
 
@@ -204,49 +143,28 @@ const StyledProject = styled.li`
     flex-wrap: wrap;
     gap: 8px;
     padding: 0;
-    margin: 20px 0 0 0;
+    margin: 18px 0 0;
     list-style: none;
-    flex-grow: 1;
-    align-items: flex-end;
 
     li {
       font-family: var(--font-mono);
-      font-size: var(--fz-xs);
-      color: var(--blue); 
+      font-size: 11px;
+      color: var(--green);
       background: rgba(2, 10, 20, 0.8);
-      padding: 4px 10px;
+      padding: 4px 9px;
       border: 1px solid rgba(0, 255, 102, 0.2);
       border-radius: 2px;
-      transition: var(--transition);
       display: inline-flex;
       align-items: center;
 
       &::before {
         content: '>>';
         color: var(--pink);
-        margin-right: 6px;
+        margin-right: 5px;
         font-weight: 700;
-        transition: var(--transition);
-      }
-
-      &:hover {
-        color: var(--navy);
-        background: var(--blue);
-        border-color: var(--blue);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(0, 255, 102, 0.4);
-        
-        &::before {
-          color: var(--navy);
-        }
       }
     }
   }
-`;
-
-const scanlineSweep = keyframes`
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(500%); }
 `;
 
 const Projects = () => {
@@ -264,9 +182,11 @@ const Projects = () => {
             fileAbsolutePath
             frontmatter {
               title
+              company
               tech
               github
               external
+              diagram
               cover {
                 childImageSharp {
                   gatsbyImageData(width: 400, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
@@ -280,142 +200,98 @@ const Projects = () => {
     }
   `);
 
-  const [showMore, setShowMore] = useState(false);
-  const revealTitle = useRef(null);
-  const revealArchiveLink = useRef(null);
-  const revealProjects = useRef([]);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    sr.reveal(revealTitle.current, srConfig());
-    sr.reveal(revealArchiveLink.current, srConfig());
-    revealProjects.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 100)));
-  }, []);
-
   const { language } = useI18next();
   const { t } = useTranslation();
 
-  const GRID_LIMIT = 6;
   const projects = data.projects.edges.filter(
     ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
   );
-  const firstSix = projects.slice(0, GRID_LIMIT);
-  const projectsToShow = showMore ? projects : firstSix;
-
-  const projectInner = node => {
-    const { frontmatter, html } = node;
-    const { github, external, title, tech, cover } = frontmatter;
-    const image = cover ? getImage(cover) : null;
-
-    return (
-      <div className="project-inner">
-        <header>
-          {image && (
-            <div className="project-image">
-              <a
-                href={external ? external : github ? github : '#'}
-                target="_blank"
-                rel="noreferrer">
-                <GatsbyImage image={image} alt={title} className="img" />
-              </a>
-            </div>
-          )}
-
-          <div
-            className="project-top"
-            style={image ? { marginBottom: '20px', justifyContent: 'flex-end' } : {}}>
-            {!image && (
-              <div className="folder">
-                &gt;_
-              </div>
-            )}
-            <div className="project-links">
-              {github && (
-                <a href={github} aria-label="GitHub Link" target="_blank" rel="noreferrer">
-                  <Icon name="GitHub" />
-                </a>
-              )}
-              {external && (
-                <a
-                  href={external}
-                  aria-label="External Link"
-                  className="external"
-                  target="_blank"
-                  rel="noreferrer">
-                  <Icon name="External" />
-                </a>
-              )}
-            </div>
-          </div>
-
-          <h3 className="project-title">
-            <a href={external} target="_blank" rel="noreferrer">
-              {`> RUN: ${title}.exe`}
-            </a>
-          </h3>
-
-          <div className="project-description" dangerouslySetInnerHTML={{ __html: html }} />
-        </header>
-
-        <footer>
-          {tech && (
-            <ul className="project-tech-list">
-              {tech.map((tech, i) => (
-                <li key={i}>{tech}</li>
-              ))}
-            </ul>
-          )}
-        </footer>
-      </div>
-    );
-  };
 
   return (
     <StyledProjectsSection>
-      <h2 ref={revealTitle}>{t('Other Noteworthy Projects')}</h2>
+      <h2>{t('Other Noteworthy Projects')}</h2>
 
-      <Link className="inline-link archive-link" to="/archive" ref={revealArchiveLink}>
+      <Link className="inline-link archive-link" to="/archive">
         {t('view the archive')}
       </Link>
 
       <ul className="projects-grid">
-        {prefersReducedMotion ? (
-          <>
-            {projectsToShow &&
-              projectsToShow.map(({ node }, i) => (
-                <StyledProject key={i}>{projectInner(node)}</StyledProject>
-              ))}
-          </>
-        ) : (
-          <TransitionGroup component={null}>
-            {projectsToShow &&
-              projectsToShow.map(({ node }, i) => (
-                <CSSTransition
-                  key={i}
-                  classNames="fadeup"
-                  timeout={i >= GRID_LIMIT ? (i - GRID_LIMIT) * 300 : 300}
-                  exit={false}>
-                  <StyledProject
-                    key={i}
-                    ref={el => (revealProjects.current[i] = el)}
-                    style={{
-                      transitionDelay: `${i >= GRID_LIMIT ? (i - GRID_LIMIT) * 100 : 0}ms`,
-                    }}>
-                    {projectInner(node)}
-                  </StyledProject>
-                </CSSTransition>
-              ))}
-          </TransitionGroup>
-        )}
-      </ul>
+        {projects &&
+          projects.map(({ node }, i) => {
+            const { frontmatter, html } = node;
+            const { github, external, title, company, tech, cover, diagram } = frontmatter;
+            const image = cover ? getImage(cover) : null;
+            const href = external || github || null;
 
-      <button className="more-button" onClick={() => setShowMore(!showMore)}>
-        {t('Show')} {showMore ? t('Less') : t('More')}
-      </button>
+            return (
+              <StyledProject key={i}>
+                <div className="project-inner">
+                  <header style={{ width: '100%' }}>
+                    <div className="project-image">
+                      {image ? (
+                        <GatsbyImage image={image} alt={title} className="img" />
+                      ) : (
+                        <ProjectDiagram type={diagram} title={title} compact />
+                      )}
+                    </div>
+
+                    <div className="project-top">
+                      <span className="company-badge">{company || 'PRODUCTION'}</span>
+                      {(github || external) && (
+                        <div className="project-links">
+                          {github && (
+                            <a
+                              href={github}
+                              aria-label="GitHub Link"
+                              target="_blank"
+                              rel="noreferrer">
+                              <Icon name="GitHub" />
+                            </a>
+                          )}
+                          {external && (
+                            <a
+                              href={external}
+                              aria-label="External Link"
+                              className="external"
+                              target="_blank"
+                              rel="noreferrer">
+                              <Icon name="External" />
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <h3 className="project-title">
+                      {href ? (
+                        <a href={href} target="_blank" rel="noreferrer">
+                          {title}
+                        </a>
+                      ) : (
+                        title
+                      )}
+                    </h3>
+
+                    <div
+                      className="project-description"
+                      dangerouslySetInnerHTML={{ __html: html }}
+                    />
+                  </header>
+
+                  <footer style={{ width: '100%' }}>
+                    {tech && tech.length > 0 && (
+                      <ul className="project-tech-list">
+                        {tech.map((item, idx) => (
+                          <li key={idx}>{item}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </footer>
+                </div>
+              </StyledProject>
+            );
+          })}
+      </ul>
     </StyledProjectsSection>
   );
 };

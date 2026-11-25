@@ -1,15 +1,17 @@
 ---
-date: '2'
-title: 'Penjaminan KMK PEN'
+date: '5'
+title: 'Pemulihan Ekonomi Nasional (PEN)'
+company: 'Askrindo'
 cover: './PEN.png'
 external: 'https://askrindo.co.id/penjaminan-kmk-pen'
+showInProjects: true
 tech:
   - Java
   - Spring Boot
-  - Postgre Database
-  - REST API
-  - Jasper Report
-  - Git
+  - Angular
+  - PostgreSQL
+  - Microsoft SQL Server
+  - JasperReports
 ---
 
-As a Backend Developer for [Penjaminan KMK PEN](https://askrindo.co.id/penjaminan-kmk-pen) at Asuransi Kredit Indonesia, I developed and maintained the backend systems supporting loan guarantee services. I built and optimized APIs using Java (Spring Boot) to facilitate secure loan application processing, guarantee issuance, and real-time data tracking. My role also involved integrating with external systems for risk assessments, ensuring efficient and scalable data processing for both clients and internal users.
+Full-stack working capital loan guarantee system supporting Indonesia's Pemulihan Ekonomi Nasional (PEN) program at Askrindo. Built REST APIs, external risk integration workflows, guarantee issuance, and automated JasperReports reconciliation.

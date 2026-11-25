@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { usePrefersReducedMotion } from '@hooks';
 
 const blink = keyframes`
   0%, 100% { opacity: 1; }
@@ -12,16 +13,16 @@ const StyledTerminal = styled.div`
   color: var(--light-slate);
   text-align: center;
   max-width: 600px;
-  margin: 30px auto 0;
-  padding: 20px 30px;
+  margin: 24px auto 0;
+  padding: 12px 20px;
   line-height: 1.6;
 
   .line {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 5px;
-    
+    margin-bottom: 4px;
+
     @media (max-width: 480px) {
       flex-wrap: wrap;
     }
@@ -37,51 +38,48 @@ const StyledTerminal = styled.div`
     display: inline-block;
     width: 10px;
     height: 1.1em;
-    background-color: var(--pink);
+    background-color: var(--green);
     vertical-align: middle;
-    margin-left: 4px;
+    margin-left: 6px;
     animation: ${blink} 1s step-end infinite;
-    box-shadow: 0 0 8px var(--pink);
   }
 `;
 
-const TerminalTyping = () => {
-  const [text, setText] = useState('');
-  const [showSecondLine, setShowSecondLine] = useState(false);
-  const fullText = "Locating signal... found in Jakarta, Indonesia";
-  
-  useEffect(() => {
-    let typeInterval;
-    const initialDelay = setTimeout(() => {
-      setShowSecondLine(true);
-      let i = 0;
-      typeInterval = setInterval(() => {
-        setText(fullText.substring(0, i + 1));
-        i++;
-        if (i >= fullText.length) {
-          clearInterval(typeInterval);
-        }
-      }, 70); // typing speed
-    }, 2000); // Initial delay to let the page load and hero animate
+const FULL_TEXT = 'Jakarta, Indonesia';
 
-    return () => {
-      clearTimeout(initialDelay);
-      if (typeInterval) clearInterval(typeInterval);
-    };
-  }, []);
+const TerminalTyping = () => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [text, setText] = useState(FULL_TEXT);
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setText(FULL_TEXT);
+      return;
+    }
+
+    let i = 0;
+    setText('');
+    const typeInterval = setInterval(() => {
+      i++;
+      setText(FULL_TEXT.substring(0, i));
+      if (i >= FULL_TEXT.length) {
+        clearInterval(typeInterval);
+      }
+    }, 35);
+
+    return () => clearInterval(typeInterval);
+  }, [prefersReducedMotion]);
 
   return (
     <StyledTerminal>
       <div className="line">
         <span className="prompt">&gt;</span> sys.location --ping
       </div>
-      {showSecondLine && (
-        <div className="line">
-          <span className="prompt">&gt;</span> 
-          <span>{text}</span>
-          <span className="cursor" />
-        </div>
-      )}
+      <div className="line">
+        <span className="prompt">&gt;</span>
+        <span>{text || FULL_TEXT}</span>
+        {!prefersReducedMotion && <span className="cursor" aria-hidden="true" />}
+      </div>
     </StyledTerminal>
   );
 };

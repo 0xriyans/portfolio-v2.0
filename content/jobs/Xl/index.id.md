@@ -2,17 +2,19 @@
 date: '2022-01-01'
 title: 'API Developer'
 company: 'XL Axiata'
+tabLabel: 'XL Axiata'
 location: 'Jakarta, Indonesia'
-range: '2022 - 2023'
+range: '2022 – 2023'
 url: 'https://www.xl.co.id/'
 tech:
+  - Java
   - Spring Boot
-  - Solace
-  - Redis
-  - K6
+  - Spring Cloud
+  - Apache Kafka
+  - Oracle
+  - MySQL
 ---
 
-- Memimpin migrasi arsitektur masif dari infrastruktur SOAR (TIBCO) lama ke kerangka kerja layanan mikro (microservices) terdesentralisasi menggunakan Spring Boot.
-- Merekayasa mekanisme interaksi layanan berbasis event dengan latensi rendah menggunakan perantara pesan Solace melintasi modul telekomunikasi dengan lalu lintas tinggi.
-- Mengelola siklus pengembangan penuh API RESTful inti, mengonfigurasi aturan proksi, dan metrik pembatasan laju di lapisan API Gateway.
-- Mengeksekusi pengujian stres beban tinggi dan penyetelan kinerja menggunakan K6 untuk mengidentifikasi hambatan pemrosesan di bawah lalu lintas puncak.
+- Memigrasikan sistem legacy **SOAR / TIBCO** ke arsitektur microservices **Spring Boot / Spring Cloud**.
+- Mengembangkan modul produksi inti: **XL Fulfillment Policy Engine**, **XL Incident Notification**, **XL Info Paket**, **XL Info Quota**, dan **XL Bulk IMEI Registration**.
+- Membangun REST API berkecepatan tinggi, pemrosesan event asynchronous, serta integrasi basis data Oracle, MySQL, dan MongoDB.

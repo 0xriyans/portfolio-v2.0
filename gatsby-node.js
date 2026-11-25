@@ -5,12 +5,35 @@
  */
 
 const path = require('path');
-const _ = require('lodash');
 
 // Mencegah peringatan MaxListenersExceededWarning saat gatsby-plugin-manifest membuat puluhan favicon
 require('events').EventEmitter.defaultMaxListeners = 20;
 
-exports.createPages = async ({ actions, graphql, reporter }) => {
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions;
+  createTypes(`
+    type MarkdownRemarkFrontmatter {
+      title: String
+      date: String
+      company: String
+      tabLabel: String
+      location: String
+      range: String
+      url: String
+      tech: [String]
+      github: String
+      external: String
+      cta: String
+      ios: String
+      android: String
+      diagram: String
+      showInProjects: Boolean
+      cover: File @fileByRelativePath
+    }
+  `);
+};
+
+exports.createPages = async () => {
   // Blog (pensieve) and tag pages have been removed to keep the portfolio clean.
 };
 
@@ -23,10 +46,6 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
         rules: [
           {
             test: /scrollreveal/,
-            use: loaders.null(),
-          },
-          {
-            test: /animejs/,
             use: loaders.null(),
           },
           {

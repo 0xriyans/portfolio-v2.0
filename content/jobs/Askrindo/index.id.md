@@ -1,18 +1,20 @@
 ---
 date: '2025-01-01'
-title: 'Software Engineer'
-company: 'Asuransi Kredit Indonesia'
+title: 'Software Engineer (Full Stack)'
+company: 'PT Asuransi Kredit Indonesia (Askrindo)'
+tabLabel: 'Askrindo — Periode Sekarang'
 location: 'Jakarta, Indonesia'
-range: '2025 - Present'
+range: '2025 – Sekarang'
 url: 'https://askrindo.co.id/'
 tech:
   - Java
   - Spring Boot
   - Angular
+  - Redis
+  - PostgreSQL
   - Midtrans
 ---
 
-- Bertindak sebagai insinyur utama yang bertanggung jawab atas desain arsitektur dan pengembangan siklus penuh dari platform asuransi umum B2B dan B2C tingkat perusahaan.
-- Merancang infrastruktur frontend-backend yang sangat terpisah (decoupled) menggunakan Angular dan Spring Boot untuk memastikan skalabilitas yang mulus bagi klien ritel dan korporat.
-- Merancang lapisan integrasi yang kuat untuk menghubungkan sistem inti dengan platform pihak ketiga, termasuk gateway pembayaran Midtrans untuk penagihan premi secara real-time.
-- Merumuskan Dokumen Desain Teknis (TDD) untuk menerjemahkan kebutuhan bisnis yang kompleks ke dalam spesifikasi rekayasa perangkat lunak yang jelas.
+- Merancang dan membangun platform asuransi B2B dan B2C secara full-stack (**Portal Bisnis Askrindo**) menggunakan Java Spring Boot dan Angular.
+- Mengamankan konkurensi pembayaran Midtrans dalam dua lapis: Redis mutex `SET lock:pay:{order_id} NX EX 30` ditambah database pessimistic lock `SELECT ... FOR UPDATE`, dengan respons idempotent HTTP `200` untuk webhook yang kalah.
+- Mengoptimalkan transaksi PostgreSQL dan Microsoft SQL Server untuk penerbitan polis dan penagihan premi.

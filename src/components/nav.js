@@ -2,17 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { navLinks } from '@config';
 import { loaderDelay } from '@utils';
 import { useScrollDirection, usePrefersReducedMotion, useOnClickOutside } from '@hooks';
 import { Menu } from '@components';
-import { IconLogo } from '@components/icons';
-
-const scanlineAnim = keyframes`
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-`;
 
 const StyledHeader = styled.header`
   ${({ theme }) => theme.mixins.flexBetween};
@@ -115,7 +109,7 @@ const StyledLinks = styled.div`
         transition: var(--transition);
         position: relative;
         color: var(--light-slate);
-        
+
         &:hover,
         &:focus {
           color: var(--white);
@@ -173,7 +167,8 @@ const StyledLanguageDropdown = styled.div`
       white-space: nowrap;
     }
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       background: rgba(0, 255, 102, 0.1);
       box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
     }
@@ -265,11 +260,11 @@ const Nav = ({ isHome }) => {
     <div className="logo" tabIndex="-1">
       {isHome ? (
         <a href="/" aria-label="home">
-          {"< RIYAN />"}
+          RIYAN.SYS
         </a>
       ) : (
         <Link to="/" aria-label="home">
-          {"< RIYAN />"}
+          RIYAN.SYS
         </Link>
       )}
     </div>
@@ -284,7 +279,6 @@ const Nav = ({ isHome }) => {
       HIRE_ME [ON]
     </a>
   );
-
 
   const flags = {
     id: { src: 'https://flagcdn.com/w80/id.png', label: 'ID' },
@@ -332,7 +326,6 @@ const Nav = ({ isHome }) => {
                     ))}
                 </ol>
                 <div>{ResumeLink}</div>
-
               </StyledLinks>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -382,8 +375,6 @@ const Nav = ({ isHome }) => {
                     </CSSTransition>
                   )}
                 </TransitionGroup>
-
-
               </StyledLinks>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

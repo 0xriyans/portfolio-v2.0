@@ -5,8 +5,6 @@ import TransitionStyles from './TransitionStyles';
 import PrismStyles from './PrismStyles';
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=M+PLUS+1+Code:wght@400;500;600&display=swap');
-
   ${TransitionStyles};
   ${fonts};
   ${variables};
@@ -107,9 +105,8 @@ const GlobalStyle = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     background-color: var(--navy);
-    background-image: 
-      radial-gradient(circle at center, rgba(0, 255, 102, 0.05) 0%, rgba(5, 5, 5, 0.95) 100%),
-      url('https://grainy-gradients.vercel.app/noise.svg');
+    background-image:
+      radial-gradient(circle at center, rgba(0, 255, 102, 0.05) 0%, rgba(5, 5, 5, 0.96) 100%);
     color: var(--white);
     font-family: var(--font-sans);
     font-size: var(--fz-xl);
@@ -137,22 +134,6 @@ const GlobalStyle = createGlobalStyle`
         user-select: none;
       }
     }
-
-    &::after {
-      content: " ";
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-      z-index: 9999;
-      background-size: 100% 3px, 3px 100%;
-      pointer-events: none;
-      opacity: 0.15;
-      animation: scanline-scroll 8s linear infinite;
-    }
   }
 
   #root {
@@ -160,7 +141,6 @@ const GlobalStyle = createGlobalStyle`
     display: grid;
     grid-template-rows: 1fr auto;
     grid-template-columns: 100%;
-    animation: crt-flicker 0.15s infinite;
   }
 
   main {
@@ -247,42 +227,25 @@ const GlobalStyle = createGlobalStyle`
     font-weight: 700;
     letter-spacing: 0.05em;
     white-space: nowrap;
-    animation: neon-glow-pulse 3s infinite alternate;
 
     @media (max-width: 480px) {
-      font-size: clamp(16px, 4.5vw, 20px);
+      font-size: clamp(15px, 4.2vw, 19px);
     }
 
     &:before {
-      position: relative;
-      bottom: 4px;
-      counter-increment: section;
-      content: 'root:~# ';
-      margin-right: 10px;
-      color: var(--blue);
-      font-family: var(--font-mono);
-      font-size: clamp(var(--fz-md), 3vw, var(--fz-xl));
-      font-weight: 400;
-      text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
-
-      @media (max-width: 480px) {
-        margin-bottom: -3px;
-        margin-right: 5px;
-      }
+      display: none;
     }
 
     &:after {
       content: '';
       display: block;
       position: relative;
-      top: -5px;
+      top: -2px;
       width: 100%;
       max-width: 300px;
       height: 1px;
       margin-left: 20px;
-      background-color: var(--pink);
-      box-shadow: 0 0 10px var(--pink);
-      animation: expand-line 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+      background-color: rgba(0, 255, 102, 0.4);
 
       @media (max-width: 1080px) {
         max-width: 200px;

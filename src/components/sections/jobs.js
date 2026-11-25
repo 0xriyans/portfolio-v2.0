@@ -1,206 +1,157 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
-import { CSSTransition } from 'react-transition-group';
-import styled, { keyframes } from 'styled-components';
-import { srConfig } from '@config';
-import { KEY_CODES } from '@utils';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
-
-const blink = keyframes`
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-`;
+import styled from 'styled-components';
 
 const StyledJobsSection = styled.section`
-  max-width: 900px;
+  max-width: 960px;
 
-  .inner {
-    ${({ theme }) => theme.mixins.glassmorphism};
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    overflow: hidden;
-    min-height: 400px;
-    border-radius: 10px;
-  }
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+    margin-top: 20px;
 
-  .terminal-header {
-    background: rgba(0, 0, 0, 0.4);
-    border-bottom: 1px solid rgba(0, 255, 102, 0.3);
-    padding: 12px 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    
-    .btn {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, rgba(0, 255, 102, 0.7), rgba(0, 255, 102, 0.2));
     }
-    .btn-red { background: #ff5f56; box-shadow: 0 0 5px #ff5f56; }
-    .btn-yellow { background: #ffbd2e; box-shadow: 0 0 5px #ffbd2e; }
-    .btn-green { background: #27c93f; box-shadow: 0 0 5px #27c93f; }
-    
-    .title {
-      flex: 1;
-      text-align: center;
-      color: var(--light-slate);
-      font-family: var(--font-mono);
-      font-size: var(--fz-xs);
-      letter-spacing: 1px;
-      opacity: 0.8;
-      margin-right: 48px; /* to offset the buttons and keep title centered */
-    }
-  }
-
-  .terminal-body {
-    display: flex;
-    flex: 1;
 
     @media (max-width: 600px) {
-      flex-direction: column;
+      padding-left: 22px;
     }
   }
 `;
 
-const StyledTabList = styled.div`
-  display: flex;
-  flex-direction: column;
-  z-index: 3;
-  width: 250px;
-  padding: 30px 20px;
-  margin: 0;
-  list-style: none;
-  background: rgba(0, 0, 0, 0.3);
-  border-right: 1px solid rgba(0, 255, 102, 0.2);
+const StyledTimelineEntry = styled.article`
+  position: relative;
+  margin-bottom: 28px;
+  background: #0d1117;
+  border: 1px solid rgba(0, 255, 102, 0.22);
+  border-radius: 6px;
+  padding: 24px 26px;
 
-  @media (max-width: 600px) {
-    flex-direction: row;
-    overflow-x: auto;
-    width: 100%;
-    padding: 15px 20px;
-    border-right: none;
-    border-bottom: 1px solid rgba(0, 255, 102, 0.2);
-    gap: 12px;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-`;
-
-const StyledTabButton = styled.button`
-  ${({ theme }) => theme.mixins.link};
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 12px 15px;
-  margin-bottom: 5px;
-  background: ${({ isActive }) =>
-    isActive ? 'rgba(0, 255, 102, 0.1)' : 'transparent'};
-  color: ${({ isActive }) => (isActive ? 'var(--blue)' : 'var(--light-slate)')};
-  font-family: var(--font-mono);
-  font-size: var(--fz-xs);
-  text-align: left;
-  transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-  box-shadow: none;
-  border: 1px solid ${({ isActive }) => (isActive ? 'rgba(0, 255, 102, 0.3)' : 'transparent')};
-  border-left: ${({ isActive }) => (isActive ? '3px solid var(--blue)' : '3px solid transparent')};
-  text-shadow: ${({ isActive }) => (isActive ? '0 0 8px rgba(0, 255, 102, 0.6)' : 'none')};
-
-  @media (max-width: 600px) {
-    ${({ theme }) => theme.mixins.flexCenter};
-    width: auto;
-    min-width: max-content;
+  &:last-child {
     margin-bottom: 0;
   }
 
-  &:hover,
-  &:focus {
-    background: rgba(0, 255, 102, 0.15);
-    color: var(--blue);
-    border-color: rgba(0, 255, 102, 0.3);
-    border-left: 3px solid var(--blue);
-    text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
+  &::before {
+    content: '';
+    position: absolute;
+    left: -27px;
+    top: 28px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: ${({ isCurrent }) => (isCurrent ? 'var(--green)' : '#050505')};
+    border: 2px solid var(--green);
+    box-shadow: ${({ isCurrent }) => (isCurrent ? '0 0 10px rgba(0, 255, 102, 0.8)' : 'none')};
+
+    @media (max-width: 600px) {
+      left: -21px;
+    }
   }
-`;
 
-const StyledTabPanels = styled.div`
-  position: relative;
-  width: 100%;
-  padding: 40px;
-
-  @media (max-width: 600px) {
-    padding: 30px 20px;
+  .entry-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px 16px;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed rgba(0, 255, 102, 0.2);
+    padding-bottom: 12px;
   }
-`;
 
-const StyledTabPanel = styled.div`
-  width: 100%;
-  height: auto;
-  font-family: var(--font-mono);
+  .entry-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-  p {
+  .entry-role {
+    margin: 0;
     font-family: var(--font-mono);
+    font-size: var(--fz-lg);
+    font-weight: 700;
+    color: var(--white);
   }
 
-  ul {
-    ${({ theme }) => theme.mixins.fancyList};
+  .entry-company {
     font-family: var(--font-mono);
     font-size: var(--fz-sm);
-    color: var(--light-slate);
-    
-    li {
-      margin-bottom: 15px;
-      line-height: 1.6;
-      &::before {
-        content: '~/';
-        color: var(--pink);
-        font-weight: bold;
-      }
+    color: var(--green);
+
+    a {
+      color: var(--green);
     }
   }
 
-  h3 {
-    margin-bottom: 15px;
-    font-size: var(--fz-xl);
-    font-weight: 500;
-    line-height: 1.4;
-    font-family: var(--font-mono);
-    color: var(--white);
-    word-break: break-all;
-
-    .prompt {
-      color: var(--pink);
-      margin-right: 10px;
-    }
-    
-    .cursor {
-      display: inline-block;
-      width: 10px;
-      height: 20px;
-      background-color: var(--blue);
-      margin-left: 5px;
-      vertical-align: middle;
-      animation: ${blink} 1s step-end infinite;
-      box-shadow: 0 0 8px var(--blue);
-    }
-
-    .company {
-      color: var(--blue);
-    }
-  }
-
-  .range {
-    margin-bottom: 30px;
-    color: var(--slate);
+  .entry-range {
     font-family: var(--font-mono);
     font-size: var(--fz-xs);
-    border-bottom: 1px dashed rgba(0, 255, 102, 0.3);
-    padding-bottom: 15px;
-    display: inline-block;
+    color: var(--pink);
+    background: rgba(0, 255, 102, 0.08);
+    border: 1px solid rgba(0, 255, 102, 0.25);
+    padding: 4px 10px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  .entry-body {
+    font-family: var(--font-sans);
+    font-size: var(--fz-md);
+    color: var(--light-slate);
+
+    ul {
+      ${({ theme }) => theme.mixins.fancyList};
+      margin: 0;
+
+      li {
+        margin-bottom: 10px;
+        line-height: 1.55;
+        font-size: var(--fz-md);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    code {
+      font-size: 12px;
+      color: var(--green);
+      background: rgba(0, 255, 102, 0.08);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+  }
+
+  .entry-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+
+    li {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--green);
+      background: rgba(2, 10, 20, 0.8);
+      border: 1px solid rgba(0, 255, 102, 0.2);
+      padding: 3px 9px;
+      border-radius: 2px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    padding: 20px 18px;
   }
 `;
 
@@ -217,9 +168,11 @@ const Jobs = () => {
             frontmatter {
               title
               company
+              tabLabel
               location
               range
               url
+              tech
             }
             html
           }
@@ -234,122 +187,44 @@ const Jobs = () => {
     node.fileAbsolutePath.includes(`.${language}.md`),
   );
 
-  const [activeTabId, setActiveTabId] = useState(0);
-  const [tabFocus, setTabFocus] = useState(null);
-  const tabs = useRef([]);
-  const revealContainer = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-    sr.reveal(revealContainer.current, srConfig(0, 0.05));
-  }, []);
-
-  const focusTab = () => {
-    if (tabs.current[tabFocus]) {
-      tabs.current[tabFocus].focus();
-      return;
-    }
-    if (tabFocus >= tabs.current.length) {
-      setTabFocus(0);
-    }
-    if (tabFocus < 0) {
-      setTabFocus(tabs.current.length - 1);
-    }
-  };
-
-  useEffect(() => focusTab(), [tabFocus]);
-
-  const onKeyDown = e => {
-    switch (e.key) {
-      case KEY_CODES.ARROW_UP: {
-        e.preventDefault();
-        setTabFocus(tabFocus - 1);
-        break;
-      }
-      case KEY_CODES.ARROW_DOWN: {
-        e.preventDefault();
-        setTabFocus(tabFocus + 1);
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-  };
-
   return (
-    <StyledJobsSection id="jobs" ref={revealContainer}>
+    <StyledJobsSection id="jobs">
       <h2 className="numbered-heading">{t('Where I’ve Worked')}</h2>
 
-      <div className="inner">
-        <div className="terminal-header">
-          <div className="btn btn-red"></div>
-          <div className="btn btn-yellow"></div>
-          <div className="btn btn-green"></div>
-          <div className="title">root@portfolio:~</div>
-        </div>
-        
-        <div className="terminal-body">
-          <StyledTabList role="tablist" aria-label="Job tabs" onKeyDown={e => onKeyDown(e)}>
-            {jobsData &&
-              jobsData.map(({ node }, i) => {
-                const { company } = node.frontmatter;
-                return (
-                  <StyledTabButton
-                    key={i}
-                    isActive={activeTabId === i}
-                    onClick={() => setActiveTabId(i)}
-                    ref={el => (tabs.current[i] = el)}
-                    id={`tab-${i}`}
-                    role="tab"
-                    tabIndex={activeTabId === i ? '0' : '-1'}
-                    aria-selected={activeTabId === i ? true : false}
-                    aria-controls={`panel-${i}`}>
-                    <span>{`> cd ./${company.replace(/\s+/g, '_')}`}</span>
-                  </StyledTabButton>
-                );
-              })}
-          </StyledTabList>
+      <div className="timeline" role="list" aria-label="Work history timeline">
+        {jobsData &&
+          jobsData.map(({ node }, i) => {
+            const { frontmatter, html } = node;
+            const { title, url, company, tabLabel, range, tech } = frontmatter;
+            const isCurrent = i === 0;
 
-          <StyledTabPanels>
-            {jobsData &&
-              jobsData.map(({ node }, i) => {
-                const { frontmatter, html } = node;
-                const { title, url, company, range } = frontmatter;
+            return (
+              <StyledTimelineEntry key={i} role="listitem" isCurrent={isCurrent}>
+                <div className="entry-header">
+                  <div className="entry-title-group">
+                    <h3 className="entry-role">{title}</h3>
+                    <div className="entry-company">
+                      @{' '}
+                      <a href={url} target="_blank" rel="noreferrer">
+                        {tabLabel || company}
+                      </a>
+                    </div>
+                  </div>
+                  <span className="entry-range">[{range}]</span>
+                </div>
 
-                return (
-                  <CSSTransition key={i} in={activeTabId === i} timeout={250} classNames="fade">
-                    <StyledTabPanel
-                      id={`panel-${i}`}
-                      role="tabpanel"
-                      tabIndex={activeTabId === i ? '0' : '-1'}
-                      aria-labelledby={`tab-${i}`}
-                      aria-hidden={activeTabId !== i}
-                      hidden={activeTabId !== i}>
-                      <h3>
-                        <span className="prompt">sys@admin:~$</span>
-                        <span>{`cat ${title.replace(/\s+/g, '_')}`}</span>
-                        <span className="company">
-                          &nbsp;@&nbsp;
-                          <a href={url} className="inline-link" target="_blank" rel="noreferrer">
-                            {company}
-                          </a>
-                        </span>
-                        <span className="cursor"></span>
-                      </h3>
+                <div className="entry-body" dangerouslySetInnerHTML={{ __html: html }} />
 
-                      <p className="range">[{range}]</p>
-
-                      <div dangerouslySetInnerHTML={{ __html: html }} />
-                    </StyledTabPanel>
-                  </CSSTransition>
-                );
-              })}
-          </StyledTabPanels>
-        </div>
+                {tech && tech.length > 0 && (
+                  <ul className="entry-tech">
+                    {tech.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </StyledTimelineEntry>
+            );
+          })}
       </div>
     </StyledJobsSection>
   );

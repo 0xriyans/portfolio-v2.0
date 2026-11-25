@@ -14,11 +14,12 @@ const StyledProgressContainer = styled.div`
 
 const StyledProgressBar = styled.div`
   height: 100%;
+  width: 100%;
   background-color: var(--pink);
-  width: ${props => props.scroll}%;
-  transition: width 0.1s ease-out;
+  transform-origin: left center;
+  transform: scaleX(${props => props.scroll / 100});
+  transition: transform 0.1s ease-out;
   box-shadow: 0 0 10px var(--pink);
-  border-radius: 0 2px 2px 0;
 `;
 
 const ScrollProgress = () => {
@@ -26,13 +27,14 @@ const ScrollProgress = () => {
 
   const handleScroll = () => {
     const totalScroll = document.documentElement.scrollTop || document.body.scrollTop;
-    const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    
+    const windowHeight =
+      document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
     if (windowHeight === 0) {
       setScrollProgress(0);
       return;
     }
-    
+
     const scroll = totalScroll / windowHeight;
     setScrollProgress(scroll * 100);
   };
@@ -49,13 +51,13 @@ const ScrollProgress = () => {
     removeQod();
     const observer = new MutationObserver(removeQod);
     observer.observe(document.body, { childList: true, subtree: true });
-    
+
     // Initial check
     handleScroll();
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleScroll);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);

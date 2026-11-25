@@ -2,9 +2,9 @@ const config = require('./src/config');
 
 module.exports = {
   siteMetadata: {
-    title: 'Riyan Sugiarto - Scalable Infrastructure Software Engineer',
+    title: 'Riyan Sugiarto — Backend Software Engineer',
     description:
-      'Riyan Sugiarto is a Software Engineer focused on enterprise-scale System Design and Backend Architecture, highly capable of delivering end-to-end Full-Stack and Frontend experiences.',
+      'Riyan Sugiarto is a Backend Software Engineer with 6+ years of experience building enterprise Java, Spring Boot, Quarkus, Apache Kafka, and PostgreSQL systems.',
     siteUrl: 'https://riyans.tech', // No trailing slash allowed!
     image: '/og.png', // Path to your image you placed in the 'static' folder
     twitterUsername: '@0xriyans',
@@ -165,12 +165,6 @@ module.exports = {
             },
           },
         ],
-      },
-    },
-    {
-      resolve: `gatsby-plugin-google-analytics`,
-      options: {
-        trackingId: 'UA-45666519-2',
       },
     },
   ],

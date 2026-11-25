@@ -1,15 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { useTranslation } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
-import { srConfig, email, socialMedia } from '@config';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
+import { email, socialMedia } from '@config';
 
 const StyledContactSection = styled.section`
   max-width: 800px;
   margin: 0 auto 100px;
   text-align: left;
-  
+
   @media (max-width: 768px) {
     margin: 0 auto 50px;
   }
@@ -40,9 +38,15 @@ const TerminalWindow = styled.div`
         height: 12px;
         border-radius: 50%;
       }
-      .red { background: #ff5f56; }
-      .yellow { background: #ffbd2e; }
-      .green { background: #27c93f; }
+      .red {
+        background: #ff5f56;
+      }
+      .yellow {
+        background: #ffbd2e;
+      }
+      .green {
+        background: #27c93f;
+      }
     }
 
     .window-title {
@@ -69,11 +73,11 @@ const TerminalWindow = styled.div`
     .prompt {
       color: var(--green, #00ff66);
     }
-    
+
     .text-green {
       color: var(--green, #00ff66);
     }
-    
+
     .text-dim {
       color: var(--slate);
     }
@@ -84,7 +88,7 @@ const TerminalWindow = styled.div`
       text-decoration-color: rgba(0, 255, 102, 0.3);
       text-underline-offset: 3px;
       transition: var(--transition);
-      
+
       &:hover {
         color: var(--green, #00ff66);
         text-decoration-color: var(--green, #00ff66);
@@ -111,7 +115,7 @@ const TerminalWindow = styled.div`
         align-items: center;
         gap: 10px;
         color: var(--white);
-        
+
         .cursor {
           display: inline-block;
           width: 8px;
@@ -131,7 +135,7 @@ const TerminalWindow = styled.div`
         border-radius: 2px;
         text-decoration: none;
         transition: var(--transition);
-        
+
         &:hover {
           background: rgba(0, 255, 102, 0.1);
           color: var(--green, #00ff66);
@@ -142,28 +146,27 @@ const TerminalWindow = styled.div`
   }
 
   @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 `;
 
 const Contact = () => {
-  const revealContainer = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-    sr.reveal(revealContainer.current, srConfig(200, 0.05));
-  }, []);
-
-  const getGithub = () => socialMedia.find(s => s.name === 'GitHub')?.url || 'https://github.com/0xriyans';
-  const getLinkedin = () => socialMedia.find(s => s.name === 'Linkedin')?.url || 'https://linkedin.com/in/riyan-sugiarto';
+  const getGithub = () =>
+    socialMedia.find(s => s.name === 'GitHub')?.url || 'https://github.com/0xriyans';
+  const getLinkedin = () =>
+    socialMedia.find(s => s.name === 'Linkedin')?.url || 'https://linkedin.com/in/riyan-sugiarto';
 
   return (
-    <StyledContactSection id="contact" ref={revealContainer}>
+    <StyledContactSection id="contact">
+      <h2 className="numbered-heading">{t('Contact Heading')}</h2>
       <TerminalWindow>
         <div className="terminal-header">
           <div className="window-controls">
@@ -177,9 +180,7 @@ const Contact = () => {
           <div className="output-line">
             <span className="prompt">root@system:~$</span> ls -la networks/social
           </div>
-          <div className="output-line text-dim">
-            drwxr-xr-x 2 root admin 4096 Mar 04 12:00 .
-          </div>
+          <div className="output-line text-dim">drwxr-xr-x 2 root admin 4096 Mar 04 12:00 .</div>
           <div className="output-line">
             <span className="text-dim">-rw-r--r-- 1 root admin 84</span>{' '}
             <a href={getGithub()} target="_blank" rel="noreferrer">
@@ -194,9 +195,7 @@ const Contact = () => {
           </div>
           <div className="output-line">
             <span className="text-dim">-rw-r--r-- 1 root admin 64</span>{' '}
-            <a href={`mailto:${email}`}>
-              mailto:{email}
-            </a>
+            <a href={`mailto:${email}`}>mailto:{email}</a>
           </div>
 
           <div className="output-line mt-4">
@@ -205,13 +204,12 @@ const Contact = () => {
           <div className="output-line">
             <span className="text-green">{'>'}</span> {t('Initialize secure transmission protocol')}
           </div>
-          <div className="output-line text-dim">
-            [OK] {t('Payload encrypted and ready.')}
-          </div>
+          <div className="output-line text-dim">[OK] {t('Payload encrypted and ready.')}</div>
 
           <div className="input-wrapper">
             <div className="input-text">
-              <span className="text-green">_</span> {t('start_transmission')} <span className="cursor"></span>
+              <span className="text-green">_</span> {t('start_transmission')}{' '}
+              <span className="cursor"></span>
             </div>
             <a href={`mailto:${email}`} className="execute-btn">
               EXECUTE

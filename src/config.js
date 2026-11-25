@@ -35,7 +35,7 @@ module.exports = {
     },
     {
       name: 'STACK',
-      url: '/#jobs',
+      url: '/#stack',
     },
     {
       name: 'PROJECTS',

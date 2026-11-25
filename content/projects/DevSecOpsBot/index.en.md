@@ -7,7 +7,7 @@ tech:
   - Gemini AI
   - DevSecOps
 cover: './devsecops-bot.png'
-showInProjects: true
+showInProjects: false
 ---
 
 Let's be honest: manual code reviews are hard. For developers, jumping between context, reading hundreds of lines of code, and hunting for security vulnerabilities can be exhausting...
