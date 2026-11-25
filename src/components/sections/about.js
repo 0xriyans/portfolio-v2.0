@@ -306,9 +306,7 @@ const About = () => {
         <StyledVerifiedMetrics ref={metricsRef} aria-label="Verified engineering metrics">
           <div className="metric-card">
             <div className="metric-label">EXPERIENCE</div>
-            <div className="metric-value">
-              <CountUp to={6} suffix="+ Years" active={metricsInView} minCh={7} />
-            </div>
+            <div className="metric-value">6+ Years</div>
             <div className="metric-desc">
               Backend &amp; Full-Stack engineering across insurance, credit guarantees, and telecom.
             </div>

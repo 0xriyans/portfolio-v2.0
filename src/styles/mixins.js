@@ -51,7 +51,7 @@ const mixins = {
     &:hover,
     &:active,
     &:focus {
-      color: var(--yellow);
+      color: var(--green);
       outline: 0;
     }
   `,
@@ -154,7 +154,7 @@ const mixins = {
     box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.7);
     position: relative;
     padding-top: 40px;
-    
+
     &::before {
       content: '';
       position: absolute;
