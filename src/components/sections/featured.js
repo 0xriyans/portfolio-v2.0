@@ -1,14 +1,41 @@
-import React, { useRef } from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
+import React from 'react';
+import { Link, useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
 import { Icon } from '@components/icons';
-import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
-import { MOTION } from '@styles/motionTokens';
 import ProjectMedia from '../ProjectMedia';
 
 const StyledFeaturedSection = styled.section`
-  max-width: 1040px;
+  max-width: 1120px;
+
+  .projects-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 42px;
+  }
+
+  .view-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-size: var(--fz-sm);
+    font-weight: 600;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--cream);
+      border-color: var(--cream);
+      color: var(--on-cream);
+    }
+  }
 `;
 
 const StyledProjectsGrid = styled.ul`
@@ -17,7 +44,6 @@ const StyledProjectsGrid = styled.ul`
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-gap: 32px;
   align-items: start;
-  margin-top: 40px;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -27,18 +53,13 @@ const StyledProjectsGrid = styled.ul`
 
 const StyledProject = styled.li`
   position: relative;
-  background: #0d1117;
-  border: 1px solid rgba(0, 255, 102, 0.24);
-  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  opacity: ${({ visible }) => (visible ? 1 : 0)};
-  transform: translate3d(0, ${({ visible }) => (visible ? '0px' : `${MOTION.rise.projects}px`)}, 0);
-  transition: ${({ reduced }) =>
-    reduced
-      ? 'none'
-      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--card-delay, 0ms), transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--card-delay, 0ms), border-color ${MOTION.duration.micro}ms ease 0ms, box-shadow ${MOTION.duration.micro}ms ease 0ms`};
+  box-shadow: 0 12px 32px rgba(1, 7, 54, 0.38);
 
   @media (min-width: 769px) {
     &:nth-child(even) {
@@ -46,19 +67,11 @@ const StyledProject = styled.li`
     }
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      border-color: var(--green);
-      box-shadow: 0 8px 28px rgba(0, 255, 102, 0.16);
-      transform: translate3d(0, -4px, 0);
-    }
-  }
-
   .project-media {
     width: 100%;
-    height: 220px;
-    border-bottom: 1px solid rgba(0, 255, 102, 0.2);
-    background: #070c0a;
+    height: 230px;
+    border-bottom: 1px solid var(--border);
+    background: #091538;
     overflow: hidden;
 
     @media (max-width: 768px) {
@@ -80,7 +93,7 @@ const StyledProject = styled.li`
   }
 
   .project-content {
-    padding: 24px;
+    padding: 24px 26px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -96,22 +109,22 @@ const StyledProject = styled.li`
 
   .project-overline {
     margin: 0;
-    color: var(--pink);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    color: var(--text-muted);
+    font-size: var(--fz-xs);
+    font-weight: 600;
+    letter-spacing: 0.03em;
   }
 
   .project-links {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: var(--light-slate);
+    color: var(--text-secondary);
 
     a {
       display: inline-flex;
       padding: 4px;
+
       svg {
         width: 18px;
         height: 18px;
@@ -120,57 +133,44 @@ const StyledProject = styled.li`
   }
 
   .project-title {
-    margin: 0 0 12px;
-    color: var(--white);
-    font-family: var(--font-mono);
-    font-size: 19px;
-    line-height: 1.3;
+    margin: 0 0 10px;
+    color: var(--cream);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.25;
 
     a {
-      color: var(--white);
-      &:hover {
-        color: var(--green);
-      }
+      color: var(--cream);
     }
   }
 
   .project-description {
-    color: var(--light-slate);
-    font-size: var(--fz-sm);
-    font-family: var(--font-sans);
+    color: var(--text-secondary);
+    font-size: var(--fz-md);
     line-height: 1.6;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 
     strong {
-      color: var(--green);
+      color: var(--cream);
       font-weight: 600;
-    }
-
-    code {
-      font-size: 11.5px;
-      color: var(--green);
-      background: rgba(0, 255, 102, 0.08);
-      padding: 1px 5px;
-      border-radius: 2px;
     }
   }
 
   .project-tech-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
     margin: 0;
     padding: 0;
     list-style: none;
 
     li {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--green);
-      background: rgba(2, 10, 20, 0.85);
-      padding: 3px 8px;
-      border: 1px solid rgba(0, 255, 102, 0.22);
-      border-radius: 2px;
+      font-size: var(--fz-xs);
+      color: var(--cream);
+      background: rgba(34, 57, 111, 0.55);
+      padding: 4px 11px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
     }
   }
 `;
@@ -219,9 +219,6 @@ const Featured = () => {
 
   const { language } = useI18next();
   const { t } = useTranslation();
-  const gridRef = useRef(null);
-  const inView = useInViewOnce(gridRef, MOTION.trigger.viewport);
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   const featuredProjects = data.featured.edges.filter(
     ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
@@ -229,26 +226,31 @@ const Featured = () => {
 
   return (
     <StyledFeaturedSection id="projects">
-      <h2 className="numbered-heading">[ 05 // PROJECTS ]</h2>
+      <div className="projects-header">
+        <div>
+          <span className="section-kicker">{t('Selected work')}</span>
+          <h2 className="section-heading">{t('Projects')}</h2>
+          <p className="section-intro">
+            High-concurrency insurance platforms, core financial migrations, AI e-KYC verification,
+            and telecommunications microservices.
+          </p>
+        </div>
 
-      <StyledProjectsGrid ref={gridRef}>
+        <Link className="view-all-link" to="/archive">
+          {t('View all projects')} &rarr;
+        </Link>
+      </div>
+
+      <StyledProjectsGrid>
         {featuredProjects &&
           featuredProjects.map(({ node }, i) => {
             const { frontmatter, html } = node;
             const { external, title, company, tech, github } = frontmatter;
             const href = external || github || null;
-            const visible = prefersReducedMotion || inView;
-
             const media = <ProjectMedia frontmatter={frontmatter} compact />;
 
             return (
-              <StyledProject
-                key={i}
-                visible={visible}
-                reduced={prefersReducedMotion}
-                style={{
-                  '--card-delay': prefersReducedMotion ? '0ms' : `${i * MOTION.stagger.projects}ms`,
-                }}>
+              <StyledProject key={i}>
                 <div className="project-media">
                   {href ? (
                     <a href={href} target="_blank" rel="noreferrer" aria-label={title}>

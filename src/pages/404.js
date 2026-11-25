@@ -1,71 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'gatsby';
 import { Helmet } from 'react-helmet';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { navDelay } from '@utils';
 import Layout from '@components/layout';
-import { usePrefersReducedMotion } from '@hooks';
 
 const StyledMainContainer = styled.main`
-  ${({ theme }) => theme.mixins.flexCenter};
+  display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 const StyledTitle = styled.h1`
-  color: var(--green);
-  font-family: var(--font-mono);
-  font-size: clamp(100px, 25vw, 200px);
+  color: var(--cream);
+  font-family: var(--font-heading);
+  font-size: clamp(72px, 18vw, 150px);
   line-height: 1;
 `;
 const StyledSubtitle = styled.h2`
-  font-size: clamp(30px, 5vw, 50px);
-  font-weight: 400;
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 500;
+  color: var(--text-secondary);
 `;
 const StyledHomeButton = styled(Link)`
   ${({ theme }) => theme.mixins.bigButton};
-  margin-top: 40px;
+  margin-top: 32px;
 `;
 
-const NotFoundPage = ({ location }) => {
-  const [isMounted, setIsMounted] = useState(false);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    const timeout = setTimeout(() => setIsMounted(true), navDelay);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  const content = (
+const NotFoundPage = ({ location }) => (
+  <Layout location={location}>
+    <Helmet title="Page Not Found" />
     <StyledMainContainer className="fillHeight">
       <StyledTitle>404</StyledTitle>
       <StyledSubtitle>Page Not Found</StyledSubtitle>
-      <StyledHomeButton to="/">Go Home</StyledHomeButton>
+      <StyledHomeButton to="/">Back to Home</StyledHomeButton>
     </StyledMainContainer>
-  );
-
-  return (
-    <Layout location={location}>
-      <Helmet title="Page Not Found" />
-
-      {prefersReducedMotion ? (
-        <>{content}</>
-      ) : (
-        <TransitionGroup component={null}>
-          {isMounted && (
-            <CSSTransition timeout={500} classNames="fadeup">
-              {content}
-            </CSSTransition>
-          )}
-        </TransitionGroup>
-      )}
-    </Layout>
-  );
-};
+  </Layout>
+);
 
 NotFoundPage.propTypes = {
   location: PropTypes.object.isRequired,

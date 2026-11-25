@@ -1,186 +1,120 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { useI18next } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
-import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
-import { MOTION } from '@styles/motionTokens';
-import CountUp from '../CountUp';
 
 const StyledJobsSection = styled.section`
-  max-width: 980px;
+  max-width: 1120px;
 
-  .timeline {
-    position: relative;
-    padding-left: 175px;
-    margin-top: 28px;
-
-    @media (max-width: 720px) {
-      padding-left: 26px;
-    }
-  }
-
-  .timeline-rail {
-    position: absolute;
-    left: 152px;
-    top: 10px;
-    bottom: 10px;
-    width: 2px;
-    background: linear-gradient(to bottom, rgba(0, 255, 102, 0.85), rgba(0, 255, 102, 0.2));
-    transform-origin: top center;
-    transform: scaleY(${({ active }) => (active ? 1 : 0)});
-    transition: ${({ reduced }) => (reduced ? 'none' : `transform 750ms ${MOTION.easing.css}`)};
-
-    @media (max-width: 720px) {
-      left: 7px;
-    }
+  .experience-list {
+    margin-top: 38px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
   }
 `;
 
-const StyledTimelineEntry = styled.article`
-  position: relative;
-  margin-bottom: 26px;
-  background: #0d1117;
-  border: 1px solid rgba(0, 255, 102, 0.22);
-  border-radius: 6px;
-  padding: 24px 26px;
-  opacity: ${({ visible }) => (visible ? 1 : 0)};
-  transform: translate3d(
-    ${({ visible }) => (visible ? '0px' : `-${MOTION.rise.timeline}px`)},
-    0,
-    0
-  );
-  transition: ${({ reduced }) =>
-    reduced
-      ? 'none'
-      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--job-delay, 0ms), transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--job-delay, 0ms), border-color ${MOTION.duration.micro}ms ease 0ms`};
+const StyledEntryCard = styled.article`
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 26px 28px;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
 
-  &:last-child {
-    margin-bottom: 0;
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 22px 20px;
   }
 
-  &:hover {
-    border-color: rgba(0, 255, 102, 0.55);
-  }
-
-  /* Timeline dot aligned with left rail */
-  &::before {
-    content: '';
-    position: absolute;
-    left: -29px;
-    top: 26px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: ${({ isCurrent }) => (isCurrent ? 'var(--green)' : '#050505')};
-    border: 2px solid var(--green);
-    box-shadow: ${({ isCurrent }) => (isCurrent ? '0 0 10px rgba(0, 255, 102, 0.8)' : 'none')};
-
-    @media (max-width: 720px) {
-      left: -25px;
-      top: 24px;
-    }
-  }
-
-  .left-date {
-    position: absolute;
-    left: -176px;
-    top: 22px;
-    width: 132px;
-    text-align: right;
-    font-family: var(--font-mono);
-    font-size: 12px;
+  .entry-num {
+    font-size: clamp(26px, 3vw, 34px);
     font-weight: 600;
-    color: var(--pink);
-    letter-spacing: 0.03em;
-    line-height: 1.3;
-
-    @media (max-width: 720px) {
-      position: static;
-      width: auto;
-      text-align: left;
-      margin-bottom: 8px;
-      display: inline-block;
-      background: rgba(0, 255, 102, 0.08);
-      border: 1px solid rgba(0, 255, 102, 0.25);
-      padding: 3px 9px;
-      border-radius: 3px;
-    }
+    color: var(--cream);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    opacity: 0.9;
   }
 
-  .entry-header {
+  .entry-top {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 12px;
-    border-bottom: 1px dashed rgba(0, 255, 102, 0.2);
-    padding-bottom: 12px;
-  }
-
-  .entry-role {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: var(--fz-lg);
-    font-weight: 700;
-    color: var(--white);
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
   }
 
   .entry-company {
-    font-family: var(--font-mono);
-    font-size: var(--fz-sm);
-    color: var(--green);
+    margin: 0;
+    font-size: clamp(20px, 2.6vw, 24px);
+    font-weight: 600;
+    color: var(--cream);
 
     a {
-      color: var(--green);
+      color: var(--cream);
     }
+  }
+
+  .entry-date {
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    background: rgba(34, 57, 111, 0.55);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-size: var(--fz-xs);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .entry-role {
+    margin: 0 0 14px;
+    font-size: var(--fz-md);
+    font-weight: 500;
+    color: var(--text-muted);
   }
 
   .verified-metrics-strip {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     margin: 0 0 14px;
   }
 
   .verified-pill {
-    font-family: var(--font-mono);
-    font-size: 11.5px;
-    color: var(--lightest-slate);
-    background: rgba(0, 255, 102, 0.07);
-    border: 1px solid rgba(0, 255, 102, 0.3);
-    border-radius: 4px;
-    padding: 5px 10px;
+    font-size: var(--fz-xs);
+    color: var(--text-secondary);
+    background: rgba(1, 7, 54, 0.55);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 5px 12px;
+    font-variant-numeric: tabular-nums;
 
     strong {
-      color: var(--green);
+      color: var(--cream);
     }
   }
 
   .entry-body {
-    font-family: var(--font-sans);
     font-size: var(--fz-md);
-    color: var(--light-slate);
+    color: var(--text-secondary);
 
     ul {
       ${({ theme }) => theme.mixins.fancyList};
       margin: 0;
 
       li {
-        margin-bottom: 10px;
-        line-height: 1.55;
+        margin-bottom: 8px;
+        line-height: 1.6;
         font-size: var(--fz-md);
 
         &:last-child {
           margin-bottom: 0;
         }
       }
-    }
-
-    code {
-      font-size: 12px;
-      color: var(--green);
-      background: rgba(0, 255, 102, 0.08);
-      padding: 2px 6px;
-      border-radius: 2px;
     }
   }
 
@@ -193,18 +127,13 @@ const StyledTimelineEntry = styled.article`
     margin: 16px 0 0;
 
     li {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--green);
-      background: rgba(2, 10, 20, 0.8);
-      border: 1px solid rgba(0, 255, 102, 0.2);
-      padding: 3px 9px;
-      border-radius: 2px;
+      font-size: var(--fz-xs);
+      color: var(--cream);
+      background: rgba(34, 57, 111, 0.5);
+      border: 1px solid var(--border);
+      padding: 4px 11px;
+      border-radius: var(--radius-pill);
     }
-  }
-
-  @media (max-width: 600px) {
-    padding: 20px 18px;
   }
 `;
 
@@ -236,11 +165,6 @@ const Jobs = () => {
   `);
 
   const { language } = useI18next();
-  const timelineRef = useRef(null);
-  const inView = useInViewOnce(timelineRef, MOTION.trigger.viewport);
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const active = prefersReducedMotion || inView;
-
   const jobsData = data.jobs.edges.filter(({ node }) =>
     node.fileAbsolutePath.includes(`.${language}.md`),
   );
@@ -250,16 +174,10 @@ const Jobs = () => {
       return (
         <div className="verified-metrics-strip">
           <span className="verified-pill">
-            Redis Lock:{' '}
-            <strong>
-              EX <CountUp to={30} suffix="s" active={active} minCh={3} />
-            </strong>
+            Redis Lock: <strong>SET lock:pay:&#123;order_id&#125; NX EX 30</strong>
           </span>
           <span className="verified-pill">
-            Webhook Idempotency:{' '}
-            <strong>
-              HTTP <CountUp to={200} active={active} minCh={3} />
-            </strong>
+            DB Guard: <strong>SELECT ... FOR UPDATE · Idempotent HTTP 200</strong>
           </span>
         </div>
       );
@@ -269,19 +187,10 @@ const Jobs = () => {
       return (
         <div className="verified-metrics-strip">
           <span className="verified-pill">
-            Container Memory:{' '}
-            <strong>
-              &gt;
-              <CountUp to={1.5} decimals={1} active={active} minCh={3} /> GB → &lt;
-              <CountUp to={300} active={active} minCh={3} /> MB (
-              <CountUp to={60} suffix="%+" active={active} minCh={3} />)
-            </strong>
+            Container Memory: <strong>&gt;1.5 GB &rarr; &lt;300 MB (60%+ reduction)</strong>
           </span>
           <span className="verified-pill">
-            Withdrawal:{' '}
-            <strong>
-              <CountUp to={2} active={active} minCh={1} /> Business Days → Real-Time
-            </strong>
+            Withdrawal: <strong>2 Business Days &rarr; Real-Time</strong>
           </span>
         </div>
       );
@@ -291,51 +200,52 @@ const Jobs = () => {
   };
 
   return (
-    <StyledJobsSection id="jobs" active={active} reduced={prefersReducedMotion}>
-      <h2 className="numbered-heading">[ 04 // EXPERIENCE ]</h2>
+    <StyledJobsSection id="experience">
+      <span className="section-kicker">Career history</span>
+      <h2 className="section-heading">Work Experience</h2>
+      <p className="section-intro">
+        6+ years building enterprise backend and end-to-end production systems across
+        Indonesia&apos;s insurance, credit guarantee, and telecommunications leaders.
+      </p>
 
-      <div className="timeline" ref={timelineRef} role="list" aria-label="Work history timeline">
-        <div className="timeline-rail" aria-hidden="true" />
+      <div className="experience-list" role="list" aria-label="Work experience entries">
         {jobsData &&
           jobsData.map(({ node }, i) => {
             const { frontmatter, html } = node;
             const { date, title, url, company, tabLabel, range, tech } = frontmatter;
-            const isCurrent = i === 0;
+            const num = String(i + 1).padStart(2, '0');
 
             return (
-              <StyledTimelineEntry
-                key={i}
-                role="listitem"
-                isCurrent={isCurrent}
-                visible={active}
-                reduced={prefersReducedMotion}
-                style={{
-                  '--job-delay': prefersReducedMotion ? '0ms' : `${i * MOTION.stagger.default}ms`,
-                }}>
-                <div className="left-date">{range}</div>
-
-                <div className="entry-header">
-                  <h3 className="entry-role">{title}</h3>
-                  <div className="entry-company">
-                    @{' '}
-                    <a href={url} target="_blank" rel="noreferrer">
-                      {tabLabel || company}
-                    </a>
-                  </div>
+              <StyledEntryCard key={`${date}-${i}`} role="listitem">
+                <div className="entry-num" aria-hidden="true">
+                  {num}
                 </div>
 
-                {renderVerifiedMetrics(date)}
+                <div>
+                  <div className="entry-top">
+                    <h3 className="entry-company">
+                      <a href={url} target="_blank" rel="noreferrer">
+                        {tabLabel || company}
+                      </a>
+                    </h3>
+                    <span className="entry-date">{range}</span>
+                  </div>
 
-                <div className="entry-body" dangerouslySetInnerHTML={{ __html: html }} />
+                  <p className="entry-role">{title}</p>
 
-                {tech && tech.length > 0 && (
-                  <ul className="entry-tech">
-                    {tech.map((item, idx) => (
-                      <li key={idx}>{item}</li>
-                    ))}
-                  </ul>
-                )}
-              </StyledTimelineEntry>
+                  {renderVerifiedMetrics(date)}
+
+                  <div className="entry-body" dangerouslySetInnerHTML={{ __html: html }} />
+
+                  {tech && tech.length > 0 && (
+                    <ul className="entry-tech">
+                      {tech.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </StyledEntryCard>
             );
           })}
       </div>

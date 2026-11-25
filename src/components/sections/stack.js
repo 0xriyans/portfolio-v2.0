@@ -1,414 +1,363 @@
-import React, { useRef, useState } from 'react';
-import styled, { keyframes, css } from 'styled-components';
-import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
-import { MOTION } from '@styles/motionTokens';
-
-const marqueeLeft = keyframes`
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
-`;
-
-const marqueeRight = keyframes`
-  from { transform: translate3d(-50%, 0, 0); }
-  to { transform: translate3d(0, 0, 0); }
-`;
+import React from 'react';
+import styled from 'styled-components';
 
 const CORE_CARDS = [
   {
     name: 'Java',
-    angle: -18,
-    offsetX: -270,
-    offsetY: 28,
     note: 'Primary backend language (6+ yrs)',
-    badge: 'CORE',
+    badge: 'Core',
     glyph: 'JVM',
+    angle: -18,
+    offsetX: -288,
+    offsetY: 26,
   },
   {
     name: 'Spring Boot',
-    angle: -12,
-    offsetX: -180,
-    offsetY: 12,
     note: 'Microservices, REST & Spring Cloud',
     badge: 'API',
     glyph: 'SB',
+    angle: -12,
+    offsetX: -192,
+    offsetY: 11,
   },
   {
     name: 'Apache Kafka',
-    angle: -6,
-    offsetX: -90,
-    offsetY: 3,
     note: 'Zero-loss manual offset streaming',
-    badge: 'STREAM',
+    badge: 'Stream',
     glyph: 'KFK',
+    angle: -6,
+    offsetX: -96,
+    offsetY: 3,
   },
   {
     name: 'PostgreSQL',
-    angle: 0,
-    offsetX: 0,
-    offsetY: 0,
     note: 'ACID ledger & SELECT FOR UPDATE',
     badge: 'ACID',
     glyph: 'PG',
+    angle: 0,
+    offsetX: 0,
+    offsetY: 0,
   },
   {
     name: 'Quarkus',
-    angle: 6,
-    offsetX: 90,
-    offsetY: 3,
-    note: 'Pruhub Flink migration (<300 MB)',
-    badge: 'CLOUD',
+    note: 'Flink migration (<300 MB RAM)',
+    badge: 'Cloud',
     glyph: 'QKS',
+    angle: 6,
+    offsetX: 96,
+    offsetY: 3,
   },
   {
     name: 'Kubernetes',
-    angle: 12,
-    offsetX: 180,
-    offsetY: 12,
     note: 'Production container orchestration',
-    badge: 'K8S',
+    badge: 'K8s',
     glyph: 'K8S',
+    angle: 12,
+    offsetX: 192,
+    offsetY: 11,
   },
   {
     name: 'Docker',
-    angle: 18,
-    offsetX: 270,
-    offsetY: 28,
-    note: 'Lean microservice container builds',
-    badge: 'RUNTIME',
+    note: 'Lean container builds & tooling',
+    badge: 'Runtime',
     glyph: 'DKR',
+    angle: 18,
+    offsetX: 288,
+    offsetY: 26,
   },
 ];
 
-const ROW_ONE = [
-  'Spring Cloud',
-  'Angular',
-  'Couchbase',
-  'MySQL',
-  'MongoDB',
-  'Microsoft SQL Server',
-  'Oracle',
-  'Redis',
+const STACK_GROUPS = [
+  {
+    label: 'Languages',
+    items: ['Java', 'Python', 'TypeScript', 'JavaScript', 'SQL'],
+  },
+  {
+    label: 'Backend',
+    items: ['Spring Boot', 'Spring Cloud', 'FastAPI', 'Quarkus', 'Node.js', 'Express'],
+  },
+  {
+    label: 'AI & LLM',
+    items: [
+      'Google Gemini',
+      'Anthropic',
+      'OpenAI API',
+      'LangChain',
+      'Hugging Face',
+      'Ollama',
+      'RAG & Agents',
+    ],
+  },
+  {
+    label: 'Frontend',
+    items: ['React', 'Next.js', 'Tailwind CSS', 'Vite', 'Angular'],
+  },
+  {
+    label: 'Data & Messaging',
+    items: [
+      'PostgreSQL',
+      'SQL Server',
+      'MongoDB',
+      'Redis',
+      'SQLModel',
+      'Apache Kafka',
+      'RabbitMQ',
+      'Couchbase',
+      'MySQL',
+      'Oracle',
+    ],
+  },
+  {
+    label: 'Infra & Tooling',
+    items: ['Docker', 'Kubernetes', 'AWS', 'SonarQube', 'JUnit', 'Git', 'Postman'],
+  },
 ];
 
-const ROW_TWO = [
-  'TypeScript',
-  'Python',
-  'FastAPI',
-  'RabbitMQ',
-  'AWS',
-  'SonarQube',
-  'JUnit',
-  'Git',
-  'Postman',
-  'React',
-  'Next.js',
-];
+const EXPLORING_ITEMS = ['Solidity', 'Ethereum', 'Web3.js'];
 
 const StyledStackSection = styled.section`
-  max-width: 1040px;
+  max-width: 1120px;
 
   .fan-stage {
     position: relative;
-    height: 300px;
-    margin: 30px auto 50px;
+    height: 290px;
+    margin: 40px auto 52px;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    @media (max-width: 768px) {
+    @media (max-width: 860px) {
       height: auto;
-      display: flex;
       justify-content: flex-start;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       gap: 14px;
-      padding: 12px 4px 18px;
-      margin: 20px 0 36px;
+      padding: 8px 4px 16px;
+      margin: 28px 0 36px;
+    }
+  }
+
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .group-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 20px 22px;
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: var(--fz-md);
+      font-weight: 600;
+      color: var(--cream);
+    }
+
+    .chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 6px 13px;
+      font-size: var(--fz-xs);
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: rgba(1, 7, 54, 0.55);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+    }
+  }
+
+  .exploring-box {
+    background: var(--surface);
+    border: 1px dashed rgba(252, 241, 208, 0.35);
+    border-radius: var(--radius-card);
+    padding: 20px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+
+    .exploring-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .exploring-tag {
+        display: inline-flex;
+        align-self: flex-start;
+        padding: 4px 12px;
+        border-radius: var(--radius-pill);
+        background: rgba(252, 241, 208, 0.14);
+        color: var(--cream);
+        font-size: var(--fz-xs);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      p {
+        margin: 0;
+        font-size: var(--fz-sm);
+        color: var(--text-muted);
+      }
+    }
+
+    .exploring-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .chip {
+        padding: 6px 14px;
+        border-radius: var(--radius-pill);
+        background: rgba(34, 57, 111, 0.45);
+        border: 1px solid var(--border);
+        color: var(--cream);
+        font-size: var(--fz-xs);
+        font-weight: 500;
+      }
     }
   }
 `;
 
 const FanCard = styled.div`
   position: absolute;
-  width: 158px;
+  width: 162px;
   height: 214px;
-  background: #0d1117;
-  border: 1px solid rgba(0, 255, 102, 0.32);
-  border-radius: 8px;
-  padding: 18px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 18px 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
-  transform-origin: center bottom;
-  cursor: default;
-  z-index: var(--fan-z, 1);
-  transform: ${({ open }) =>
-    open
-      ? 'translate3d(var(--fan-x, 0px), var(--fan-y, 0px), 0) rotate(var(--fan-angle, 0deg))'
-      : 'translate3d(0, 12px, 0) rotate(0deg)'};
-  transition: ${({ reduced }) =>
-    reduced
-      ? 'none'
-      : `transform ${MOTION.duration.fan}ms ${MOTION.easing.css} var(--fan-delay, 0ms), border-color ${MOTION.duration.micro}ms ease 0ms, box-shadow ${MOTION.duration.micro}ms ease 0ms`};
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover,
-    &:focus-within {
-      z-index: 20;
-      border-color: var(--green);
-      box-shadow: 0 18px 34px rgba(0, 255, 102, 0.24);
-      transform: translate3d(
-          var(--fan-x, 0px),
-          calc(var(--fan-y, 0px) - ${MOTION.rise.fanHover}px),
-          0
-        )
-        rotate(var(--fan-angle, 0deg));
-      transition-delay: 0ms;
-
-      .fan-tooltip {
-        opacity: 1;
-        transform: translate3d(-50%, 0, 0);
-      }
-    }
-  }
+  box-shadow: 0 14px 28px rgba(1, 7, 54, 0.45);
+  z-index: ${({ index }) => 4 - Math.abs(index - 3) + 1};
+  transform: ${({ offsetX, offsetY, angle }) =>
+    `translate3d(${offsetX}px, ${offsetY}px, 0) rotate(${angle}deg)`};
 
   .card-badge {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--pink);
-    letter-spacing: 0.1em;
     align-self: flex-end;
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    background: rgba(34, 57, 111, 0.7);
+    color: var(--cream);
+    font-size: 11px;
+    font-weight: 600;
   }
 
   .card-icon {
-    font-family: var(--font-mono);
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--green);
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 44px;
+    height: 48px;
 
     span {
-      padding: 7px 12px;
-      border: 1px solid rgba(0, 255, 102, 0.35);
-      border-radius: 4px;
-      background: rgba(0, 255, 102, 0.08);
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: rgba(252, 241, 208, 0.12);
+      border: 1px solid rgba(252, 241, 208, 0.28);
+      color: var(--cream);
+      font-size: var(--fz-md);
+      font-weight: 600;
+      letter-spacing: 0.04em;
     }
   }
 
   .card-name {
-    font-family: var(--font-mono);
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--white);
+    font-size: var(--fz-md);
+    font-weight: 600;
+    color: var(--cream);
     text-align: center;
   }
 
-  .mobile-note {
-    display: none;
-    font-family: var(--font-sans);
+  .card-note {
     font-size: 12px;
-    color: var(--slate);
+    color: var(--text-muted);
     text-align: center;
     line-height: 1.35;
   }
 
-  .fan-tooltip {
-    position: absolute;
-    bottom: calc(100% + 10px);
-    left: 50%;
-    transform: translate3d(-50%, 6px, 0);
-    width: 196px;
-    padding: 8px 10px;
-    background: #050505;
-    border: 1px solid var(--green);
-    border-radius: 4px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    line-height: 1.4;
-    color: var(--lightest-slate);
-    text-align: center;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity ${MOTION.duration.micro}ms ease,
-      transform ${MOTION.duration.micro}ms ${MOTION.easing.css};
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
-
-    strong {
-      color: var(--green);
-      display: block;
-      margin-bottom: 2px;
-    }
-  }
-
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     position: relative;
-    flex: 0 0 156px;
-    height: 190px;
-    transform: none !important;
+    flex: 0 0 162px;
+    height: 204px;
+    transform: none;
     scroll-snap-align: start;
     z-index: 1;
-
-    .fan-tooltip {
-      display: none;
-    }
-
-    .mobile-note {
-      display: block;
-    }
   }
 `;
 
-const MarqueeBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow: hidden;
-  padding: 6px 0;
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+const Stack = () => (
+  <StyledStackSection id="stack">
+    <span className="section-kicker">Core capabilities</span>
+    <h2 className="section-heading">Technology Stack</h2>
+    <p className="section-intro">
+      Core backend specialization in Java, Spring Boot / Spring Cloud, Quarkus, Apache Kafka,
+      PostgreSQL, Kubernetes, and Docker — paired with end-to-end delivery across frontend, data,
+      and applied AI workflows.
+    </p>
 
-  ${({ reduced }) =>
-    reduced &&
-    css`
-      mask-image: none;
-      -webkit-mask-image: none;
-      overflow: visible;
-    `}
-
-  &:hover .marquee-track {
-    animation-play-state: paused;
-  }
-`;
-
-const MarqueeRow = styled.div`
-  display: flex;
-  width: max-content;
-
-  .marquee-track {
-    display: flex;
-    gap: 12px;
-    padding-right: 12px;
-    animation: ${({ reverse, speed }) =>
-    css`
-        ${reverse ? marqueeRight : marqueeLeft} ${speed} linear infinite
-      `};
-  }
-
-  ${({ reduced }) =>
-    reduced &&
-    css`
-      width: 100%;
-      .marquee-track {
-        flex-wrap: wrap;
-        animation: none;
-      }
-      .marquee-clone {
-        display: none;
-      }
-    `}
-
-  .chip {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--light-slate);
-    background: #0d1117;
-    border: 1px solid rgba(0, 255, 102, 0.22);
-    padding: 7px 14px;
-    border-radius: 9999px;
-    white-space: nowrap;
-
-    &::before {
-      content: '>';
-      color: var(--green);
-      margin-right: 6px;
-      font-weight: 700;
-    }
-  }
-`;
-
-const Stack = () => {
-  const fanRef = useRef(null);
-  const inView = useInViewOnce(fanRef, MOTION.trigger.viewport);
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const [activeIdx, setActiveIdx] = useState(null);
-  const isOpen = prefersReducedMotion || inView;
-
-  return (
-    <StyledStackSection id="stack">
-      <h2 className="numbered-heading">[ 03 // STACK ]</h2>
-
-      <div className="fan-stage" ref={fanRef} aria-label="Core backend stack cards">
-        {CORE_CARDS.map((card, i) => (
-          <FanCard
-            key={card.name}
-            open={isOpen}
-            reduced={prefersReducedMotion}
-            style={{
-              '--fan-z': 4 - Math.abs(i - 3) + 1,
-              '--fan-x': `${card.offsetX}px`,
-              '--fan-y': `${card.offsetY}px`,
-              '--fan-angle': `${card.angle}deg`,
-              '--fan-delay': prefersReducedMotion ? '0ms' : `${i * MOTION.stagger.fan}ms`,
-            }}
-            tabIndex={0}
-            aria-label={`${card.name}: ${card.note}`}
-            onClick={() => setActiveIdx(activeIdx === i ? null : i)}>
-            <div className="fan-tooltip" role="tooltip">
-              <strong>{card.name}</strong>
-              {card.note}
-            </div>
-            <span className="card-badge">{card.badge}</span>
-            <div className="card-icon" aria-hidden="true">
-              <span>{card.glyph}</span>
-            </div>
+    <div className="fan-stage" aria-label="Core backend stack cards">
+      {CORE_CARDS.map((card, i) => (
+        <FanCard
+          key={card.name}
+          index={i}
+          offsetX={card.offsetX}
+          offsetY={card.offsetY}
+          angle={card.angle}>
+          <span className="card-badge">{card.badge}</span>
+          <div className="card-icon" aria-hidden="true">
+            <span>{card.glyph}</span>
+          </div>
+          <div>
             <div className="card-name">{card.name}</div>
-            <div className="mobile-note">{card.note}</div>
-          </FanCard>
+            <div className="card-note">{card.note}</div>
+          </div>
+        </FanCard>
+      ))}
+    </div>
+
+    <div className="groups-grid" aria-label="Full stack capabilities by category">
+      {STACK_GROUPS.map(group => (
+        <div className="group-card" key={group.label}>
+          <h3>{group.label}</h3>
+          <div className="chip-list">
+            {group.items.map(item => (
+              <span className="chip" key={item}>
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div className="exploring-box" aria-label="Currently exploring technologies">
+      <div className="exploring-meta">
+        <span className="exploring-tag">Exploring (not production mastered)</span>
+        <p>Currently exploring: autonomous AI agent workflows &amp; Web3 fundamentals.</p>
+      </div>
+      <div className="exploring-chips">
+        {EXPLORING_ITEMS.map(item => (
+          <span className="chip" key={item}>
+            {item}
+          </span>
         ))}
       </div>
-
-      <MarqueeBlock reduced={prefersReducedMotion} aria-label="Additional tools and databases">
-        <MarqueeRow speed={MOTION.marquee.speedPrimary} reduced={prefersReducedMotion}>
-          <div className="marquee-track">
-            {ROW_ONE.map(tool => (
-              <span className="chip" key={`r1a-${tool}`}>
-                {tool}
-              </span>
-            ))}
-          </div>
-          <div className="marquee-track marquee-clone" aria-hidden="true">
-            {ROW_ONE.map(tool => (
-              <span className="chip" key={`r1b-${tool}`}>
-                {tool}
-              </span>
-            ))}
-          </div>
-        </MarqueeRow>
-
-        <MarqueeRow reverse speed={MOTION.marquee.speedSecondary} reduced={prefersReducedMotion}>
-          <div className="marquee-track">
-            {ROW_TWO.map(tool => (
-              <span className="chip" key={`r2a-${tool}`}>
-                {tool}
-              </span>
-            ))}
-          </div>
-          <div className="marquee-track marquee-clone" aria-hidden="true">
-            {ROW_TWO.map(tool => (
-              <span className="chip" key={`r2b-${tool}`}>
-                {tool}
-              </span>
-            ))}
-          </div>
-        </MarqueeRow>
-      </MarqueeBlock>
-    </StyledStackSection>
-  );
-};
+    </div>
+  </StyledStackSection>
+);
 
 export default Stack;

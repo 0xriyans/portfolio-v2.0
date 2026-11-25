@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef, Suspense } from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Defers code-split below-the-fold sections until the user nears them
- * (or the URL hash targets them), keeping initial JS, CSS, and hydration TBT small.
+ * Defers code-split below-the-fold sections until approaching the viewport
+ * (or targeted directly by URL hash) to keep initial JS and hydration lean.
  */
 const LazySection = ({
   id,
-  maxWidth = 1000,
-  minHeight = 480,
-  rootMargin = '900px 0px',
+  maxWidth = 1120,
+  minHeight = 420,
+  rootMargin = '800px 0px',
   heading,
   children,
 }) => {
@@ -26,10 +26,17 @@ const LazySection = ({
       return;
     }
 
+    const onHash = () => {
+      if (id && window.location.hash === `#${id}`) {
+        setShouldLoad(true);
+      }
+    };
+    window.addEventListener('hashchange', onHash);
+
     const node = holderRef.current;
     if (!node || typeof IntersectionObserver === 'undefined') {
       setShouldLoad(true);
-      return;
+      return () => window.removeEventListener('hashchange', onHash);
     }
 
     const observer = new IntersectionObserver(
@@ -43,7 +50,10 @@ const LazySection = ({
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
+    return () => {
+      window.removeEventListener('hashchange', onHash);
+      observer.disconnect();
+    };
   }, [id, rootMargin, shouldLoad]);
 
   const fallback = (
@@ -54,7 +64,7 @@ const LazySection = ({
         minHeight: `${minHeight}px`,
         margin: '0 auto',
       }}>
-      {heading && <h2 className="numbered-heading">{heading}</h2>}
+      {heading && <h2 className="section-heading">{heading}</h2>}
     </section>
   );
 

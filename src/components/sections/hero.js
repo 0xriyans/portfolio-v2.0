@@ -1,233 +1,322 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Link } from 'gatsby';
+import { StaticImage } from 'gatsby-plugin-image';
 import { useTranslation } from 'gatsby-plugin-react-i18next';
-import styled, { keyframes } from 'styled-components';
-import gsap from 'gsap';
-import { usePrefersReducedMotion } from '@hooks';
-import { useBootStatus } from '@utils/bootContext';
-import { MOTION } from '@styles/motionTokens';
-import TerminalTyping from '../TerminalTyping';
-
-const blurToSharp = keyframes`
-  from {
-    filter: blur(${MOTION.blur.start}px);
-  }
-  to {
-    filter: blur(0px);
-  }
-`;
+import styled from 'styled-components';
+import { email, freelance, socialMedia } from '@config';
+import { Icon } from '@components/icons';
 
 const StyledHeroSection = styled.section`
-  ${({ theme }) => theme.mixins.flexCenter};
-  position: relative;
-  flex-direction: column;
+  min-height: 88vh;
+  display: flex;
   align-items: center;
-  text-align: center;
-  min-height: 100vh;
-  padding: 80px 0 50px;
-  z-index: 1;
+  padding: 96px 0 72px;
 
-  &::before,
-  &::after {
-    content: '+';
-    position: absolute;
-    color: var(--green);
-    font-size: 24px;
-    font-family: var(--font-mono);
-    opacity: 0.4;
-  }
-  &::before {
-    top: 18%;
-    left: 5%;
-  }
-  &::after {
-    bottom: 18%;
-    right: 5%;
+  @media (max-width: 860px) {
+    min-height: auto;
+    padding: 64px 0 56px;
   }
 
-  .hero-stack {
+  .hero-grid {
     width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(240px, 320px);
+    gap: 56px;
+    align-items: center;
+
+    @media (max-width: 860px) {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
+
+  .hero-copy {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .top-badges {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
   }
 
-  &.hero-play .huge-name {
-    animation: ${blurToSharp} 420ms ${MOTION.easing.css} both;
-  }
-
-  .sys-label {
-    margin: 0 0 20px 4px;
-    color: var(--pink);
-    font-family: var(--font-mono);
-    font-size: clamp(11px, 2vw, var(--fz-md));
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: var(--radius-pill);
+    background: rgba(252, 241, 208, 0.12);
+    border: 1px solid rgba(252, 241, 208, 0.28);
+    color: var(--cream);
+    font-size: var(--fz-xs);
     font-weight: 600;
-    letter-spacing: 0.16em;
 
-    @media (max-width: 480px) {
-      letter-spacing: 0.08em;
-      font-size: 11px;
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
     }
 
-    &::before {
-      content: '[ ';
-      color: var(--green);
-    }
-    &::after {
-      content: ' ]';
-      color: var(--green);
+    &:hover,
+    &:focus-visible {
+      background: var(--cream);
+      color: var(--on-cream);
     }
   }
 
-  .huge-name {
-    margin: 0;
-    font-size: clamp(36px, 7.5vw, 68px);
-    font-family: var(--font-mono);
-    font-weight: 700;
-    line-height: 1.1;
-    color: var(--white);
-    text-shadow: 0 0 18px rgba(0, 255, 102, 0.25);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+  .role-pill {
+    padding: 7px 14px;
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: var(--fz-xs);
+    font-weight: 500;
   }
 
-  .name-line {
-    display: block;
-  }
-
-  .hero-char {
-    display: inline-block;
-  }
-
-  h2.role-heading {
-    margin: 16px 0 0;
-    color: var(--green);
-    font-size: clamp(16px, 2.5vw, 22px);
-    font-family: var(--font-mono);
+  .hero-name {
+    margin: 0 0 12px;
+    font-size: var(--fz-xl);
     font-weight: 600;
-    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    letter-spacing: -0.01em;
+  }
+
+  .hero-headline {
+    margin: 0 0 22px;
+    font-size: clamp(36px, 5.2vw, 58px);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--cream);
   }
 
   .hero-summary {
-    margin: 16px auto 0;
-    max-width: 620px;
-    font-size: var(--fz-md);
+    margin: 0 0 28px;
+    max-width: 640px;
+    font-size: var(--fz-lg);
     line-height: 1.6;
-    color: var(--light-slate);
-    font-family: var(--font-sans);
+    color: var(--text-secondary);
   }
 
-  .explore-link {
-    ${({ theme }) => theme.mixins.bigButton};
-    margin-top: 30px;
-    color: var(--navy);
-    background-color: var(--green);
-    border: 1px solid var(--green);
-    font-family: var(--font-mono);
-    font-size: var(--fz-sm);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    border-radius: 0;
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
-    padding: 15px 30px;
-    box-shadow: 0 0 18px rgba(0, 255, 102, 0.35);
-    transition: transform ${MOTION.duration.micro}ms ${MOTION.easing.css},
-      background-color ${MOTION.duration.micro}ms ease, color ${MOTION.duration.micro}ms ease;
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .cta-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 28px;
+    border-radius: var(--radius-pill);
+    background-color: var(--cream);
+    color: var(--on-cream);
+    font-size: var(--fz-md);
+    font-weight: 600;
+    border: 1px solid var(--cream);
 
     &:hover,
-    &:focus {
-      background-color: transparent;
-      color: var(--green);
-      transform: translateY(-3px);
+    &:focus-visible {
+      background-color: #f3e4b5;
+      border-color: #f3e4b5;
+      color: var(--on-cream);
+      transform: translateY(-2px);
+    }
+  }
+
+  .cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 24px;
+    border-radius: var(--radius-pill);
+    background-color: var(--surface);
+    color: var(--cream);
+    font-size: var(--fz-md);
+    font-weight: 500;
+    border: 1px solid var(--border);
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--cream);
+      transform: translateY(-2px);
+    }
+  }
+
+  .social-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 13px;
+      border-radius: var(--radius-pill);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: var(--fz-xs);
+      font-weight: 500;
+
+      svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+      }
+
+      &:hover,
+      &:focus-visible {
+        border-color: var(--cream);
+        color: var(--cream);
+      }
+    }
+  }
+
+  .hero-portrait-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 12px;
+    box-shadow: 0 20px 44px rgba(1, 7, 54, 0.55);
+
+    @media (max-width: 860px) {
+      max-width: 176px;
+      border-radius: 20px;
+      padding: 8px;
+      order: -1;
+    }
+
+    .portrait-frame {
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      background: var(--surface-2);
+
+      @media (max-width: 860px) {
+        aspect-ratio: 1 / 1;
+        border-radius: 14px;
+      }
+    }
+
+    .portrait-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+    }
+
+    .portrait-caption {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 6px 4px;
+      font-size: var(--fz-xs);
+      color: var(--text-muted);
+
+      strong {
+        color: var(--cream);
+        font-weight: 600;
+      }
     }
   }
 `;
 
-const splitChars = text =>
-  text.split('').map((ch, idx) => (
-    <span key={idx} className="hero-char" aria-hidden="true">
-      {ch === ' ' ? '\u00A0' : ch}
-    </span>
-  ));
-
 const Hero = () => {
   const { t } = useTranslation();
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const { bootDone } = useBootStatus();
-  const containerRef = useRef(null);
-  const hasPlayedRef = useRef(false);
-
-  useEffect(() => {
-    if (prefersReducedMotion || !bootDone || hasPlayedRef.current) {
-      return;
-    }
-
-    hasPlayedRef.current = true;
-    const node = containerRef.current;
-    if (node) {
-      node.classList.add('hero-play');
-    }
-
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: MOTION.easing.gsap } });
-
-      // Animate transform & opacity in GSAP (< 900ms total); blur runs cleanly via CSS keyframes
-      tl.fromTo(
-        '.hero-label',
-        { opacity: 0.1, y: MOTION.rise.default },
-        { opacity: 1, y: 0, duration: 0.36 },
-        0,
-      )
-        .fromTo(
-          '.hero-char',
-          { opacity: 0.2, y: MOTION.rise.default },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.32,
-            stagger: MOTION.stagger.letter / 1000,
-          },
-          0.04,
-        )
-        .fromTo(
-          '.hero-role',
-          { opacity: 0.2, y: MOTION.rise.default },
-          { opacity: 1, y: 0, duration: 0.36 },
-          0.14,
-        )
-        .fromTo(
-          '.hero-terminal',
-          { opacity: 0.2, y: MOTION.rise.default },
-          { opacity: 1, y: 0, duration: 0.3 },
-          0.18,
-        )
-        .fromTo(
-          '.hero-cta',
-          { opacity: 0.2, y: MOTION.rise.default },
-          { opacity: 1, y: 0, duration: 0.34 },
-          0.28,
-        );
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [bootDone, prefersReducedMotion]);
 
   return (
-    <StyledHeroSection id="hero" ref={containerRef}>
-      <div className="hero-stack">
-        <div className="sys-label hero-label">SYS.BOOT_SEQ // OVERRIDE_ACTIVE</div>
-        <h1 className="huge-name" aria-label="RIYAN SUGIARTO">
-          <span className="name-line">{splitChars('RIYAN')}</span>
-          <span className="name-line">{splitChars('SUGIARTO')}</span>
-        </h1>
-        <h2 className="role-heading hero-role">Backend Software Engineer</h2>
-        <p className="hero-summary">{t('hero_desc')}</p>
-        <div className="hero-terminal">
-          <TerminalTyping active={bootDone} delayMs={100} />
+    <StyledHeroSection id="hero">
+      <div className="hero-grid">
+        <div className="hero-copy">
+          <div className="top-badges">
+            <a
+              className="status-pill"
+              href={`mailto:${email}`}
+              aria-label={`${freelance.status} via ${email}`}>
+              <span className="dot" aria-hidden="true" />
+              {freelance.status}
+            </a>
+            <span className="role-pill">Software Engineer — Jakarta, Indonesia</span>
+          </div>
+
+          <p className="hero-name">Riyan Sugiarto</p>
+
+          <h1 className="hero-headline">{t('hero_headline')}</h1>
+
+          <p className="hero-summary">{t('hero_desc')}</p>
+
+          <div className="hero-actions">
+            <Link className="cta-primary" to="/#projects">
+              Explore Selected Work
+            </Link>
+            <Link className="cta-secondary" to="/#contact">
+              Get in Touch
+            </Link>
+          </div>
+
+          <ul className="social-row" aria-label="Social and freelance links">
+            {socialMedia.map(item => {
+              const isMail = item.url.startsWith('mailto:');
+              return (
+                <li key={item.name}>
+                  {isMail ? (
+                    <a href={item.url} aria-label={item.label || item.name}>
+                      <Icon name={item.name} />
+                      <span>{item.label || item.name}</span>
+                    </a>
+                  ) : (
+                    <a
+                      href={item.url}
+                      aria-label={item.label || item.name}
+                      target="_blank"
+                      rel="noopener noreferrer">
+                      <Icon name={item.name} />
+                      <span>
+                        {item.label || (item.name === 'Linkedin' ? 'LinkedIn' : item.name)}
+                      </span>
+                    </a>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </div>
-        <Link className="explore-link hero-cta" to="/#architecture">
-          [ EXPLORE ARCHITECTURE ]
-        </Link>
+
+        <aside className="hero-portrait-card" aria-label="Profile portrait">
+          <div className="portrait-frame">
+            <StaticImage
+              className="portrait-img"
+              src="../../images/riyans-jas.png"
+              width={420}
+              quality={85}
+              placeholder="NONE"
+              loading="eager"
+              formats={['AUTO', 'WEBP', 'AVIF']}
+              imgStyle={{ objectFit: 'cover', objectPosition: 'center 10%' }}
+              alt="Riyan Sugiarto portrait"
+            />
+          </div>
+          <div className="portrait-caption">
+            <strong>6+ Years Experience</strong>
+            <span>Askrindo · 2025–Present</span>
+          </div>
+        </aside>
       </div>
     </StyledHeroSection>
   );

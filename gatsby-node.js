@@ -117,10 +117,18 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
     });
   }
 
+  const clientAliases = {};
+  if (stage === 'build-javascript' || stage === 'develop') {
+    clientAliases.i18next$ = path.join(
+      path.dirname(require.resolve('i18next/package.json')),
+      'dist/cjs/i18next.js',
+    );
+  }
+
   actions.setWebpackConfig({
     resolve: {
       alias: {
-        i18next$: path.resolve(__dirname, 'node_modules/i18next/dist/cjs/i18next.js'),
+        ...clientAliases,
         '@components': path.resolve(__dirname, 'src/components'),
         '@config': path.resolve(__dirname, 'src/config'),
         '@fonts': path.resolve(__dirname, 'src/fonts'),

@@ -2,43 +2,39 @@ import { css } from 'styled-components';
 
 const variables = css`
   :root {
-    /* Cyberpunk Theme (High Tech, Low Life) */
-    --dark-navy: #050505;
-    --navy: #050505;
-    --light-navy: #0a0a0a;
-    --lightest-navy: #141414;
-    --navy-shadow: rgba(5, 5, 5, 0.7);
-    --dark-slate: #6b7280;
-    --slate: #9ca3af;
-    --light-slate: #d1d5db;
-    --lightest-slate: #f3f4f6;
-    --white: #ffffff;
+    /* Midnight Navy & Warm Cream Palette (Option A) */
+    --bg: #010736;
+    --surface: #0d1c42;
+    --surface-elevated: #142758;
+    --surface-2: #22396f;
+    --border: rgba(34, 57, 111, 0.9);
+    --border-soft: rgba(252, 241, 208, 0.14);
+    --cream: #fcf1d0;
+    --on-cream: #010736;
+    --text-primary: #fcf1d0;
+    --text-secondary: #d5dceb;
+    --text-muted: #98a9cc;
 
-    /* Neon Accents */
-    --yellow: #fdee00; /* Cyber Yellow */
-    --yellow-tint: rgba(253, 238, 0, 0.1);
-    --pink: #b8ff00; /* Neon Lime / Secondary Green */
-    --blue: #00ff66; /* Matrix Green (Primary) */
-    --purple: #bc13fe; /* Neon Purple */
-    --green: #00ff66; /* Matrix Green */
+    /* Compatibility tokens mapped cleanly to Option A (no neon/terminal colors) */
+    --dark-navy: #010736;
+    --navy: #010736;
+    --light-navy: #0d1c42;
+    --lightest-navy: #22396f;
+    --navy-shadow: rgba(1, 7, 54, 0.65);
+    --dark-slate: #6f82aa;
+    --slate: #98a9cc;
+    --light-slate: #d5dceb;
+    --lightest-slate: #fcf1d0;
+    --white: #fcf1d0;
+    --green: #fcf1d0;
+    --blue: #9cc2ff;
+    --pink: #fcf1d0;
+    --yellow: #fcf1d0;
+    --yellow-tint: rgba(252, 241, 208, 0.14);
 
-    /* Background blob colors (Neon & Gritty) */
-    --blob1-start: var(--green);
-    --blob1-end: #008033; /* Dark Green */
-    --blob2-start: var(--pink); /* Lime */
-    --blob2-end: #5c8000; /* Dark Lime */
-    --blob3-start: var(--green);
-    --blob3-end: #004d1f; /* Darker Green */
-    --blob4-start: var(--pink);
-    --blob4-end: #7a9900;
-    --blob5-start: var(--green);
-    --blob5-end: #00993d;
-    --blob6-start: #00e65c;
-    --blob6-end: #004d1f;
-
-    /* Fonts — max 2 local families (Calibre body sans, SF Mono monospace & headings) */
-    --font-heading: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    --font-sans: 'Calibre', 'Inter', -apple-system, system-ui, sans-serif;
+    /* Typography — Clean sans-serif throughout (max 2 font families) */
+    --font-heading: 'Calibre', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-sans: 'Calibre', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-mono: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
     --fz-xxs: 12px;
@@ -48,28 +44,19 @@ const variables = css`
     --fz-lg: 18px;
     --fz-xl: 20px;
     --fz-xxl: 22px;
-    --fz-heading: 32px;
+    --fz-heading: 36px;
 
-    /* Cyberpunk UI prefers hard angles and chamfers */
-    --border-radius: 0px;
-    --nav-height: 100px;
-    --nav-scroll-height: 70px;
-
-    --tab-height: 42px;
-    --tab-width: 120px;
+    --border-radius: 16px;
+    --radius-card: 20px;
+    --radius-sm: 12px;
+    --radius-pill: 9999px;
+    --nav-height: 80px;
+    --nav-scroll-height: 68px;
 
     --easing: cubic-bezier(0.22, 1, 0.36, 1);
     --transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
     --dur-micro: 180ms;
     --dur-entrance: 600ms;
-
-    --hamburger-width: 30px;
-
-    --ham-before: top 0.1s ease-in 0.25s, opacity 0.1s ease-in;
-    --ham-before-active: top 0.1s ease-out, opacity 0.1s ease-out 0.12s;
-    --ham-after: bottom 0.1s ease-in 0.25s, transform 0.22s cubic-bezier(0.55, 0.055, 0.675, 0.19);
-    --ham-after-active: bottom 0.1s ease-out,
-      transform 0.22s cubic-bezier(0.215, 0.61, 0.355, 1) 0.12s;
   }
 `;
 

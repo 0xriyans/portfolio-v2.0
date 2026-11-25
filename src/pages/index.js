@@ -6,17 +6,20 @@ import Layout from '@components/layout';
 import Hero from '@components/sections/hero';
 import LazySection from '@components/LazySection';
 
-const LazyAbout = React.lazy(() => import('@components/sections/about'));
-const LazyArchitecture = React.lazy(() => import('@components/sections/architecture'));
-const LazyStack = React.lazy(() => import('@components/sections/stack'));
-const LazyJobs = React.lazy(() => import('@components/sections/jobs'));
 const LazyFeatured = React.lazy(() => import('@components/sections/featured'));
 const LazyProjects = React.lazy(() => import('@components/sections/projects'));
+const LazyStack = React.lazy(() => import('@components/sections/stack'));
+const LazyJobs = React.lazy(() => import('@components/sections/jobs'));
 const LazyGithubHeatmap = React.lazy(() => import('@components/sections/githubHeatmap'));
+const LazyAbout = React.lazy(() => import('@components/sections/about'));
 const LazyContact = React.lazy(() => import('@components/sections/contact'));
 
 const StyledMainContainer = styled.main`
-  counter-reset: section;
+  padding: 0 32px;
+
+  @media (max-width: 768px) {
+    padding: 0 20px;
+  }
 `;
 
 const IndexPage = ({ location }) => (
@@ -24,36 +27,29 @@ const IndexPage = ({ location }) => (
     <StyledMainContainer className="fillHeight">
       <Hero />
       <LazySection
-        id="about"
-        rootMargin="20px 0px"
-        maxWidth={980}
-        minHeight={680}
-        heading="[ 01 // WHOAMI ]">
-        <LazyAbout />
-      </LazySection>
-      <LazySection
-        id="architecture"
-        maxWidth={1000}
-        minHeight={420}
-        heading="[ 02 // ARCHITECTURE ]">
-        <LazyArchitecture />
-      </LazySection>
-      <LazySection id="stack" maxWidth={1040} minHeight={520} heading="[ 03 // STACK ]">
-        <LazyStack />
-      </LazySection>
-      <LazySection id="jobs" maxWidth={980} minHeight={680} heading="[ 04 // EXPERIENCE ]">
-        <LazyJobs />
-      </LazySection>
-      <LazySection id="projects" maxWidth={1040} minHeight={820} heading="[ 05 // PROJECTS ]">
+        id="projects"
+        rootMargin="40px 0px"
+        maxWidth={1120}
+        minHeight={720}
+        heading="Projects">
         <LazyFeatured />
       </LazySection>
-      <LazySection maxWidth={1040} minHeight={720}>
+      <LazySection maxWidth={1120} minHeight={520}>
         <LazyProjects />
       </LazySection>
-      <LazySection id="github" maxWidth={980} minHeight={360} heading="[ 06 // GITHUB_ACTIVITY ]">
+      <LazySection id="stack" maxWidth={1120} minHeight={560} heading="Technology Stack">
+        <LazyStack />
+      </LazySection>
+      <LazySection id="experience" maxWidth={1120} minHeight={640} heading="Work Experience">
+        <LazyJobs />
+      </LazySection>
+      <LazySection id="github" maxWidth={1120} minHeight={340} heading="GitHub Contributions">
         <LazyGithubHeatmap />
       </LazySection>
-      <LazySection id="contact" maxWidth={880} minHeight={560} heading="[ 07 // TERMINAL ]">
+      <LazySection id="about" maxWidth={1120} minHeight={480} heading="About">
+        <LazyAbout />
+      </LazySection>
+      <LazySection id="contact" maxWidth={1120} minHeight={520} heading="Contact">
         <LazyContact />
       </LazySection>
     </StyledMainContainer>

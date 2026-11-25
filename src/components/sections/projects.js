@@ -1,29 +1,41 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Link, useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
 import { Icon } from '@components/icons';
-import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
-import { MOTION } from '@styles/motionTokens';
 import ProjectMedia from '../ProjectMedia';
 
 const StyledProjectsSection = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 20px !important;
-  max-width: 1040px;
+  padding-top: 24px !important;
+  max-width: 1120px;
 
-  h2 {
-    font-size: clamp(20px, 4vw, 24px);
-    font-family: var(--font-mono);
-    text-align: center;
-  }
+  .sub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
 
-  .archive-link {
-    font-family: var(--font-mono);
-    font-size: var(--fz-sm);
-    margin-top: 8px;
+    h2 {
+      margin: 0;
+      font-size: clamp(24px, 3.2vw, 30px);
+      color: var(--cream);
+    }
+
+    p {
+      margin: 6px 0 0;
+      font-size: var(--fz-md);
+      color: var(--text-muted);
+    }
+
+    .archive-link {
+      color: var(--cream);
+      font-size: var(--fz-sm);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(252, 241, 208, 0.35);
+      padding-bottom: 2px;
+    }
   }
 
   .projects-grid {
@@ -32,8 +44,6 @@ const StyledProjectsSection = styled.section`
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-gap: 24px;
-    position: relative;
-    margin-top: 36px;
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
@@ -43,41 +53,24 @@ const StyledProjectsSection = styled.section`
 
 const StyledProject = styled.li`
   position: relative;
-  opacity: ${({ visible }) => (visible ? 1 : 0)};
-  transform: translate3d(0, ${({ visible }) => (visible ? '0px' : `${MOTION.rise.projects}px`)}, 0);
-  transition: ${({ reduced }) =>
-    reduced
-      ? 'none'
-      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--card-delay, 0ms), transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--card-delay, 0ms)`};
 
   .project-inner {
-    background: #0d1117;
+    background: var(--surface);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    position: relative;
     height: 100%;
-    padding: 20px;
-    border-radius: 6px;
-    border: 1px solid rgba(0, 255, 102, 0.22);
-    transition: transform ${MOTION.duration.micro}ms ${MOTION.easing.css},
-      border-color ${MOTION.duration.micro}ms ease, box-shadow ${MOTION.duration.micro}ms ease;
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        border-color: var(--green);
-        box-shadow: 0 8px 24px rgba(0, 255, 102, 0.14);
-        transform: translate3d(0, -4px, 0);
-      }
-    }
+    padding: 22px;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--border);
   }
 
   .project-image {
     width: 100%;
     margin-bottom: 16px;
-    position: relative;
     overflow: hidden;
-    border-radius: 4px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
 
     .img {
       width: 100%;
@@ -91,54 +84,44 @@ const StyledProject = styled.li`
     margin-bottom: 8px;
 
     .company-badge {
-      color: var(--pink);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      color: var(--text-muted);
+      font-size: var(--fz-xs);
+      font-weight: 600;
     }
 
     .project-links {
       display: flex;
       align-items: center;
-      color: var(--light-slate);
+      color: var(--text-secondary);
 
       a {
         ${({ theme }) => theme.mixins.flexCenter};
         padding: 4px 6px;
 
         svg {
-          width: 18px;
-          height: 18px;
+          width: 17px;
+          height: 17px;
         }
       }
     }
   }
 
   .project-title {
-    margin: 0 0 10px;
-    color: var(--white);
-    font-family: var(--font-mono);
-    font-size: 17px;
+    margin: 0 0 8px;
+    color: var(--cream);
+    font-size: 19px;
+    font-weight: 600;
     word-break: break-word;
 
     a {
-      color: var(--white);
-      &:hover {
-        color: var(--green);
-      }
+      color: var(--cream);
     }
   }
 
   .project-description {
-    color: var(--light-slate);
-    font-size: 14.5px;
-    font-family: var(--font-sans);
-    line-height: 1.55;
-
-    a {
-      ${({ theme }) => theme.mixins.inlineLink};
-    }
+    color: var(--text-secondary);
+    font-size: var(--fz-sm);
+    line-height: 1.6;
   }
 
   .project-tech-list {
@@ -150,13 +133,12 @@ const StyledProject = styled.li`
     list-style: none;
 
     li {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--green);
-      background: rgba(2, 10, 20, 0.85);
-      padding: 3px 8px;
-      border: 1px solid rgba(0, 255, 102, 0.2);
-      border-radius: 2px;
+      font-size: var(--fz-xs);
+      color: var(--cream);
+      background: rgba(34, 57, 111, 0.55);
+      padding: 3px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
     }
   }
 `;
@@ -205,9 +187,6 @@ const Projects = () => {
 
   const { language } = useI18next();
   const { t } = useTranslation();
-  const gridRef = useRef(null);
-  const inView = useInViewOnce(gridRef, MOTION.trigger.viewport);
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   const projects = data.projects.edges.filter(
     ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
@@ -215,28 +194,26 @@ const Projects = () => {
 
   return (
     <StyledProjectsSection>
-      <h2>{t('Other Noteworthy Projects')}</h2>
+      <div className="sub-header">
+        <div>
+          <h2>{t('Other Production Systems')}</h2>
+          <p>13 named production systems in total across enterprise platforms.</p>
+        </div>
 
-      <Link className="inline-link archive-link" to="/archive">
-        {t('view the archive')}
-      </Link>
+        <Link className="archive-link" to="/archive">
+          {t('View all projects')} &rarr;
+        </Link>
+      </div>
 
-      <ul className="projects-grid" ref={gridRef}>
+      <ul className="projects-grid">
         {projects &&
           projects.map(({ node }, i) => {
             const { frontmatter, html } = node;
             const { github, external, title, company, tech } = frontmatter;
             const href = external || github || null;
-            const visible = prefersReducedMotion || inView;
 
             return (
-              <StyledProject
-                key={i}
-                visible={visible}
-                reduced={prefersReducedMotion}
-                style={{
-                  '--card-delay': prefersReducedMotion ? '0ms' : `${i * MOTION.stagger.projects}ms`,
-                }}>
+              <StyledProject key={i}>
                 <div className="project-inner">
                   <header style={{ width: '100%' }}>
                     <div className="project-image">
@@ -244,7 +221,7 @@ const Projects = () => {
                     </div>
 
                     <div className="project-top">
-                      <span className="company-badge">{company || 'PRODUCTION'}</span>
+                      <span className="company-badge">{company || 'Production'}</span>
                       {(github || external) && (
                         <div className="project-links">
                           {github && (

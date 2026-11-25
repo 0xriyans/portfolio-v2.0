@@ -2,9 +2,9 @@ const config = require('./src/config');
 
 module.exports = {
   siteMetadata: {
-    title: 'Riyan Sugiarto — Backend Software Engineer',
+    title: 'Riyan Sugiarto — Software Engineer',
     description:
-      'Riyan Sugiarto is a Backend Software Engineer with 6+ years of experience building enterprise Java, Spring Boot, Quarkus, Apache Kafka, and PostgreSQL systems.',
+      'Software Engineer (backend-first, end-to-end) in Jakarta with 6+ years of experience building resilient Java, Spring Boot, Quarkus, Apache Kafka, PostgreSQL, and applied AI systems.',
     siteUrl: 'https://riyans.tech', // No trailing slash allowed!
     image: '/og.png', // Path to your image you placed in the 'static' folder
     twitterUsername: '@0xriyans',
@@ -20,11 +20,11 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: 'RiyanSugiarto',
-        short_name: 'RiyanSugiarto',
+        name: 'Riyan Sugiarto',
+        short_name: 'Riyan',
         start_url: '/',
-        background_color: config.colors.darkNavy,
-        theme_color: config.colors.navy,
+        background_color: '#010736',
+        theme_color: '#0d1c42',
         display: 'minimal-ui',
         icon: 'src/images/logo.png',
       },

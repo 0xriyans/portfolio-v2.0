@@ -6,21 +6,20 @@ import styled from 'styled-components';
 import { email } from '@config';
 import { KEY_CODES } from '@utils';
 import { useOnClickOutside } from '@hooks';
-import { MOTION } from '@styles/motionTokens';
 
 const MOBILE_ITEMS = [
-  { label: 'Station', url: '/#about' },
-  { label: 'Architecture', url: '/#architecture' },
-  { label: 'Stack', url: '/#stack' },
-  { label: 'Experience', url: '/#jobs' },
+  { label: 'Home', url: '/#hero' },
   { label: 'Projects', url: '/#projects' },
-  { label: 'Terminal', url: '/#contact' },
+  { label: 'Stack', url: '/#stack' },
+  { label: 'Experience', url: '/#experience' },
+  { label: 'About', url: '/#about' },
+  { label: 'Contact', url: '/#contact' },
 ];
 
 const StyledMenu = styled.div`
   display: none;
 
-  @media (max-width: 768px) {
+  @media (max-width: 820px) {
     display: flex;
     align-items: center;
   }
@@ -30,56 +29,55 @@ const MenuPillButton = styled.button`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 14px;
-  background: transparent;
-  border: 1px solid rgba(0, 255, 102, 0.35);
-  border-radius: 9999px;
-  color: var(--green);
-  font-family: var(--font-mono);
-  font-size: 12px;
+  padding: 8px 16px;
+  background: rgba(34, 57, 111, 0.55);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: var(--fz-sm);
   font-weight: 600;
-  letter-spacing: 0.08em;
   cursor: pointer;
   position: relative;
   z-index: 60;
-  transition: background-color ${MOTION.duration.micro}ms ease;
 
   &:hover,
   &:focus-visible {
-    background: rgba(0, 255, 102, 0.12);
+    background: var(--surface-2);
   }
 `;
 
 const StyledSidebar = styled.aside`
   display: none;
 
-  @media (max-width: 768px) {
-    ${({ theme }) => theme.mixins.flexCenter};
+  @media (max-width: 820px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: fixed;
     top: 0;
     bottom: 0;
     right: 0;
-    padding: 70px 20px 40px;
-    width: min(78vw, 340px);
+    padding: 72px 24px 40px;
+    width: min(80vw, 340px);
     height: 100vh;
     outline: 0;
-    background-color: #070b09;
-    border-left: 1px solid rgba(0, 255, 102, 0.35);
-    box-shadow: -10px 0px 30px rgba(0, 0, 0, 0.85);
+    background-color: var(--surface);
+    border-left: 1px solid var(--border);
+    box-shadow: -12px 0 36px rgba(1, 7, 54, 0.85);
     z-index: 55;
     transform: translateX(${props => (props.menuOpen ? 0 : 105)}%);
     visibility: ${props => (props.menuOpen ? 'visible' : 'hidden')};
-    transition: transform 250ms ${MOTION.easing.css}, visibility 250ms ease;
   }
 
   nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 18px;
     width: 100%;
-    color: var(--lightest-slate);
-    font-family: var(--font-mono);
+    color: var(--cream);
+    font-family: var(--font-sans);
     text-align: center;
   }
 
@@ -90,51 +88,53 @@ const StyledSidebar = styled.aside`
     width: 100%;
 
     li {
-      margin: 0 auto 8px;
-      font-size: 15px;
+      margin: 0 auto 6px;
+      font-size: var(--fz-lg);
+      font-weight: 500;
     }
 
     a {
       display: block;
       padding: 10px 16px;
-      color: var(--light-slate);
-      text-decoration: none;
+      color: var(--text-secondary);
+      border-radius: 12px;
 
       &:hover,
-      &:focus {
-        color: var(--green);
+      &:focus-visible {
+        color: var(--cream);
+        background: rgba(34, 57, 111, 0.5);
       }
     }
   }
 
   .drawer-langs {
     display: flex;
-    gap: 10px;
-    margin-top: 8px;
+    gap: 8px;
+    margin-top: 6px;
 
     a {
-      padding: 6px 10px;
-      font-size: 12px;
-      border: 1px solid rgba(0, 255, 102, 0.25);
-      border-radius: 4px;
-      color: var(--light-slate);
+      padding: 6px 12px;
+      font-size: var(--fz-xs);
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      color: var(--text-muted);
 
       &.current {
-        border-color: var(--green);
-        color: var(--green);
+        border-color: var(--cream);
+        color: var(--cream);
       }
     }
   }
 
-  .drawer-hire {
-    margin-top: 10px;
-    padding: 12px 24px;
-    background: var(--green);
-    color: #050505;
-    font-weight: 700;
-    font-size: 13px;
-    border-radius: 9999px;
-    text-decoration: none;
+  .drawer-cta {
+    margin-top: 8px;
+    padding: 12px 26px;
+    background: var(--cream);
+    color: var(--on-cream);
+    font-weight: 600;
+    font-size: var(--fz-sm);
+    border-radius: var(--radius-pill);
   }
 `;
 
@@ -142,7 +142,6 @@ const Menu = ({ tabIndex = 0 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { languages, language, originalPath } = useI18next();
   const buttonRef = useRef(null);
-  const navRef = useRef(null);
   const wrapperRef = useRef(null);
 
   useOnClickOutside(wrapperRef, () => setMenuOpen(false));
@@ -154,7 +153,7 @@ const Menu = ({ tabIndex = 0 }) => {
       }
     };
     const onResize = e => {
-      if (e.currentTarget.innerWidth > 768) {
+      if (e.currentTarget.innerWidth > 820) {
         setMenuOpen(false);
       }
     };
@@ -179,14 +178,14 @@ const Menu = ({ tabIndex = 0 }) => {
         tabIndex={tabIndex}
         aria-expanded={menuOpen}
         aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
-        {menuOpen ? '[ CLOSE ]' : '[ MENU ]'}
+        {menuOpen ? 'Close' : 'Menu'}
       </MenuPillButton>
 
       <StyledSidebar menuOpen={menuOpen} aria-hidden={!menuOpen} tabIndex={menuOpen ? 1 : -1}>
-        <nav ref={navRef}>
+        <nav>
           <ol>
-            {MOBILE_ITEMS.map(({ url, label }, i) => (
-              <li key={i}>
+            {MOBILE_ITEMS.map(({ url, label }) => (
+              <li key={url}>
                 <Link to={url} onClick={() => setMenuOpen(false)}>
                   {label}
                 </Link>
@@ -208,12 +207,12 @@ const Menu = ({ tabIndex = 0 }) => {
           </div>
 
           <a
-            className="drawer-hire"
+            className="drawer-cta"
             href={`mailto:${email}`}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setMenuOpen(false)}>
-            HIRE_ME [ON]
+            Hire Me
           </a>
         </nav>
       </StyledSidebar>

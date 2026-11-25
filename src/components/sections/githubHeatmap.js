@@ -1,23 +1,21 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
-import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
-import { MOTION } from '@styles/motionTokens';
 
-const GREEN_SCALE = ['#0b1410', '#004d1f', '#008a38', '#00cc52', '#00ff66'];
+const GREEN_SCALE = ['#132554', '#0e4429', '#006d32', '#26a641', '#39d353'];
 
 const StyledGithubSection = styled.section`
-  max-width: 980px;
+  max-width: 1120px;
 
   .heatmap-card {
-    background: #0d1117;
-    border: 1px solid rgba(0, 255, 102, 0.25);
-    border-radius: 6px;
-    padding: 24px;
-    position: relative;
+    margin-top: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 26px;
 
     @media (max-width: 600px) {
-      padding: 18px 14px;
+      padding: 20px 16px;
     }
   }
 
@@ -26,26 +24,27 @@ const StyledGithubSection = styled.section`
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     margin-bottom: 18px;
-    font-family: var(--font-mono);
 
     .summary {
-      color: var(--white);
-      font-size: var(--fz-sm);
+      color: var(--text-secondary);
+      font-size: var(--fz-md);
 
       strong {
-        color: var(--green);
+        color: var(--cream);
         font-variant-numeric: tabular-nums;
       }
     }
 
     .profile-link {
       font-size: var(--fz-xs);
-      color: var(--green);
-      border: 1px solid rgba(0, 255, 102, 0.35);
-      padding: 5px 11px;
-      border-radius: 3px;
+      font-weight: 600;
+      color: var(--cream);
+      border: 1px solid var(--border);
+      background: rgba(34, 57, 111, 0.55);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
     }
   }
 
@@ -77,13 +76,12 @@ const StyledGithubSection = styled.section`
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--slate);
+    font-size: var(--fz-xs);
+    color: var(--text-muted);
   }
 
   .tooltip-banner {
-    color: var(--green);
+    color: var(--cream);
     min-height: 18px;
     font-variant-numeric: tabular-nums;
   }
@@ -96,29 +94,29 @@ const StyledGithubSection = styled.section`
     .swatch {
       width: 11px;
       height: 11px;
-      border-radius: 2px;
-      border: 1px solid rgba(0, 255, 102, 0.14);
+      border-radius: 3px;
+      border: 1px solid rgba(252, 241, 208, 0.12);
     }
   }
 
   .fallback-box {
     padding: 28px 20px;
     text-align: center;
-    font-family: var(--font-mono);
-    color: var(--light-slate);
+    color: var(--text-secondary);
 
     p {
-      margin-bottom: 14px;
-      font-size: var(--fz-sm);
+      margin-bottom: 16px;
+      font-size: var(--fz-md);
     }
 
     a {
       display: inline-block;
-      padding: 10px 20px;
-      border: 1px solid var(--green);
-      color: var(--green);
+      padding: 10px 22px;
+      background: var(--cream);
+      color: var(--on-cream);
       font-size: var(--fz-xs);
-      border-radius: 3px;
+      font-weight: 600;
+      border-radius: var(--radius-pill);
     }
   }
 `;
@@ -127,19 +125,13 @@ const Cell = styled.button`
   width: 12px;
   height: 12px;
   padding: 0;
-  border: 1px solid rgba(0, 255, 102, 0.12);
-  border-radius: 2px;
+  border: 1px solid rgba(252, 241, 208, 0.08);
+  border-radius: 3px;
   cursor: pointer;
-  opacity: ${({ visible }) => (visible ? 1 : 0)};
-  transform: scale(${({ visible }) => (visible ? 1 : 0.7)});
-  transition: ${({ reduced }) =>
-    reduced
-      ? 'none'
-      : `opacity 220ms ${MOTION.easing.css} var(--cell-delay, 0ms), transform 220ms ${MOTION.easing.css} var(--cell-delay, 0ms), border-color 150ms ease`};
 
   &:hover,
   &:focus-visible {
-    border-color: #ffffff;
+    border-color: var(--cream);
     outline: none;
   }
 `;
@@ -165,37 +157,7 @@ const GithubHeatmap = () => {
   const [total, setTotal] = useState(initialNode && initialNode.total ? initialNode.total : 0);
   const [selectedTip, setSelectedTip] = useState(null);
   const [fetchFailed, setFetchFailed] = useState(false);
-  const [nearViewport, setNearViewport] = useState(false);
 
-  const cardRef = useRef(null);
-  const inView = useInViewOnce(cardRef, MOTION.trigger.viewport);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  // Defer mounting 368 cell buttons until the section approaches the viewport to keep initial DOM/TTI lean
-  useEffect(() => {
-    if (prefersReducedMotion || nearViewport) {
-      setNearViewport(true);
-      return;
-    }
-    const el = cardRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') {
-      setNearViewport(true);
-      return;
-    }
-    const obs = new IntersectionObserver(
-      entries => {
-        if (entries[0] && entries[0].isIntersecting) {
-          setNearViewport(true);
-          obs.disconnect();
-        }
-      },
-      { rootMargin: '700px 0px' },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [prefersReducedMotion, nearViewport]);
-
-  // If build-time fetch wasn't available, fetch real public data on client; on failure show profile link fallback
   useEffect(() => {
     if (contributions.length > 0) {
       return;
@@ -229,7 +191,6 @@ const GithubHeatmap = () => {
     };
   }, [contributions.length]);
 
-  // Group into 7-day Sunday-aligned weeks for grid rendering
   const weeks = useMemo(() => {
     if (!contributions || contributions.length === 0) {
       return [];
@@ -256,27 +217,25 @@ const GithubHeatmap = () => {
     return grouped;
   }, [contributions]);
 
-  const visible = prefersReducedMotion || inView;
-  const maxWeekIndex = Math.max(weeks.length - 1, 1);
-
   return (
     <StyledGithubSection id="github">
-      <h2 className="numbered-heading">[ 06 // GITHUB_ACTIVITY ]</h2>
+      <span className="section-kicker">Open source &amp; activity</span>
+      <h2 className="section-heading">GitHub Contributions</h2>
 
-      <div className="heatmap-card" ref={cardRef}>
+      <div className="heatmap-card">
         {fetchFailed || weeks.length === 0 ? (
           <div className="fallback-box">
             <p>Live contribution graph could not be retrieved right now.</p>
             <a href="https://github.com/0xriyans" target="_blank" rel="noreferrer">
-              &gt; VIEW GITHUB PROFILE (@0xriyans)
+              View GitHub Profile (@0xriyans)
             </a>
           </div>
         ) : (
           <>
             <div className="heatmap-top">
               <div className="summary">
-                <strong>{total}</strong> contributions in the last 12 months (<code>@0xriyans</code>
-                )
+                <strong>{total}</strong> contributions in the last 12 months on{' '}
+                <code>@0xriyans</code>
               </div>
               <a
                 className="profile-link"
@@ -292,47 +251,38 @@ const GithubHeatmap = () => {
                 className="weeks-grid"
                 role="grid"
                 aria-label="0xriyans 12-month GitHub contributions">
-                {nearViewport &&
-                  weeks.map((week, wIdx) => (
-                    <div className="week-col" key={wIdx} role="row">
-                      {week.map((day, dIdx) => {
-                        if (!day) {
-                          return (
-                            <span key={`empty-${wIdx}-${dIdx}`} style={{ width: 12, height: 12 }} />
-                          );
-                        }
-                        // Diagonal stagger capped so total entrance stays within 800ms
-                        const diagNorm = (wIdx + dIdx) / (maxWeekIndex + 6);
-                        const delayMs = Math.round(diagNorm * 580);
-                        const tipText = `${day.count} contribution${
-                          day.count === 1 ? '' : 's'
-                        } on ${day.date}`;
+                {weeks.map((week, wIdx) => (
+                  <div className="week-col" key={wIdx} role="row">
+                    {week.map((day, dIdx) => {
+                      if (!day) {
                         return (
-                          <Cell
-                            key={day.date}
-                            type="button"
-                            visible={visible}
-                            reduced={prefersReducedMotion}
-                            style={{
-                              backgroundColor: GREEN_SCALE[day.level] || GREEN_SCALE[0],
-                              '--cell-delay': prefersReducedMotion ? '0ms' : `${delayMs}ms`,
-                            }}
-                            aria-label={tipText}
-                            title={tipText}
-                            onMouseEnter={() => setSelectedTip(tipText)}
-                            onFocus={() => setSelectedTip(tipText)}
-                            onClick={() => setSelectedTip(tipText)}
-                          />
+                          <span key={`empty-${wIdx}-${dIdx}`} style={{ width: 12, height: 12 }} />
                         );
-                      })}
-                    </div>
-                  ))}
+                      }
+                      const tipText = `${day.count} contribution${day.count === 1 ? '' : 's'} on ${
+                        day.date
+                      }`;
+                      return (
+                        <Cell
+                          key={day.date}
+                          type="button"
+                          style={{ backgroundColor: GREEN_SCALE[day.level] || GREEN_SCALE[0] }}
+                          aria-label={tipText}
+                          title={tipText}
+                          onMouseEnter={() => setSelectedTip(tipText)}
+                          onFocus={() => setSelectedTip(tipText)}
+                          onClick={() => setSelectedTip(tipText)}
+                        />
+                      );
+                    })}
+                  </div>
+                ))}
               </div>
             </div>
 
             <div className="heatmap-footer">
               <div className="tooltip-banner" aria-live="polite">
-                {selectedTip || 'Hover or tap any cell to inspect daily count & date.'}
+                {selectedTip || 'Hover or tap any square to inspect contribution count & date.'}
               </div>
               <div className="legend" aria-hidden="true">
                 <span>Less</span>

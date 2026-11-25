@@ -5,9 +5,7 @@ import { useLocation } from '@reach/router';
 import { useStaticQuery, graphql } from 'gatsby';
 import { useI18next } from 'gatsby-plugin-react-i18next';
 import CalibreRegularWoff2 from '@fonts/Calibre/Calibre-Regular.woff2';
-import SFMonoSemiboldWoff2 from '@fonts/SFMono/SFMono-Semibold.woff2';
-
-// https://www.gatsbyjs.com/docs/add-seo-component/
+import CalibreSemiboldWoff2 from '@fonts/Calibre/Calibre-Semibold.woff2';
 
 const Head = ({ title, description, image }) => {
   const { pathname } = useLocation();
@@ -56,7 +54,7 @@ const Head = ({ title, description, image }) => {
         rel="preload"
         as="font"
         type="font/woff2"
-        href={SFMonoSemiboldWoff2}
+        href={CalibreSemiboldWoff2}
         crossOrigin="anonymous"
       />
       <link
