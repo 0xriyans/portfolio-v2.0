@@ -40,23 +40,8 @@ const ScrollProgress = () => {
   };
 
   useEffect(() => {
-    // Forcefully remove Gatsby's annoying QOD indicator permanently
-    const removeQod = () => {
-      const qod = document.getElementById('query-on-demand-indicator-element');
-      if (qod) {
-        qod.style.display = 'none';
-        qod.remove();
-      }
-    };
-    removeQod();
-    const observer = new MutationObserver(removeQod);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Initial check
-    handleScroll();
-
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll);
+    window.addEventListener('resize', handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);

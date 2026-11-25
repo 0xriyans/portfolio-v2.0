@@ -1,7 +1,5 @@
 import React, { useRef, useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { FaJava, FaDocker } from 'react-icons/fa';
-import { SiSpringboot, SiApachekafka, SiPostgresql, SiKubernetes } from 'react-icons/si';
 import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
 import { MOTION } from '@styles/motionTokens';
 
@@ -23,7 +21,7 @@ const CORE_CARDS = [
     offsetY: 28,
     note: 'Primary backend language (6+ yrs)',
     badge: 'CORE',
-    icon: <FaJava />,
+    glyph: 'JVM',
   },
   {
     name: 'Spring Boot',
@@ -32,7 +30,7 @@ const CORE_CARDS = [
     offsetY: 12,
     note: 'Microservices, REST & Spring Cloud',
     badge: 'API',
-    icon: <SiSpringboot />,
+    glyph: 'SB',
   },
   {
     name: 'Apache Kafka',
@@ -41,7 +39,7 @@ const CORE_CARDS = [
     offsetY: 3,
     note: 'Zero-loss manual offset streaming',
     badge: 'STREAM',
-    icon: <SiApachekafka />,
+    glyph: 'KFK',
   },
   {
     name: 'PostgreSQL',
@@ -50,7 +48,7 @@ const CORE_CARDS = [
     offsetY: 0,
     note: 'ACID ledger & SELECT FOR UPDATE',
     badge: 'ACID',
-    icon: <SiPostgresql />,
+    glyph: 'PG',
   },
   {
     name: 'Quarkus',
@@ -59,7 +57,7 @@ const CORE_CARDS = [
     offsetY: 3,
     note: 'Pruhub Flink migration (<300 MB)',
     badge: 'CLOUD',
-    icon: <span style={{ fontWeight: 800, fontSize: 18 }}>Q</span>,
+    glyph: 'QKS',
   },
   {
     name: 'Kubernetes',
@@ -68,7 +66,7 @@ const CORE_CARDS = [
     offsetY: 12,
     note: 'Production container orchestration',
     badge: 'K8S',
-    icon: <SiKubernetes />,
+    glyph: 'K8S',
   },
   {
     name: 'Docker',
@@ -77,7 +75,7 @@ const CORE_CARDS = [
     offsetY: 28,
     note: 'Lean microservice container builds',
     badge: 'RUNTIME',
-    icon: <FaDocker />,
+    glyph: 'DKR',
   },
 ];
 
@@ -144,15 +142,15 @@ const FanCard = styled.div`
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
   transform-origin: center bottom;
   cursor: default;
-  z-index: ${({ index }) => 4 - Math.abs(index - 3) + 1};
-  transform: ${({ open, offsetX, offsetY, angle }) =>
+  z-index: var(--fan-z, 1);
+  transform: ${({ open }) =>
     open
-      ? `translate3d(${offsetX}px, ${offsetY}px, 0) rotate(${angle}deg)`
+      ? 'translate3d(var(--fan-x, 0px), var(--fan-y, 0px), 0) rotate(var(--fan-angle, 0deg))'
       : 'translate3d(0, 12px, 0) rotate(0deg)'};
-  transition: ${({ reduced, delay }) =>
+  transition: ${({ reduced }) =>
     reduced
       ? 'none'
-      : `transform ${MOTION.duration.fan}ms ${MOTION.easing.css} ${delay}ms, border-color ${MOTION.duration.micro}ms ease, box-shadow ${MOTION.duration.micro}ms ease`};
+      : `transform ${MOTION.duration.fan}ms ${MOTION.easing.css} var(--fan-delay, 0ms), border-color ${MOTION.duration.micro}ms ease 0ms, box-shadow ${MOTION.duration.micro}ms ease 0ms`};
 
   @media (hover: hover) and (pointer: fine) {
     &:hover,
@@ -160,8 +158,12 @@ const FanCard = styled.div`
       z-index: 20;
       border-color: var(--green);
       box-shadow: 0 18px 34px rgba(0, 255, 102, 0.24);
-      transform: ${({ offsetX, offsetY, angle }) =>
-    `translate3d(${offsetX}px, ${offsetY - MOTION.rise.fanHover}px, 0) rotate(${angle}deg)`};
+      transform: translate3d(
+          var(--fan-x, 0px),
+          calc(var(--fan-y, 0px) - ${MOTION.rise.fanHover}px),
+          0
+        )
+        rotate(var(--fan-angle, 0deg));
       transition-delay: 0ms;
 
       .fan-tooltip {
@@ -180,12 +182,22 @@ const FanCard = styled.div`
   }
 
   .card-icon {
-    font-size: 32px;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     color: var(--green);
     display: flex;
     align-items: center;
     justify-content: center;
     height: 44px;
+
+    span {
+      padding: 7px 12px;
+      border: 1px solid rgba(0, 255, 102, 0.35);
+      border-radius: 4px;
+      background: rgba(0, 255, 102, 0.08);
+    }
   }
 
   .card-name {
@@ -334,13 +346,15 @@ const Stack = () => {
         {CORE_CARDS.map((card, i) => (
           <FanCard
             key={card.name}
-            index={i}
             open={isOpen}
             reduced={prefersReducedMotion}
-            delay={i * MOTION.stagger.fan}
-            offsetX={card.offsetX}
-            offsetY={card.offsetY}
-            angle={card.angle}
+            style={{
+              '--fan-z': 4 - Math.abs(i - 3) + 1,
+              '--fan-x': `${card.offsetX}px`,
+              '--fan-y': `${card.offsetY}px`,
+              '--fan-angle': `${card.angle}deg`,
+              '--fan-delay': prefersReducedMotion ? '0ms' : `${i * MOTION.stagger.fan}ms`,
+            }}
             tabIndex={0}
             aria-label={`${card.name}: ${card.note}`}
             onClick={() => setActiveIdx(activeIdx === i ? null : i)}>
@@ -350,7 +364,7 @@ const Stack = () => {
             </div>
             <span className="card-badge">{card.badge}</span>
             <div className="card-icon" aria-hidden="true">
-              {card.icon}
+              <span>{card.glyph}</span>
             </div>
             <div className="card-name">{card.name}</div>
             <div className="mobile-note">{card.note}</div>

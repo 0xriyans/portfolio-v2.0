@@ -49,10 +49,10 @@ const StyledTimelineEntry = styled.article`
     0,
     0
   );
-  transition: ${({ reduced, delay }) =>
+  transition: ${({ reduced }) =>
     reduced
       ? 'none'
-      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${delay}ms, transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${delay}ms, border-color ${MOTION.duration.micro}ms ease`};
+      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--job-delay, 0ms), transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--job-delay, 0ms), border-color ${MOTION.duration.micro}ms ease 0ms`};
 
   &:last-child {
     margin-bottom: 0;
@@ -309,7 +309,9 @@ const Jobs = () => {
                 isCurrent={isCurrent}
                 visible={active}
                 reduced={prefersReducedMotion}
-                delay={i * MOTION.stagger.default}>
+                style={{
+                  '--job-delay': prefersReducedMotion ? '0ms' : `${i * MOTION.stagger.default}ms`,
+                }}>
                 <div className="left-date">{range}</div>
 
                 <div className="entry-header">

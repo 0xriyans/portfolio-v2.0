@@ -16,7 +16,10 @@ const DiagramFrame = styled.div`
   width: 100%;
   height: 100%;
   min-height: ${({ compact }) => (compact ? '190px' : '240px')};
-  background: #070c0a;
+  background-color: #070c0a;
+  background-image: linear-gradient(rgba(0, 255, 102, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 102, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
   border: 1px solid rgba(0, 255, 102, 0.28);
   border-radius: 4px;
   display: flex;
@@ -153,10 +156,17 @@ const DIAGRAMS = {
 const ProjectDiagram = ({ type, title, compact = false }) => {
   const frameRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const [saveData, setSaveData] = useState(false);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    if (prefersReducedMotion) {
+    if (typeof navigator !== 'undefined' && navigator.connection && navigator.connection.saveData) {
+      setSaveData(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion || saveData) {
       setInView(false);
       return;
     }
@@ -174,9 +184,9 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, saveData]);
 
-  const animateFlow = inView && !prefersReducedMotion;
+  const animateFlow = inView && !prefersReducedMotion && !saveData;
 
   const cfg = DIAGRAMS[type] || {
     header: `ARCH // ${(title || 'PRODUCTION SYSTEM').toUpperCase()}`,
@@ -199,18 +209,6 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
       aria-label={`${title} architecture diagram`}>
       <svg viewBox="0 0 640 300" preserveAspectRatio="xMidYMid meet">
         <defs>
-          <pattern
-            id={`grid-${type || 'default'}`}
-            width="24"
-            height="24"
-            patternUnits="userSpaceOnUse">
-            <path
-              d="M 24 0 L 0 0 0 24"
-              fill="none"
-              stroke="rgba(0, 255, 102, 0.08)"
-              strokeWidth="1"
-            />
-          </pattern>
           <marker
             id={`arrow-${type || 'default'}`}
             viewBox="0 0 10 10"
@@ -222,9 +220,6 @@ const ProjectDiagram = ({ type, title, compact = false }) => {
             <path d="M 0 1 L 10 5 L 0 9 z" fill="#00ff66" />
           </marker>
         </defs>
-
-        <rect width="640" height="300" fill="#070c0a" />
-        <rect width="640" height="300" fill={`url(#grid-${type || 'default'})`} />
 
         {/* Top Bar */}
         <rect x="0" y="0" width="640" height="36" fill="#0d1512" />

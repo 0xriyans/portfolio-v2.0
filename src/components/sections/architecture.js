@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import gsap from 'gsap';
 import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
 import { MOTION } from '@styles/motionTokens';
 
@@ -87,38 +86,67 @@ const Architecture = () => {
     }
 
     hasAnimatedRef.current = true;
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: MOTION.easing.gsap } });
+    let cancelled = false;
+    let ctx;
 
-      // Total ~1800ms: nodes fade in sequentially, connector lines draw left-to-right, light dot travels
-      const lines = gsap.utils.toArray('.arch-line');
-      lines.forEach(line => {
-        const len = typeof line.getTotalLength === 'function' ? line.getTotalLength() : 60;
-        gsap.set(line, { strokeDasharray: len, strokeDashoffset: len });
-      });
+    import('gsap').then(({ default: gsap }) => {
+      if (cancelled || !sectionRef.current) {
+        return;
+      }
+      ctx = gsap.context(() => {
+        const tl = gsap.timeline({ defaults: { ease: MOTION.easing.gsap } });
 
-      tl.fromTo(
-        '.arch-node',
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.35, stagger: 0.16 },
-        0,
-      )
-        .to(lines, { strokeDashoffset: 0, duration: 0.25, stagger: 0.18 }, 0.18)
-        .fromTo(
-          '.arch-dot-desktop',
-          { attr: { cx: 146 }, opacity: 0 },
-          {
-            keyframes: [
-              { attr: { cx: 146 }, opacity: 1, duration: 0.1 },
-              { attr: { cx: 832 }, opacity: 1, duration: 1.45, ease: 'power1.inOut' },
-              { attr: { cx: 832 }, opacity: 0, duration: 0.25 },
-            ],
-          },
-          0.1,
-        );
-    }, sectionRef);
+        // Total ~1800ms: nodes fade in sequentially, connector lines draw left-to-right, light dot travels
+        const lines = gsap.utils.toArray('.arch-line');
+        lines.forEach(line => {
+          const len = typeof line.getTotalLength === 'function' ? line.getTotalLength() : 60;
+          gsap.set(line, { strokeDasharray: len, strokeDashoffset: len });
+        });
 
-    return () => ctx.revert();
+        tl.fromTo(
+          '.arch-node',
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.35, stagger: 0.16 },
+          0,
+        )
+          .to(lines, { strokeDashoffset: 0, duration: 0.25, stagger: 0.18 }, 0.18)
+          .fromTo(
+            '.arch-dot-desktop',
+            { attr: { cx: 146 }, opacity: 0 },
+            {
+              keyframes: [
+                { attr: { cx: 146 }, opacity: 1, duration: 0.1 },
+                { attr: { cx: 832 }, opacity: 1, duration: 1.45, ease: 'power1.inOut' },
+                { attr: { cx: 832 }, opacity: 0, duration: 0.25 },
+              ],
+            },
+            0.1,
+          )
+          .fromTo(
+            '.arch-dot-mobile',
+            { attr: { cx: 168, cy: 55 }, opacity: 0 },
+            {
+              keyframes: [
+                { attr: { cx: 168, cy: 55 }, opacity: 1, duration: 0.08 },
+                { attr: { cx: 264, cy: 55 }, opacity: 1, duration: 0.26, ease: 'none' },
+                { attr: { cx: 264, cy: 157 }, opacity: 1, duration: 0.26, ease: 'none' },
+                { attr: { cx: 96, cy: 157 }, opacity: 1, duration: 0.34, ease: 'none' },
+                { attr: { cx: 96, cy: 259 }, opacity: 1, duration: 0.26, ease: 'none' },
+                { attr: { cx: 192, cy: 259 }, opacity: 1, duration: 0.26, ease: 'none' },
+                { attr: { cx: 192, cy: 259 }, opacity: 0, duration: 0.24 },
+              ],
+            },
+            0.1,
+          );
+      }, sectionRef);
+    });
+
+    return () => {
+      cancelled = true;
+      if (ctx) {
+        ctx.revert();
+      }
+    };
   }, [inView, prefersReducedMotion]);
 
   return (
@@ -297,6 +325,17 @@ const Architecture = () => {
             strokeWidth="2"
             markerEnd="url(#arch-arrow-m)"
           />
+
+          {!prefersReducedMotion && (
+            <circle
+              className="arch-dot-mobile"
+              cx="168"
+              cy="55"
+              r="4.5"
+              fill="#b8ff00"
+              opacity="0"
+            />
+          )}
 
           {MOBILE_NODES.map((n, idx) => (
             <g key={idx} className="arch-node">

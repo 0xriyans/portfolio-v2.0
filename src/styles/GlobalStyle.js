@@ -1,11 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
 import fonts from './fonts';
 import variables from './variables';
-import TransitionStyles from './TransitionStyles';
-import PrismStyles from './PrismStyles';
 
 const GlobalStyle = createGlobalStyle`
-  ${TransitionStyles};
   ${fonts};
   ${variables};
 
@@ -68,33 +65,6 @@ const GlobalStyle = createGlobalStyle`
   }
   ::-webkit-scrollbar {
     display: none;
-  }
-
-  @keyframes neonBorder {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  @keyframes crt-flicker {
-    0% { opacity: 0.98; }
-    50% { opacity: 1; }
-    100% { opacity: 0.98; }
-  }
-
-  @keyframes scanline-scroll {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 100vh; }
-  }
-
-  @keyframes expand-line {
-    0% { width: 0; opacity: 0; }
-    100% { width: 300px; opacity: 1; }
-  }
-
-  @keyframes neon-glow-pulse {
-    0%, 100% { text-shadow: 0 0 5px rgba(0, 255, 102, 0.2), 0 0 10px rgba(0, 255, 102, 0.1); }
-    50% { text-shadow: 0 0 10px rgba(0, 255, 102, 0.6), 0 0 20px rgba(0, 255, 102, 0.4); }
   }
 
   body {
@@ -187,6 +157,11 @@ const GlobalStyle = createGlobalStyle`
     @media (max-width: 480px) {
       padding: 60px 0;
     }
+  }
+
+  main > section:not(#hero):not(#about) {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 640px;
   }
 
   h1,
@@ -476,10 +451,6 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
   }
 
-  ${TransitionStyles};
-
-  ${PrismStyles};
-
   /* Force hide Gatsby Query On Demand indicator */
   #query-on-demand-indicator-element,
   gatsby-qod,
@@ -488,6 +459,23 @@ const GlobalStyle = createGlobalStyle`
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-label,
+    .name-line,
+    .hero-char,
+    .hero-role,
+    .hero-terminal,
+    .hero-cta,
+    section,
+    section * {
+      animation: none !important;
+      transition: none !important;
+      filter: none !important;
+      opacity: 1 !important;
+      stroke-dashoffset: 0 !important;
+    }
   }
 `;
 

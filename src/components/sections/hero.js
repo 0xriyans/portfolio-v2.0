@@ -1,12 +1,21 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'gatsby';
 import { useTranslation } from 'gatsby-plugin-react-i18next';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import gsap from 'gsap';
 import { usePrefersReducedMotion } from '@hooks';
 import { useBootStatus } from '@utils/bootContext';
 import { MOTION } from '@styles/motionTokens';
 import TerminalTyping from '../TerminalTyping';
+
+const blurToSharp = keyframes`
+  from {
+    filter: blur(${MOTION.blur.start}px);
+  }
+  to {
+    filter: blur(0px);
+  }
+`;
 
 const StyledHeroSection = styled.section`
   ${({ theme }) => theme.mixins.flexCenter};
@@ -41,6 +50,10 @@ const StyledHeroSection = styled.section`
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  &.hero-play .huge-name {
+    animation: ${blurToSharp} 420ms ${MOTION.easing.css} both;
   }
 
   .sys-label {
@@ -84,7 +97,6 @@ const StyledHeroSection = styled.section`
 
   .hero-char {
     display: inline-block;
-    will-change: transform, opacity, filter;
   }
 
   h2.role-heading {
@@ -151,46 +163,49 @@ const Hero = () => {
     }
 
     hasPlayedRef.current = true;
+    const node = containerRef.current;
+    if (node) {
+      node.classList.add('hero-play');
+    }
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: MOTION.easing.gsap } });
-      const blurFrom = `blur(${MOTION.blur.start}px)`;
 
-      // Whole hero sequence strictly within 1000ms
+      // Animate transform & opacity in GSAP (< 900ms total); blur runs cleanly via CSS keyframes
       tl.fromTo(
         '.hero-label',
-        { opacity: 0, y: MOTION.rise.default, filter: blurFrom },
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45 },
+        { opacity: 0.1, y: MOTION.rise.default },
+        { opacity: 1, y: 0, duration: 0.36 },
         0,
       )
         .fromTo(
           '.hero-char',
-          { opacity: 0, y: MOTION.rise.default, filter: blurFrom },
+          { opacity: 0.2, y: MOTION.rise.default },
           {
             opacity: 1,
             y: 0,
-            filter: 'blur(0px)',
-            duration: 0.42,
+            duration: 0.32,
             stagger: MOTION.stagger.letter / 1000,
           },
-          0.08,
+          0.04,
         )
         .fromTo(
           '.hero-role',
-          { opacity: 0, y: MOTION.rise.default, filter: blurFrom },
-          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45 },
-          0.22,
+          { opacity: 0.2, y: MOTION.rise.default },
+          { opacity: 1, y: 0, duration: 0.36 },
+          0.14,
         )
         .fromTo(
           '.hero-terminal',
-          { opacity: 0, y: MOTION.rise.default, filter: blurFrom },
-          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.4 },
-          0.28,
+          { opacity: 0.2, y: MOTION.rise.default },
+          { opacity: 1, y: 0, duration: 0.3 },
+          0.18,
         )
         .fromTo(
           '.hero-cta',
-          { opacity: 0, y: MOTION.rise.default, filter: blurFrom },
-          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45 },
-          0.42,
+          { opacity: 0.2, y: MOTION.rise.default },
+          { opacity: 1, y: 0, duration: 0.34 },
+          0.28,
         );
     }, containerRef);
 
@@ -206,9 +221,9 @@ const Hero = () => {
           <span className="name-line">{splitChars('SUGIARTO')}</span>
         </h1>
         <h2 className="role-heading hero-role">Backend Software Engineer</h2>
-        <p className="hero-summary hero-role">{t('hero_desc')}</p>
+        <p className="hero-summary">{t('hero_desc')}</p>
         <div className="hero-terminal">
-          <TerminalTyping active={bootDone} delayMs={260} />
+          <TerminalTyping active={bootDone} delayMs={100} />
         </div>
         <Link className="explore-link hero-cta" to="/#architecture">
           [ EXPLORE ARCHITECTURE ]

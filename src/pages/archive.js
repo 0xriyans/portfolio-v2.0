@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useI18next } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
-import { Layout } from '@components';
+import Layout from '@components/layout';
 import { Icon } from '@components/icons';
 
 const StyledTableContainer = styled.div`

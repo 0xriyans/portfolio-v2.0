@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { navLinks, email } from '@config';
 import { usePrefersReducedMotion } from '@hooks';
-import { Menu } from '@components';
+import Menu from '@components/menu';
 import { MOTION } from '@styles/motionTokens';
 
 const SECTION_TARGETS = [
@@ -180,14 +180,20 @@ const Nav = ({ isHome }) => {
     }
 
     const checkVisibility = () => {
+      if (window.scrollY < 100) {
+        setVisible(false);
+        return;
+      }
       const heroEl = document.getElementById('hero');
       const threshold = heroEl ? heroEl.offsetHeight * 0.8 : window.innerHeight * 0.8;
       setVisible(window.scrollY >= threshold);
     };
 
-    checkVisibility();
+    if (window.scrollY > 0) {
+      checkVisibility();
+    }
     window.addEventListener('scroll', checkVisibility, { passive: true });
-    window.addEventListener('resize', checkVisibility);
+    window.addEventListener('resize', checkVisibility, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', checkVisibility);
@@ -206,6 +212,9 @@ const Nav = ({ isHome }) => {
     }
 
     const handleScrollSpy = () => {
+      if (window.scrollY < 100) {
+        return;
+      }
       const scrollMarker = window.scrollY + window.innerHeight * 0.35;
       let current = targets[0].id;
       for (const el of targets) {
@@ -216,15 +225,20 @@ const Nav = ({ isHome }) => {
       setActiveId(current);
     };
 
-    handleScrollSpy();
+    if (window.scrollY > 0) {
+      handleScrollSpy();
+    }
     window.addEventListener('scroll', handleScrollSpy, { passive: true });
     return () => window.removeEventListener('scroll', handleScrollSpy);
   }, [isHome]);
 
   useEffect(() => {
+    if (!visible) {
+      return;
+    }
     updateDotPosition(activeId);
     const onResize = () => updateDotPosition(activeId);
-    window.addEventListener('resize', onResize);
+    window.addEventListener('resize', onResize, { passive: true });
     return () => window.removeEventListener('resize', onResize);
   }, [activeId, visible, updateDotPosition]);
 

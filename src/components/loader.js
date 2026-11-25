@@ -44,10 +44,10 @@ const StyledLoader = styled.div`
   inset: 0;
   width: 100%;
   height: 100%;
-  background-color: #050505;
+  background-color: rgba(5, 5, 5, 0.96);
   z-index: 99;
   cursor: pointer;
-  animation: ${fadeOutOverlay} 220ms cubic-bezier(0.22, 1, 0.36, 1) 960ms forwards;
+  animation: ${fadeOutOverlay} 150ms cubic-bezier(0.22, 1, 0.36, 1) 750ms forwards;
 
   html.skip-boot & {
     display: none !important;
@@ -68,7 +68,8 @@ const StyledLoader = styled.div`
     }
 
     p:nth-child(1) {
-      animation-delay: 0ms;
+      opacity: 1;
+      animation: none;
     }
     p:nth-child(2) {
       animation-delay: 120ms;
@@ -112,7 +113,7 @@ const StyledLoader = styled.div`
       background: var(--green);
       transform-origin: left center;
       transform: scaleX(0);
-      animation: ${scaleBar} 900ms cubic-bezier(0.22, 1, 0.36, 1) 60ms forwards;
+      animation: ${scaleBar} 900ms cubic-bezier(0.22, 1, 0.36, 1) 0ms forwards;
     }
   }
 
@@ -144,7 +145,7 @@ const Loader = ({ finishLoading }) => {
   }, [finishLoading]);
 
   useEffect(() => {
-    const timer = setTimeout(handleFinish, 1180);
+    const timer = setTimeout(handleFinish, 900);
 
     const onKeyDown = e => {
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {

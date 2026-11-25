@@ -61,6 +61,7 @@ const StyledGithubSection = styled.section`
     grid-auto-columns: 12px;
     gap: 4px;
     min-width: max-content;
+    min-height: 108px;
   }
 
   .week-col {
@@ -128,14 +129,13 @@ const Cell = styled.button`
   padding: 0;
   border: 1px solid rgba(0, 255, 102, 0.12);
   border-radius: 2px;
-  background-color: ${({ level }) => GREEN_SCALE[level] || GREEN_SCALE[0]};
   cursor: pointer;
   opacity: ${({ visible }) => (visible ? 1 : 0)};
   transform: scale(${({ visible }) => (visible ? 1 : 0.7)});
-  transition: ${({ reduced, delay }) =>
+  transition: ${({ reduced }) =>
     reduced
       ? 'none'
-      : `opacity 220ms ${MOTION.easing.css} ${delay}ms, transform 220ms ${MOTION.easing.css} ${delay}ms, border-color 150ms ease`};
+      : `opacity 220ms ${MOTION.easing.css} var(--cell-delay, 0ms), transform 220ms ${MOTION.easing.css} var(--cell-delay, 0ms), border-color 150ms ease`};
 
   &:hover,
   &:focus-visible {
@@ -165,10 +165,35 @@ const GithubHeatmap = () => {
   const [total, setTotal] = useState(initialNode && initialNode.total ? initialNode.total : 0);
   const [selectedTip, setSelectedTip] = useState(null);
   const [fetchFailed, setFetchFailed] = useState(false);
+  const [nearViewport, setNearViewport] = useState(false);
 
   const cardRef = useRef(null);
   const inView = useInViewOnce(cardRef, MOTION.trigger.viewport);
   const prefersReducedMotion = usePrefersReducedMotion();
+
+  // Defer mounting 368 cell buttons until the section approaches the viewport to keep initial DOM/TTI lean
+  useEffect(() => {
+    if (prefersReducedMotion || nearViewport) {
+      setNearViewport(true);
+      return;
+    }
+    const el = cardRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setNearViewport(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      entries => {
+        if (entries[0] && entries[0].isIntersecting) {
+          setNearViewport(true);
+          obs.disconnect();
+        }
+      },
+      { rootMargin: '700px 0px' },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [prefersReducedMotion, nearViewport]);
 
   // If build-time fetch wasn't available, fetch real public data on client; on failure show profile link fallback
   useEffect(() => {
@@ -267,38 +292,41 @@ const GithubHeatmap = () => {
                 className="weeks-grid"
                 role="grid"
                 aria-label="0xriyans 12-month GitHub contributions">
-                {weeks.map((week, wIdx) => (
-                  <div className="week-col" key={wIdx} role="row">
-                    {week.map((day, dIdx) => {
-                      if (!day) {
+                {nearViewport &&
+                  weeks.map((week, wIdx) => (
+                    <div className="week-col" key={wIdx} role="row">
+                      {week.map((day, dIdx) => {
+                        if (!day) {
+                          return (
+                            <span key={`empty-${wIdx}-${dIdx}`} style={{ width: 12, height: 12 }} />
+                          );
+                        }
+                        // Diagonal stagger capped so total entrance stays within 800ms
+                        const diagNorm = (wIdx + dIdx) / (maxWeekIndex + 6);
+                        const delayMs = Math.round(diagNorm * 580);
+                        const tipText = `${day.count} contribution${
+                          day.count === 1 ? '' : 's'
+                        } on ${day.date}`;
                         return (
-                          <span key={`empty-${wIdx}-${dIdx}`} style={{ width: 12, height: 12 }} />
+                          <Cell
+                            key={day.date}
+                            type="button"
+                            visible={visible}
+                            reduced={prefersReducedMotion}
+                            style={{
+                              backgroundColor: GREEN_SCALE[day.level] || GREEN_SCALE[0],
+                              '--cell-delay': prefersReducedMotion ? '0ms' : `${delayMs}ms`,
+                            }}
+                            aria-label={tipText}
+                            title={tipText}
+                            onMouseEnter={() => setSelectedTip(tipText)}
+                            onFocus={() => setSelectedTip(tipText)}
+                            onClick={() => setSelectedTip(tipText)}
+                          />
                         );
-                      }
-                      // Diagonal stagger capped so total entrance stays within 800ms
-                      const diagNorm = (wIdx + dIdx) / (maxWeekIndex + 6);
-                      const delayMs = Math.round(diagNorm * 580);
-                      const tipText = `${day.count} contribution${day.count === 1 ? '' : 's'} on ${
-                        day.date
-                      }`;
-                      return (
-                        <Cell
-                          key={day.date}
-                          type="button"
-                          level={day.level}
-                          visible={visible}
-                          reduced={prefersReducedMotion}
-                          delay={delayMs}
-                          aria-label={tipText}
-                          title={tipText}
-                          onMouseEnter={() => setSelectedTip(tipText)}
-                          onFocus={() => setSelectedTip(tipText)}
-                          onClick={() => setSelectedTip(tipText)}
-                        />
-                      );
-                    })}
-                  </div>
-                ))}
+                      })}
+                    </div>
+                  ))}
               </div>
             </div>
 

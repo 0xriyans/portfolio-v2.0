@@ -1,12 +1,11 @@
 import React, { useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
-import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import styled from 'styled-components';
 import { Icon } from '@components/icons';
 import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
 import { MOTION } from '@styles/motionTokens';
-import ProjectDiagram from '../ProjectDiagram';
+import ProjectMedia from '../ProjectMedia';
 
 const StyledFeaturedSection = styled.section`
   max-width: 1040px;
@@ -36,10 +35,10 @@ const StyledProject = styled.li`
   flex-direction: column;
   opacity: ${({ visible }) => (visible ? 1 : 0)};
   transform: translate3d(0, ${({ visible }) => (visible ? '0px' : `${MOTION.rise.projects}px`)}, 0);
-  transition: ${({ reduced, delay }) =>
+  transition: ${({ reduced }) =>
     reduced
       ? 'none'
-      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${delay}ms, transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${delay}ms, border-color ${MOTION.duration.micro}ms ease, box-shadow ${MOTION.duration.micro}ms ease`};
+      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--card-delay, 0ms), transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--card-delay, 0ms), border-color ${MOTION.duration.micro}ms ease 0ms, box-shadow ${MOTION.duration.micro}ms ease 0ms`};
 
   @media (min-width: 769px) {
     &:nth-child(even) {
@@ -193,9 +192,18 @@ const Featured = () => {
               title
               company
               diagram
+              videoWebm {
+                publicURL
+              }
+              videoMp4 {
+                publicURL
+              }
+              poster {
+                publicURL
+              }
               cover {
                 childImageSharp {
-                  gatsbyImageData(width: 700, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
+                  gatsbyImageData(width: 700, placeholder: NONE, formats: [AUTO, WEBP, AVIF])
                 }
               }
               tech
@@ -227,23 +235,20 @@ const Featured = () => {
         {featuredProjects &&
           featuredProjects.map(({ node }, i) => {
             const { frontmatter, html } = node;
-            const { external, title, company, tech, github, cover, diagram } = frontmatter;
-            const image = cover ? getImage(cover) : null;
+            const { external, title, company, tech, github } = frontmatter;
             const href = external || github || null;
             const visible = prefersReducedMotion || inView;
 
-            const media = image ? (
-              <GatsbyImage image={image} alt={title} className="img" />
-            ) : (
-              <ProjectDiagram type={diagram} title={title} compact />
-            );
+            const media = <ProjectMedia frontmatter={frontmatter} compact />;
 
             return (
               <StyledProject
                 key={i}
                 visible={visible}
                 reduced={prefersReducedMotion}
-                delay={i * MOTION.stagger.projects}>
+                style={{
+                  '--card-delay': prefersReducedMotion ? '0ms' : `${i * MOTION.stagger.projects}ms`,
+                }}>
                 <div className="project-media">
                   {href ? (
                     <a href={href} target="_blank" rel="noreferrer" aria-label={title}>

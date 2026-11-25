@@ -37,7 +37,8 @@ const MatrixRain = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*アァカサタナハマヤラワガザダバパ'.split(
       '',
     );
-    const fontSize = 22;
+    const fontSize = width <= 768 ? 28 : 22;
+    const tickMs = width <= 768 ? 140 : 110;
     let columns = Math.ceil(width / fontSize);
     const drops = Array.from({ length: columns }, () => Math.floor(Math.random() * 20));
 
@@ -66,10 +67,11 @@ const MatrixRain = () => {
       timeoutId = setTimeout(() => {
         draw();
         animationFrameId = requestAnimationFrame(renderLoop);
-      }, 110);
+      }, tickMs);
     };
 
-    renderLoop();
+    // Defer canvas glyph rasterization until initial boot & hydration settle so LCP/TBT stay fast
+    const bootDelayId = setTimeout(renderLoop, 1250);
 
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
@@ -83,6 +85,7 @@ const MatrixRain = () => {
     window.addEventListener('resize', handleResize);
 
     return () => {
+      clearTimeout(bootDelayId);
       clearTimeout(timeoutId);
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);

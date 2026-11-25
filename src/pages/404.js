@@ -5,7 +5,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { navDelay } from '@utils';
-import { Layout } from '@components';
+import Layout from '@components/layout';
 import { usePrefersReducedMotion } from '@hooks';
 
 const StyledMainContainer = styled.main`

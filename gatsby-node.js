@@ -55,6 +55,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       ios: String
       android: String
       diagram: String
+      videoWebm: File @fileByRelativePath
+      videoMp4: File @fileByRelativePath
+      poster: File @fileByRelativePath
       showInProjects: Boolean
       cover: File @fileByRelativePath
     }
@@ -117,6 +120,7 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
   actions.setWebpackConfig({
     resolve: {
       alias: {
+        i18next$: path.resolve(__dirname, 'node_modules/i18next/dist/cjs/i18next.js'),
         '@components': path.resolve(__dirname, 'src/components'),
         '@config': path.resolve(__dirname, 'src/config'),
         '@fonts': path.resolve(__dirname, 'src/fonts'),

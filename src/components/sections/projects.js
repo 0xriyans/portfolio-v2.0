@@ -1,12 +1,11 @@
 import React, { useRef } from 'react';
 import { Link, useStaticQuery, graphql } from 'gatsby';
 import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
-import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import styled from 'styled-components';
 import { Icon } from '@components/icons';
 import { useInViewOnce, usePrefersReducedMotion } from '@hooks';
 import { MOTION } from '@styles/motionTokens';
-import ProjectDiagram from '../ProjectDiagram';
+import ProjectMedia from '../ProjectMedia';
 
 const StyledProjectsSection = styled.section`
   display: flex;
@@ -46,10 +45,10 @@ const StyledProject = styled.li`
   position: relative;
   opacity: ${({ visible }) => (visible ? 1 : 0)};
   transform: translate3d(0, ${({ visible }) => (visible ? '0px' : `${MOTION.rise.projects}px`)}, 0);
-  transition: ${({ reduced, delay }) =>
+  transition: ${({ reduced }) =>
     reduced
       ? 'none'
-      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${delay}ms, transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${delay}ms`};
+      : `opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--card-delay, 0ms), transform ${MOTION.duration.entrance}ms ${MOTION.easing.css} var(--card-delay, 0ms)`};
 
   .project-inner {
     background: #0d1117;
@@ -182,9 +181,18 @@ const Projects = () => {
               github
               external
               diagram
+              videoWebm {
+                publicURL
+              }
+              videoMp4 {
+                publicURL
+              }
+              poster {
+                publicURL
+              }
               cover {
                 childImageSharp {
-                  gatsbyImageData(width: 400, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
+                  gatsbyImageData(width: 400, placeholder: NONE, formats: [AUTO, WEBP, AVIF])
                 }
               }
             }
@@ -217,8 +225,7 @@ const Projects = () => {
         {projects &&
           projects.map(({ node }, i) => {
             const { frontmatter, html } = node;
-            const { github, external, title, company, tech, cover, diagram } = frontmatter;
-            const image = cover ? getImage(cover) : null;
+            const { github, external, title, company, tech } = frontmatter;
             const href = external || github || null;
             const visible = prefersReducedMotion || inView;
 
@@ -227,15 +234,13 @@ const Projects = () => {
                 key={i}
                 visible={visible}
                 reduced={prefersReducedMotion}
-                delay={i * MOTION.stagger.projects}>
+                style={{
+                  '--card-delay': prefersReducedMotion ? '0ms' : `${i * MOTION.stagger.projects}ms`,
+                }}>
                 <div className="project-inner">
                   <header style={{ width: '100%' }}>
                     <div className="project-image">
-                      {image ? (
-                        <GatsbyImage image={image} alt={title} className="img" />
-                      ) : (
-                        <ProjectDiagram type={diagram} title={title} compact />
-                      )}
+                      <ProjectMedia frontmatter={frontmatter} compact />
                     </div>
 
                     <div className="project-top">

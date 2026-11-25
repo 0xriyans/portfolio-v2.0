@@ -7,11 +7,9 @@ const QUERY = '(prefers-reduced-motion: no-preference)';
 const isRenderingOnServer = typeof window === 'undefined';
 
 const getInitialState = () =>
-  // For our initial server render, we won't know if the user
-  // prefers reduced motion, but it doesn't matter. This value
-  // will be overwritten on the client, before any animations
-  // occur.
-  isRenderingOnServer ? true : !window.matchMedia(QUERY).matches;
+  // Match default non-reduced browser state during SSR to avoid full-tree hydration mismatches;
+  // GlobalStyle enforces static visibility via @media (prefers-reduced-motion: reduce) from frame 0.
+  isRenderingOnServer ? false : !window.matchMedia(QUERY).matches;
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(getInitialState);
   useEffect(() => {

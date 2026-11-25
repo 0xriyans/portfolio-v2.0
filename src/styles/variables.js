@@ -36,11 +36,10 @@ const variables = css`
     --blob6-start: #00e65c;
     --blob6-end: #004d1f;
 
-    /* Fonts */
-    --font-heading: 'Orbitron', 'M PLUS 1 Code', sans-serif;
-    --font-sans: 'Rajdhani', 'JetBrains Mono', 'M PLUS 1 Code', sans-serif;
-    --font-mono: 'Share Tech Mono', 'Space Grotesk', 'Fira Code', 'Fira Mono', 'M PLUS 1 Code',
-      monospace;
+    /* Fonts — max 2 local families (Calibre body sans, SF Mono monospace & headings) */
+    --font-heading: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --font-sans: 'Calibre', 'Inter', -apple-system, system-ui, sans-serif;
+    --font-mono: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
     --fz-xxs: 12px;
     --fz-xs: 13px;

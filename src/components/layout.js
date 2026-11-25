@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
-import { Head, Loader, Nav, Social, Email, Footer, MatrixRain, ScrollProgress } from '@components';
+import Head from '@components/head';
+import Loader from '@components/loader';
+import Nav from '@components/nav';
+import Social from '@components/social';
+import Email from '@components/email';
+import Footer from '@components/footer';
+import MatrixRain from '@components/MatrixRain';
+import ScrollProgress from '@components/ScrollProgress';
 import { usePrefersReducedMotion } from '@hooks';
 import { BootProvider } from '@utils/bootContext';
-import { GlobalStyle, theme } from '@styles';
+import { theme } from '@styles';
 
 const StyledContent = styled.div`
   display: flex;
@@ -76,12 +83,10 @@ const Layout = ({ children, location }) => {
 
       <div id="root">
         <ThemeProvider theme={theme}>
-          <GlobalStyle />
-
           <a className="skip-to-content" href="#content">
             Skip to Content
           </a>
-          <MatrixRain />
+          {bootDone && <MatrixRain />}
           <ScrollProgress />
 
           {showBoot && isHome && <Loader finishLoading={() => setShowBoot(false)} />}
