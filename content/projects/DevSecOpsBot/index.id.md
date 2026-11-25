@@ -7,7 +7,7 @@ tech:
   - Gemini AI
   - DevSecOps
 cover: './devsecops-bot.png'
-showInProjects: true
+showInProjects: false
 ---
 
 Jujur saja: melakukan code review manual itu melelahkan. Bagi developer, berpindah-pindah konteks, membaca ratusan baris kode, dan mencari celah keamanan bisa sangat menguras tenaga...

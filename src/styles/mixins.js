@@ -1,30 +1,29 @@
 import { css } from 'styled-components';
 
 const button = css`
-  color: var(--pink);
-  background-color: rgba(184, 255, 0, 0.05);
-  border: 1px solid var(--pink);
-  border-radius: var(--border-radius);
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
-  font-size: var(--fz-xs);
-  font-family: var(--font-mono);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--on-cream);
+  background-color: var(--cream);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-pill);
+  font-size: var(--fz-sm);
+  font-family: var(--font-sans);
+  font-weight: 600;
   line-height: 1;
   text-decoration: none;
   cursor: pointer;
   transition: var(--transition);
-  padding: 1.25rem 1.75rem;
+  padding: 14px 24px;
 
   &:hover,
-  &:focus,
-  &:active {
-    background-color: rgba(184, 255, 0, 0.15);
-    color: var(--pink);
-    border-color: var(--pink);
-    box-shadow: 0 0 10px var(--pink), inset 0 0 10px var(--pink);
-    outline: none;
-  }
-  &:after {
-    display: none !important;
+  &:focus-visible {
+    background-color: #f3e4b5;
+    border-color: #f3e4b5;
+    color: var(--on-cream);
+    transform: translateY(-2px);
   }
 `;
 
@@ -44,158 +43,66 @@ const mixins = {
   link: css`
     display: inline-block;
     text-decoration: none;
-    text-decoration-skip-ink: auto;
     color: inherit;
-    position: relative;
     transition: var(--transition);
     &:hover,
-    &:active,
-    &:focus {
-      color: var(--yellow);
-      outline: 0;
+    &:focus-visible {
+      color: var(--cream);
     }
   `,
 
   inlineLink: css`
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     text-decoration: none;
-    text-decoration-skip-ink: auto;
-    position: relative;
+    color: var(--cream);
+    font-weight: 500;
+    border-bottom: 1px solid rgba(252, 241, 208, 0.35);
+    padding-bottom: 2px;
     transition: var(--transition);
-    color: var(--blue);
+
     &:hover,
-    &:focus,
-    &:active {
-      color: var(--blue);
-      outline: 0;
-      text-shadow: 0 0 8px var(--blue);
-      &:after {
-        width: 100%;
-      }
-      & > * {
-        color: var(--blue) !important;
-        transition: var(--transition);
-      }
-    }
-    &:after {
-      content: '';
-      display: block;
-      width: 0;
-      height: 1px;
-      position: relative;
-      bottom: 0.37em;
-      background-color: var(--blue);
-      transition: var(--transition);
-      opacity: 0.8;
-      box-shadow: 0 0 5px var(--blue);
+    &:focus-visible {
+      border-bottom-color: var(--cream);
     }
   `,
 
   button,
 
   smallButton: css`
-    color: var(--pink);
-    background-color: rgba(184, 255, 0, 0.05);
-    border: 1px solid var(--pink);
-    border-radius: var(--border-radius);
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
-    padding: 0.75rem 1rem;
+    ${button};
+    padding: 10px 18px;
     font-size: var(--fz-xs);
-    font-family: var(--font-mono);
-    line-height: 1;
-    text-decoration: none;
-    cursor: pointer;
-    transition: var(--transition);
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: rgba(184, 255, 0, 0.15);
-      color: var(--pink);
-      border-color: var(--pink);
-      box-shadow: 0 0 10px var(--pink), inset 0 0 10px var(--pink);
-      outline: none;
-    }
-    &:after {
-      display: none !important;
-    }
   `,
 
   bigButton: css`
-    color: var(--pink);
-    background-color: rgba(184, 255, 0, 0.05);
-    border: 1px solid var(--pink);
-    border-radius: var(--border-radius);
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
-    padding: 1.25rem 1.75rem;
-    font-size: var(--fz-sm);
-    font-family: var(--font-mono);
-    line-height: 1;
-    text-decoration: none;
-    cursor: pointer;
-    transition: var(--transition);
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: rgba(184, 255, 0, 0.15);
-      color: var(--pink);
-      border-color: var(--pink);
-      box-shadow: 0 0 10px var(--pink), inset 0 0 10px var(--pink);
-      outline: none;
-    }
-    &:after {
-      display: none !important;
-    }
+    ${button};
+    padding: 15px 28px;
+    font-size: var(--fz-md);
+  `,
+
+  editorialCard: css`
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    box-shadow: 0 12px 32px rgba(1, 7, 54, 0.35);
   `,
 
   glassmorphism: css`
-    background: #0d1117;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.7);
-    position: relative;
-    padding-top: 40px;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: 14px;
-      left: 15px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #ff5f56;
-      box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
-      z-index: 2;
-    }
-
-    &::after {
-      content: 'bash';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 40px;
-      background: #161b22;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      color: var(--light-slate);
-      font-size: 11px;
-      font-family: var(--font-mono);
-      line-height: 40px;
-      text-align: center;
-      letter-spacing: 1px;
-      z-index: 1;
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-    }
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    box-shadow: 0 12px 32px rgba(1, 7, 54, 0.35);
   `,
 
   boxShadow: css`
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    box-shadow: 0 12px 30px rgba(1, 7, 54, 0.4);
     transition: var(--transition);
 
     &:hover,
-    &:focus {
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(0, 240, 255, 0.2);
+    &:focus-visible {
+      box-shadow: 0 18px 36px rgba(1, 7, 54, 0.55);
     }
   `,
 
@@ -203,18 +110,21 @@ const mixins = {
     padding: 0;
     margin: 0;
     list-style: none;
-    font-size: var(--fz-lg);
+    font-size: var(--fz-md);
     li {
       position: relative;
-      padding-left: 30px;
+      padding-left: 20px;
       margin-bottom: 10px;
       &:before {
-        content: '>';
+        content: '';
         position: absolute;
         left: 0;
-        color: var(--pink);
-        font-family: var(--font-mono);
-        text-shadow: 0 0 5px rgba(184, 255, 0, 0.8);
+        top: 0.62em;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: var(--cream);
+        opacity: 0.8;
       }
     }
   `,

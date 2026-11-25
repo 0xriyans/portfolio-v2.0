@@ -1,206 +1,154 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import { useI18next, useTranslation } from 'gatsby-plugin-react-i18next';
-import { CSSTransition } from 'react-transition-group';
-import styled, { keyframes } from 'styled-components';
-import { srConfig } from '@config';
-import { KEY_CODES } from '@utils';
-import sr from '@utils/sr';
-import { usePrefersReducedMotion } from '@hooks';
-
-const blink = keyframes`
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-`;
+import { useI18next } from 'gatsby-plugin-react-i18next';
+import styled from 'styled-components';
+import CountUp from '@components/CountUp';
+import { useInViewOnce } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
 
 const StyledJobsSection = styled.section`
-  max-width: 900px;
+  max-width: 1120px;
 
-  .inner {
-    ${({ theme }) => theme.mixins.glassmorphism};
+  .experience-list {
+    margin-top: 38px;
     display: flex;
     flex-direction: column;
-    padding: 0;
-    overflow: hidden;
-    min-height: 400px;
-    border-radius: 10px;
-  }
-
-  .terminal-header {
-    background: rgba(0, 0, 0, 0.4);
-    border-bottom: 1px solid rgba(0, 255, 102, 0.3);
-    padding: 12px 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    
-    .btn {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-    .btn-red { background: #ff5f56; box-shadow: 0 0 5px #ff5f56; }
-    .btn-yellow { background: #ffbd2e; box-shadow: 0 0 5px #ffbd2e; }
-    .btn-green { background: #27c93f; box-shadow: 0 0 5px #27c93f; }
-    
-    .title {
-      flex: 1;
-      text-align: center;
-      color: var(--light-slate);
-      font-family: var(--font-mono);
-      font-size: var(--fz-xs);
-      letter-spacing: 1px;
-      opacity: 0.8;
-      margin-right: 48px; /* to offset the buttons and keep title centered */
-    }
-  }
-
-  .terminal-body {
-    display: flex;
-    flex: 1;
-
-    @media (max-width: 600px) {
-      flex-direction: column;
-    }
+    gap: 18px;
   }
 `;
 
-const StyledTabList = styled.div`
-  display: flex;
-  flex-direction: column;
-  z-index: 3;
-  width: 250px;
-  padding: 30px 20px;
-  margin: 0;
-  list-style: none;
-  background: rgba(0, 0, 0, 0.3);
-  border-right: 1px solid rgba(0, 255, 102, 0.2);
+const StyledEntryCard = styled.article`
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 26px 28px;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  opacity: ${({ $inView }) => ($inView ? 1 : 0)};
+  transform: translateY(${({ $inView }) => ($inView ? 0 : MOTION.rise.timeline)}px);
+  transition:
+    opacity ${MOTION.duration.entrance}ms ${MOTION.easing.css} ${({ $delayMs }) => $delayMs || 0}ms,
+    transform ${MOTION.duration.entrance}ms ${MOTION.easing.css}
+      ${({ $delayMs }) => $delayMs || 0}ms;
 
-  @media (max-width: 600px) {
-    flex-direction: row;
-    overflow-x: auto;
-    width: 100%;
-    padding: 15px 20px;
-    border-right: none;
-    border-bottom: 1px solid rgba(0, 255, 102, 0.2);
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
     gap: 12px;
+    padding: 22px 20px;
+  }
 
-    &::-webkit-scrollbar {
-      display: none;
+  .entry-num {
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 600;
+    color: var(--cream);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    opacity: 0.9;
+  }
+
+  .entry-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .entry-company {
+    margin: 0;
+    font-size: clamp(20px, 2.6vw, 24px);
+    font-weight: 600;
+    color: var(--cream);
+
+    a {
+      color: var(--cream);
     }
   }
-`;
 
-const StyledTabButton = styled.button`
-  ${({ theme }) => theme.mixins.link};
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 12px 15px;
-  margin-bottom: 5px;
-  background: ${({ isActive }) =>
-    isActive ? 'rgba(0, 255, 102, 0.1)' : 'transparent'};
-  color: ${({ isActive }) => (isActive ? 'var(--blue)' : 'var(--light-slate)')};
-  font-family: var(--font-mono);
-  font-size: var(--fz-xs);
-  text-align: left;
-  transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-  box-shadow: none;
-  border: 1px solid ${({ isActive }) => (isActive ? 'rgba(0, 255, 102, 0.3)' : 'transparent')};
-  border-left: ${({ isActive }) => (isActive ? '3px solid var(--blue)' : '3px solid transparent')};
-  text-shadow: ${({ isActive }) => (isActive ? '0 0 8px rgba(0, 255, 102, 0.6)' : 'none')};
-
-  @media (max-width: 600px) {
-    ${({ theme }) => theme.mixins.flexCenter};
-    width: auto;
-    min-width: max-content;
-    margin-bottom: 0;
+  .entry-date {
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    background: rgba(34, 57, 111, 0.55);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-size: var(--fz-xs);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
   }
 
-  &:hover,
-  &:focus {
-    background: rgba(0, 255, 102, 0.15);
-    color: var(--blue);
-    border-color: rgba(0, 255, 102, 0.3);
-    border-left: 3px solid var(--blue);
-    text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
-  }
-`;
-
-const StyledTabPanels = styled.div`
-  position: relative;
-  width: 100%;
-  padding: 40px;
-
-  @media (max-width: 600px) {
-    padding: 30px 20px;
-  }
-`;
-
-const StyledTabPanel = styled.div`
-  width: 100%;
-  height: auto;
-  font-family: var(--font-mono);
-
-  p {
-    font-family: var(--font-mono);
+  .entry-role {
+    margin: 0 0 14px;
+    font-size: var(--fz-md);
+    font-weight: 500;
+    color: var(--text-muted);
   }
 
-  ul {
-    ${({ theme }) => theme.mixins.fancyList};
-    font-family: var(--font-mono);
-    font-size: var(--fz-sm);
-    color: var(--light-slate);
-    
-    li {
-      margin-bottom: 15px;
-      line-height: 1.6;
-      &::before {
-        content: '~/';
-        color: var(--pink);
-        font-weight: bold;
+  .verified-metrics-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 14px;
+  }
+
+  .verified-pill {
+    font-size: var(--fz-xs);
+    color: var(--text-secondary);
+    background: rgba(1, 7, 54, 0.55);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 5px 12px;
+    font-variant-numeric: tabular-nums;
+
+    strong {
+      color: var(--cream);
+    }
+  }
+
+  .entry-body {
+    font-size: var(--fz-md);
+    color: var(--text-secondary);
+
+    ul {
+      ${({ theme }) => theme.mixins.fancyList};
+      margin: 0;
+
+      li {
+        margin-bottom: 8px;
+        line-height: 1.6;
+        font-size: var(--fz-md);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
   }
 
-  h3 {
-    margin-bottom: 15px;
-    font-size: var(--fz-xl);
-    font-weight: 500;
-    line-height: 1.4;
-    font-family: var(--font-mono);
-    color: var(--white);
-    word-break: break-all;
+  .entry-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
 
-    .prompt {
-      color: var(--pink);
-      margin-right: 10px;
+    li {
+      font-size: var(--fz-xs);
+      color: var(--cream);
+      background: rgba(34, 57, 111, 0.5);
+      border: 1px solid var(--border);
+      padding: 4px 11px;
+      border-radius: var(--radius-pill);
     }
-    
-    .cursor {
-      display: inline-block;
-      width: 10px;
-      height: 20px;
-      background-color: var(--blue);
-      margin-left: 5px;
-      vertical-align: middle;
-      animation: ${blink} 1s step-end infinite;
-      box-shadow: 0 0 8px var(--blue);
-    }
-
-    .company {
-      color: var(--blue);
-    }
-  }
-
-  .range {
-    margin-bottom: 30px;
-    color: var(--slate);
-    font-family: var(--font-mono);
-    font-size: var(--fz-xs);
-    border-bottom: 1px dashed rgba(0, 255, 102, 0.3);
-    padding-bottom: 15px;
-    display: inline-block;
   }
 `;
 
@@ -209,17 +157,20 @@ const Jobs = () => {
     query {
       jobs: allMarkdownRemark(
         filter: { fileAbsolutePath: { regex: "/jobs/" } }
-        sort: { fields: [frontmatter___date], order: DESC }
+        sort: { frontmatter: { date: DESC } }
       ) {
         edges {
           node {
             fileAbsolutePath
             frontmatter {
+              date
               title
               company
+              tabLabel
               location
               range
               url
+              tech
             }
             html
           }
@@ -229,127 +180,105 @@ const Jobs = () => {
   `);
 
   const { language } = useI18next();
-  const { t } = useTranslation();
+  const listRef = useRef(null);
+  const inView = useInViewOnce(listRef, MOTION.trigger.viewport);
   const jobsData = data.jobs.edges.filter(({ node }) =>
     node.fileAbsolutePath.includes(`.${language}.md`),
   );
 
-  const [activeTabId, setActiveTabId] = useState(0);
-  const [tabFocus, setTabFocus] = useState(null);
-  const tabs = useRef([]);
-  const revealContainer = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
+  const renderVerifiedMetrics = date => {
+    if (date === '2025-01-01') {
+      return (
+        <div className="verified-metrics-strip">
+          <span className="verified-pill">
+            Redis Lock: <strong>SET lock:pay:&#123;order_id&#125; NX EX 30</strong>
+          </span>
+          <span className="verified-pill">
+            DB Guard: <strong>SELECT ... FOR UPDATE · Idempotent HTTP 200</strong>
+          </span>
+        </div>
+      );
+    }
 
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
+    if (date === '2023-01-01') {
+      return (
+        <div className="verified-metrics-strip">
+          <span className="verified-pill">
+            Container Memory:{' '}
+            <strong>
+              &gt;1.5 GB &rarr; &lt;300 MB (
+              <CountUp to={60} suffix="%+" active={inView} minCh={3} /> reduction)
+            </strong>
+          </span>
+          <span className="verified-pill">
+            Withdrawal: <strong>2 Business Days &rarr; Real-Time</strong>
+          </span>
+        </div>
+      );
     }
-    sr.reveal(revealContainer.current, srConfig(0, 0.05));
-  }, []);
 
-  const focusTab = () => {
-    if (tabs.current[tabFocus]) {
-      tabs.current[tabFocus].focus();
-      return;
-    }
-    if (tabFocus >= tabs.current.length) {
-      setTabFocus(0);
-    }
-    if (tabFocus < 0) {
-      setTabFocus(tabs.current.length - 1);
-    }
-  };
-
-  useEffect(() => focusTab(), [tabFocus]);
-
-  const onKeyDown = e => {
-    switch (e.key) {
-      case KEY_CODES.ARROW_UP: {
-        e.preventDefault();
-        setTabFocus(tabFocus - 1);
-        break;
-      }
-      case KEY_CODES.ARROW_DOWN: {
-        e.preventDefault();
-        setTabFocus(tabFocus + 1);
-        break;
-      }
-      default: {
-        break;
-      }
-    }
+    return null;
   };
 
   return (
-    <StyledJobsSection id="jobs" ref={revealContainer}>
-      <h2 className="numbered-heading">{t('Where I’ve Worked')}</h2>
+    <StyledJobsSection id="experience">
+      <span className="section-kicker">Career history</span>
+      <h2 className="section-heading">Work Experience</h2>
+      <p className="section-intro">
+        6+ years building enterprise backend and end-to-end production systems across
+        Indonesia&apos;s insurance, credit guarantee, and telecommunications leaders.
+      </p>
 
-      <div className="inner">
-        <div className="terminal-header">
-          <div className="btn btn-red"></div>
-          <div className="btn btn-yellow"></div>
-          <div className="btn btn-green"></div>
-          <div className="title">root@portfolio:~</div>
-        </div>
-        
-        <div className="terminal-body">
-          <StyledTabList role="tablist" aria-label="Job tabs" onKeyDown={e => onKeyDown(e)}>
-            {jobsData &&
-              jobsData.map(({ node }, i) => {
-                const { company } = node.frontmatter;
-                return (
-                  <StyledTabButton
-                    key={i}
-                    isActive={activeTabId === i}
-                    onClick={() => setActiveTabId(i)}
-                    ref={el => (tabs.current[i] = el)}
-                    id={`tab-${i}`}
-                    role="tab"
-                    tabIndex={activeTabId === i ? '0' : '-1'}
-                    aria-selected={activeTabId === i ? true : false}
-                    aria-controls={`panel-${i}`}>
-                    <span>{`> cd ./${company.replace(/\s+/g, '_')}`}</span>
-                  </StyledTabButton>
-                );
-              })}
-          </StyledTabList>
+      <div
+        className="experience-list"
+        ref={listRef}
+        role="list"
+        aria-label="Work experience entries"
+      >
+        {jobsData &&
+          jobsData.map(({ node }, i) => {
+            const { frontmatter, html } = node;
+            const { date, title, url, company, tabLabel, range, tech } = frontmatter;
+            const num = String(i + 1).padStart(2, '0');
 
-          <StyledTabPanels>
-            {jobsData &&
-              jobsData.map(({ node }, i) => {
-                const { frontmatter, html } = node;
-                const { title, url, company, range } = frontmatter;
+            return (
+              <StyledEntryCard
+                key={`${date}-${i}`}
+                role="listitem"
+                $inView={inView}
+                $delayMs={i * MOTION.stagger.default}
+              >
+                <div className="entry-num" aria-hidden="true">
+                  {num}
+                </div>
 
-                return (
-                  <CSSTransition key={i} in={activeTabId === i} timeout={250} classNames="fade">
-                    <StyledTabPanel
-                      id={`panel-${i}`}
-                      role="tabpanel"
-                      tabIndex={activeTabId === i ? '0' : '-1'}
-                      aria-labelledby={`tab-${i}`}
-                      aria-hidden={activeTabId !== i}
-                      hidden={activeTabId !== i}>
-                      <h3>
-                        <span className="prompt">sys@admin:~$</span>
-                        <span>{`cat ${title.replace(/\s+/g, '_')}`}</span>
-                        <span className="company">
-                          &nbsp;@&nbsp;
-                          <a href={url} className="inline-link" target="_blank" rel="noreferrer">
-                            {company}
-                          </a>
-                        </span>
-                        <span className="cursor"></span>
-                      </h3>
+                <div>
+                  <div className="entry-top">
+                    <h3 className="entry-company">
+                      <a href={url} target="_blank" rel="noreferrer">
+                        {tabLabel || company}
+                      </a>
+                    </h3>
+                    <span className="entry-date">{range}</span>
+                  </div>
 
-                      <p className="range">[{range}]</p>
+                  <p className="entry-role">{title}</p>
 
-                      <div dangerouslySetInnerHTML={{ __html: html }} />
-                    </StyledTabPanel>
-                  </CSSTransition>
-                );
-              })}
-          </StyledTabPanels>
-        </div>
+                  {renderVerifiedMetrics(date)}
+
+                  <div className="entry-body" dangerouslySetInnerHTML={{ __html: html }} />
+
+                  {tech && tech.length > 0 && (
+                    <ul className="entry-tech">
+                      {tech.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </StyledEntryCard>
+            );
+          })}
       </div>
     </StyledJobsSection>
   );

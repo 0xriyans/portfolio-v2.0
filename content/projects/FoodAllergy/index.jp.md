@@ -10,7 +10,7 @@ tech:
   - Tailwind CSS
   - Prisma
 company: 'Personal Project'
-showInProjects: true
+showInProjects: false
 ---
 
 食品中の潜在的なアレルゲンをスキャンして特定できる、健康にフォーカスしたアプリケーションです。モダンなグラスモーフィズム・インターフェースと、包括的な成分データベースを備えています。

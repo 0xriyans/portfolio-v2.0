@@ -1,17 +1,17 @@
 ---
 date: '1'
-title: 'Insurtech By Askrindo'
+title: 'Portal Bisnis Askrindo'
+company: 'Askrindo'
 cover: './insurtech-cover.png'
 external: 'https://insurtech.askrindo.co.id/'
+showInProjects: true
 tech:
   - Java
   - Spring Boot
   - Angular
   - PostgreSQL
-  - Midtrans API
-  - PlantUML
+  - Redis
+  - Midtrans
 ---
 
-**Insurtech By Askrindo** is a unified B2B and B2C digital general insurance platform that enables seamless insurance purchases for retail customers as well as corporate bank integrations. It supports diverse insurance lines including Property (Rumahku), SME (Usahaku), Marine, Fire, Earthquake, and Travel.
-
-As the lead engineer, I architected a highly decoupled frontend-backend infrastructure using **Angular** and **Java Spring Boot**, complete with custom calculation logic and ironclad security (end-to-end encryption and custom authentication). The system seamlessly bridges modern digital payments via **Midtrans** and complex legacy core financial systems, backed by heavily optimized **PostgreSQL** and **SQL Server** databases to fluidly handle high-volume enterprise transactions.
+Full-stack B2B and B2C general insurance platform at Askrindo built with Angular and Java Spring Boot. Midtrans payment concurrency is guarded in two layers: Redis mutex `SET lock:pay:{order_id} NX EX 30` plus database pessimistic lock `SELECT ... FOR UPDATE`, returning idempotent HTTP `200` for losing webhooks.

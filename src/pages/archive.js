@@ -1,21 +1,36 @@
-import React, { useRef, useEffect } from 'react';
-import { graphql } from 'gatsby';
+import React from 'react';
+import { graphql, Link } from 'gatsby';
 import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
 import { useI18next } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
-import { srConfig } from '@config';
-import sr from '@utils/sr';
-import { Layout } from '@components';
+import SeoHead from '@components/head';
+import Layout from '@components/layout';
 import { Icon } from '@components/icons';
-import { usePrefersReducedMotion } from '@hooks';
+
+const StyledHeader = styled.header`
+  margin-top: 40px;
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: var(--fz-sm);
+    font-weight: 500;
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--cream);
+    }
+  }
+`;
 
 const StyledTableContainer = styled.div`
-  margin: 100px -20px;
-
-  @media (max-width: 768px) {
-    margin: 50px -10px;
-  }
+  margin: 48px 0 80px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
 
   table {
     width: 100%;
@@ -27,102 +42,85 @@ const StyledTableContainer = styled.div`
       }
     }
 
+    thead th {
+      padding: 16px 20px;
+      text-align: left;
+      font-size: var(--fz-xs);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
     tbody tr {
+      border-bottom: 1px solid rgba(34, 57, 111, 0.45);
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
       &:hover,
-      &:focus {
-        background-color: rgba(255, 255, 255, 0.1);
+      &:focus-within {
+        background-color: rgba(34, 57, 111, 0.3);
       }
     }
 
-    th,
     td {
-      padding: 10px;
+      padding: 16px 20px;
       text-align: left;
+      vertical-align: top;
 
-      &:first-child {
-        padding-left: 20px;
-
-        @media (max-width: 768px) {
-          padding-left: 10px;
-        }
-      }
-      &:last-child {
-        padding-right: 20px;
-
-        @media (max-width: 768px) {
-          padding-right: 10px;
-        }
+      @media (max-width: 768px) {
+        padding: 14px 14px;
       }
 
       svg {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
       }
-    }
 
-    tr {
-      cursor: default;
-
-      td:first-child {
-        border-top-left-radius: var(--border-radius);
-        border-bottom-left-radius: var(--border-radius);
-      }
-      td:last-child {
-        border-top-right-radius: var(--border-radius);
-        border-bottom-right-radius: var(--border-radius);
-      }
-    }
-
-    td {
       &.year {
-        padding-right: 20px;
-
-        @media (max-width: 768px) {
-          padding-right: 10px;
-          font-size: var(--fz-sm);
-        }
+        color: var(--text-muted);
+        font-size: var(--fz-sm);
+        white-space: nowrap;
       }
 
       &.title {
-        padding-top: 15px;
-        padding-right: 20px;
-        color: var(--lightest-slate);
-        font-size: var(--fz-xl);
+        color: var(--cream);
+        font-size: var(--fz-md);
         font-weight: 600;
-        line-height: 1.25;
+        line-height: 1.35;
       }
 
       &.company {
-        font-size: var(--fz-lg);
+        font-size: var(--fz-sm);
+        color: var(--text-secondary);
         white-space: nowrap;
       }
 
       &.tech {
-        font-size: var(--fz-xxs);
-        font-family: var(--font-mono);
+        font-size: var(--fz-xs);
+        color: var(--text-muted);
         line-height: 1.5;
+
         .separator {
-          margin: 0 5px;
-        }
-        span {
-          display: inline-block;
+          margin: 0 6px;
         }
       }
 
       &.links {
-        min-width: 100px;
+        min-width: 76px;
 
         div {
           display: flex;
           align-items: center;
+          gap: 10px;
+          color: var(--text-secondary);
 
           a {
-            ${({ theme }) => theme.mixins.flexCenter};
-            flex-shrink: 0;
-          }
-
-          a + a {
-            margin-left: 10px;
+            display: inline-flex;
+            padding: 4px;
           }
         }
       }
@@ -135,58 +133,42 @@ const ArchivePage = ({ location, data }) => {
   const projects = data.allMarkdownRemark.edges.filter(
     ({ node }) => node && node.fileAbsolutePath.includes(`.${language}.md`),
   );
-  const revealTitle = useRef(null);
-  const revealTable = useRef(null);
-  const revealProjects = useRef([]);
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    sr.reveal(revealTitle.current, srConfig());
-    sr.reveal(revealTable.current, srConfig(200, 0));
-    revealProjects.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 10)));
-  }, []);
 
   return (
     <Layout location={location}>
-      <Helmet title="Archive" />
-
       <main>
-        <header ref={revealTitle}>
-          <h1 className="big-heading">Archive</h1>
-          <p className="subtitle">A big list of things I’ve worked on</p>
-        </header>
+        <StyledHeader>
+          <Link className="back-link" to="/#projects">
+            &larr; Back to home
+          </Link>
+          <h1 className="big-heading">All Projects</h1>
+          <p className="subtitle">
+            13 named production systems delivered across Askrindo, MSIG Life, Prudential, and XL
+            Axiata.
+          </p>
+        </StyledHeader>
 
-        <StyledTableContainer ref={revealTable}>
+        <StyledTableContainer>
           <table>
             <thead>
               <tr>
-                <th>Year</th>
-                <th>Title</th>
-                <th className="hide-on-mobile">Made at</th>
-                <th className="hide-on-mobile">Built with</th>
+                <th>Period</th>
+                <th>Project</th>
+                <th className="hide-on-mobile">Company</th>
+                <th className="hide-on-mobile">Stack</th>
                 <th>Link</th>
               </tr>
             </thead>
             <tbody>
               {projects.length > 0 &&
                 projects.map(({ node }, i) => {
-                  const {
-                    date,
-                    github,
-                    external,
-                    ios,
-                    android,
-                    title,
-                    tech,
-                    company,
-                  } = node.frontmatter;
+                  const { date, github, external, ios, android, title, tech, company } =
+                    node.frontmatter;
                   return (
-                    <tr key={i} ref={el => (revealProjects.current[i] = el)}>
-                      <td className="overline year">{`${new Date(date).getFullYear()}`}</td>
+                    <tr key={i}>
+                      <td className="year">
+                        {/^\d{4}/.test(date || '') ? new Date(date).getFullYear() : 'Production'}
+                      </td>
 
                       <td className="title">{title}</td>
 
@@ -195,12 +177,14 @@ const ArchivePage = ({ location, data }) => {
                       </td>
 
                       <td className="tech hide-on-mobile">
-                        {tech.length > 0 &&
-                          tech.map((item, i) => (
-                            <span key={i}>
+                        {tech &&
+                          tech.length > 0 &&
+                          tech.map((item, idx) => (
+                            <span key={idx}>
                               {item}
-                              {''}
-                              {i !== tech.length - 1 && <span className="separator">&middot;</span>}
+                              {idx !== tech.length - 1 && (
+                                <span className="separator">&middot;</span>
+                              )}
                             </span>
                           ))}
                       </td>
@@ -208,22 +192,42 @@ const ArchivePage = ({ location, data }) => {
                       <td className="links">
                         <div>
                           {external && (
-                            <a href={external} aria-label="External Link">
+                            <a
+                              href={external}
+                              aria-label="External Link"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
                               <Icon name="External" />
                             </a>
                           )}
                           {github && (
-                            <a href={github} aria-label="GitHub Link">
+                            <a
+                              href={github}
+                              aria-label="GitHub Link"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
                               <Icon name="GitHub" />
                             </a>
                           )}
                           {ios && (
-                            <a href={ios} aria-label="Apple App Store Link">
+                            <a
+                              href={ios}
+                              aria-label="Apple App Store Link"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
                               <Icon name="AppStore" />
                             </a>
                           )}
                           {android && (
-                            <a href={android} aria-label="Google Play Store Link">
+                            <a
+                              href={android}
+                              aria-label="Google Play Store Link"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
                               <Icon name="PlayStore" />
                             </a>
                           )}
@@ -239,6 +243,7 @@ const ArchivePage = ({ location, data }) => {
     </Layout>
   );
 };
+
 ArchivePage.propTypes = {
   location: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
@@ -246,11 +251,30 @@ ArchivePage.propTypes = {
 
 export default ArchivePage;
 
+export const Head = ({ location, pageContext }) => (
+  <SeoHead
+    title="All Production Systems"
+    pathname={location.pathname}
+    language={
+      (pageContext && (pageContext.language || (pageContext.i18n && pageContext.i18n.language))) ||
+      'en'
+    }
+  />
+);
+
+Head.propTypes = {
+  location: PropTypes.object.isRequired,
+  pageContext: PropTypes.object,
+};
+
 export const pageQuery = graphql`
   {
     allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/projects/" } }
-      sort: { fields: [frontmatter___date], order: DESC }
+      filter: {
+        fileAbsolutePath: { regex: "/projects|featured/" }
+        frontmatter: { showInProjects: { ne: false } }
+      }
+      sort: { frontmatter: { date: DESC } }
     ) {
       edges {
         node {

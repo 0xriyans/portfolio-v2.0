@@ -1,16 +1,16 @@
 ---
-date: '5'
-title: 'Andromeda - Agency Digital Platform'
+date: '4'
+title: 'Andromeda Agency Financing'
+company: 'MSIG Life'
 cover: './andromeda-cover.png'
 external: 'https://andromeda.msiglife.co.id/'
+showInProjects: true
 tech:
-  - Java & Spring Boot
+  - Java
+  - Spring Boot
   - Spring Cloud
   - PostgreSQL
-  - SQL Server
-  - Financial Algorithms
+  - Microsoft SQL Server
 ---
 
-**Andromeda** is an internal digital platform built for MSIG Life agencies, designed specifically to manage and streamline complex agent financing and compensation operations.
-
-As the backend architect, I designed the entire architectural layout and database schemas (utilizing both **PostgreSQL** and **SQL Server**). I engineered a custom financial calculation engine that automatically processes loan requests, risk analysis, payout distributions, and agent compensation allowances. The platform leverages **Java Spring Boot** and **Spring Cloud** to ensure secure, high-performance financial processing for the agency network.
+Full-stack agency financing and compensation platform built for MSIG Life. Designed the backend architecture, multi-database schemas across PostgreSQL and Microsoft SQL Server, and financial calculation workflows powered by Java Spring Boot and Spring Cloud.

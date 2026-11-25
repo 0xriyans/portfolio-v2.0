@@ -1,16 +1,13 @@
-const config = require('./src/config');
-
 module.exports = {
   siteMetadata: {
-    title: 'Riyan Sugiarto - Scalable Infrastructure Software Engineer',
+    title: 'Riyan Sugiarto — Software Engineer',
     description:
-      'Riyan Sugiarto is a Software Engineer focused on enterprise-scale System Design and Backend Architecture, highly capable of delivering end-to-end Full-Stack and Frontend experiences.',
+      'Software Engineer (backend-first, end-to-end) in Jakarta with 6+ years of experience building resilient Java, Spring Boot, Quarkus, Apache Kafka, PostgreSQL, and applied AI systems.',
     siteUrl: 'https://riyans.tech', // No trailing slash allowed!
     image: '/og.png', // Path to your image you placed in the 'static' folder
     twitterUsername: '@0xriyans',
   },
   plugins: [
-    `gatsby-plugin-react-helmet`,
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
@@ -20,16 +17,15 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: 'RiyanSugiarto',
-        short_name: 'RiyanSugiarto',
+        name: 'Riyan Sugiarto',
+        short_name: 'Riyan',
         start_url: '/',
-        background_color: config.colors.darkNavy,
-        theme_color: config.colors.navy,
+        background_color: '#010736',
+        theme_color: '#0d1c42',
         display: 'minimal-ui',
         icon: 'src/images/logo.png',
       },
     },
-    `gatsby-plugin-offline`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -95,7 +91,6 @@ module.exports = {
               maxWidth: 700,
               linkImagesToOriginal: true,
               quality: 90,
-              tracedSVG: { color: config.colors.yellow },
             },
           },
           {
@@ -165,12 +160,6 @@ module.exports = {
             },
           },
         ],
-      },
-    },
-    {
-      resolve: `gatsby-plugin-google-analytics`,
-      options: {
-        trackingId: 'UA-45666519-2',
       },
     },
   ],

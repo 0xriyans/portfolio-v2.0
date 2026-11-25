@@ -5,7 +5,6 @@ const prismColors = {
   lineHighlight: `#1d2d50`,
   blue: `#5ccfe6`,
   purple: `#c3a6ff`,
-  yellow: `#bae67e`,
   yellow: `#ffd580`,
   orange: `#ffae57`,
   red: `#ef6b73`,
@@ -84,7 +83,7 @@ const PrismStyles = css`
   .gatsby-highlight-code-line {
     display: block;
     background-color: ${prismColors.lineHighlight};
-    border-left: 2px solid var(--yellow);
+    border-left: 2px solid var(--green);
     padding-left: calc(1em + 2px);
     padding-right: 1em;
     margin-right: -1.35em;

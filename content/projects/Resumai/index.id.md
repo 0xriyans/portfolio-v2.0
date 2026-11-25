@@ -10,7 +10,7 @@ tech:
   - Tailwind CSS
   - AI
 company: 'Personal Project'
-showInProjects: true
+showInProjects: false
 ---
 
 Resumai adalah platform berbasis AI yang dirancang untuk membantu pengguna membuat CV profesional dan teroptimasi dalam hitungan menit. Dengan UI yang modern dan saran cerdas dari AI, membangun profil karier Anda kini menjadi jauh lebih mudah dan cepat.

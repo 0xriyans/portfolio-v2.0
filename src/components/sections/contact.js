@@ -1,224 +1,543 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'gatsby-plugin-react-i18next';
 import styled from 'styled-components';
-import { srConfig, email, socialMedia } from '@config';
-import sr from '@utils/sr';
+import { email, freelance, socialMedia } from '@config';
+import { Icon } from '@components/icons';
 import { usePrefersReducedMotion } from '@hooks';
+import { MOTION } from '@styles/motionTokens';
+
+// Configurable form backend endpoint (set your Formspree / API endpoint when ready)
+const CONTACT_ENDPOINT = '';
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const StyledContactSection = styled.section`
-  max-width: 800px;
-  margin: 0 auto 100px;
-  text-align: left;
-  
-  @media (max-width: 768px) {
-    margin: 0 auto 50px;
+  max-width: 1120px;
+  margin: 0 auto 56px;
+
+  .contact-header {
+    max-width: 720px;
+    margin-bottom: 36px;
+  }
+
+  .contact-heading {
+    margin: 0 0 14px;
+    font-size: clamp(30px, 4.5vw, 46px);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    color: var(--cream);
+  }
+
+  .contact-intro {
+    margin: 0;
+    font-size: var(--fz-lg);
+    color: var(--text-secondary);
+    line-height: 1.6;
   }
 `;
 
-const TerminalWindow = styled.div`
-  background: #0d1117;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
-  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.7);
-  font-family: var(--font-mono);
-  font-size: var(--fz-sm);
+const CardsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
 
-  .terminal-header {
-    background: #161b22;
-    padding: 10px 15px;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const ContactCard = styled.a`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 24px 26px;
+  border-radius: var(--radius-card);
+  border: 1px solid ${({ $active }) => ($active ? 'var(--cream)' : 'var(--border)')};
+  background: ${({ $active }) => ($active ? 'var(--cream)' : 'var(--surface)')};
+  color: ${({ $active }) => ($active ? 'var(--on-cream)' : 'var(--cream)')};
+  text-decoration: none;
+  transition:
+    background ${MOTION.duration.rotatorStep}ms ${MOTION.easing.css},
+    color ${MOTION.duration.rotatorStep}ms ${MOTION.easing.css},
+    border-color ${MOTION.duration.rotatorStep}ms ${MOTION.easing.css},
+    transform ${MOTION.duration.rotatorStep}ms ${MOTION.easing.css};
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--cream);
+    color: ${({ $active }) => ($active ? 'var(--on-cream)' : 'var(--cream)')};
+  }
+
+  .card-top {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
 
-    .window-controls {
-      display: flex;
-      gap: 8px;
+  .card-kicker {
+    font-size: var(--fz-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: ${({ $active }) => ($active ? '#22396F' : 'var(--text-muted)')};
+  }
 
-      .dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-      }
-      .red { background: #ff5f56; }
-      .yellow { background: #ffbd2e; }
-      .green { background: #27c93f; }
-    }
+  .card-icon {
+    width: 18px;
+    height: 18px;
+    opacity: 0.85;
+  }
 
-    .window-title {
-      flex: 1;
-      text-align: center;
-      color: var(--light-slate);
-      font-size: var(--fz-xs);
-      letter-spacing: 1px;
+  .card-title {
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .card-sub {
+    font-size: var(--fz-sm);
+    color: ${({ $active }) => ($active ? '#0D1C42' : 'var(--text-secondary)')};
+    word-break: break-word;
+  }
+`;
+
+const FreelanceBar = styled.div`
+  margin-top: 20px;
+  padding: 18px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+
+  .freelance-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--fz-sm);
+    font-weight: 600;
+    color: var(--cream);
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cream);
     }
   }
 
-  .terminal-body {
-    padding: 20px;
-    color: var(--light-slate);
-    line-height: 1.6;
-
-    .output-line {
-      margin-bottom: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .prompt {
-      color: var(--green, #00ff66);
-    }
-    
-    .text-green {
-      color: var(--green, #00ff66);
-    }
-    
-    .text-dim {
-      color: var(--slate);
-    }
+  .freelance-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 
     a {
-      color: var(--green, #00ff66);
-      text-decoration: underline;
-      text-decoration-color: rgba(0, 255, 102, 0.3);
-      text-underline-offset: 3px;
-      transition: var(--transition);
-      
-      &:hover {
-        color: var(--green, #00ff66);
-        text-decoration-color: var(--green, #00ff66);
-        text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
-      }
-    }
-
-    .mt-4 {
-      margin-top: 25px;
-    }
-
-    .input-wrapper {
-      margin-top: 25px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      background: rgba(0, 0, 0, 0.3);
-      padding: 10px 15px;
-      border-radius: 4px;
+      gap: 7px;
+      padding: 8px 15px;
+      border-radius: var(--radius-pill);
+      background: rgba(1, 7, 54, 0.55);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: var(--fz-xs);
+      font-weight: 500;
 
-      .input-text {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--white);
-        
-        .cursor {
-          display: inline-block;
-          width: 8px;
-          height: 15px;
-          background: var(--green, #00ff66);
-          animation: blink 1s step-end infinite;
-        }
+      svg {
+        width: 15px;
+        height: 15px;
       }
 
-      .execute-btn {
-        border: 1px solid var(--green, #00ff66);
-        color: var(--green, #00ff66);
-        background: transparent;
-        padding: 8px 20px;
-        font-family: var(--font-mono);
-        font-size: var(--fz-xs);
-        border-radius: 2px;
-        text-decoration: none;
-        transition: var(--transition);
-        
-        &:hover {
-          background: rgba(0, 255, 102, 0.1);
-          color: var(--green, #00ff66);
-          box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
-        }
+      &:hover,
+      &:focus-visible {
+        border-color: var(--cream);
+        color: var(--cream);
       }
     }
   }
+`;
 
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+const ContactFormCard = styled.form`
+  margin-top: 24px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+
+  @media (max-width: 600px) {
+    padding: 22px 18px;
+  }
+
+  .form-title {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--cream);
+  }
+
+  .form-sub {
+    margin: 0 0 20px;
+    font-size: var(--fz-sm);
+    color: var(--text-muted);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: var(--fz-xs);
+      font-weight: 600;
+      color: var(--cream);
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--cream);
+      font-family: var(--font-sans);
+      font-size: var(--fz-md);
+
+      &::placeholder {
+        color: var(--text-muted);
+      }
+
+      &:focus {
+        border-color: var(--cream);
+      }
+    }
+
+    textarea {
+      min-height: 104px;
+      resize: vertical;
+    }
+  }
+
+  .form-actions {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    .status-note {
+      font-size: var(--fz-xs);
+      color: var(--text-muted);
+    }
+
+    .submit-btn {
+      padding: 13px 26px;
+      border-radius: var(--radius-pill);
+      background: var(--cream);
+      color: var(--on-cream);
+      font-family: var(--font-sans);
+      font-size: var(--fz-sm);
+      font-weight: 600;
+      border: 1px solid var(--cream);
+      cursor: pointer;
+
+      &:hover,
+      &:focus-visible {
+        background: #f3e4b5;
+        border-color: #f3e4b5;
+      }
+    }
   }
 `;
 
 const Contact = () => {
-  const revealContainer = useRef(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
   const { t } = useTranslation();
 
+  const githubUrl =
+    socialMedia.find(s => s.name === 'GitHub')?.url || 'https://github.com/0xriyans';
+  const linkedinUrl =
+    socialMedia.find(s => s.name === 'Linkedin')?.url ||
+    'https://www.linkedin.com/in/riyan-sugiarto/';
+  const xUrl = socialMedia.find(s => s.name === 'Twitter')?.url || 'https://twitter.com/0xriyans';
+
+  const cards = [
+    {
+      key: 'email',
+      icon: 'Email',
+      kicker: 'Direct Mail',
+      title: 'Email',
+      sub: email,
+      href: `mailto:${email}`,
+    },
+    {
+      key: 'linkedin',
+      icon: 'Linkedin',
+      kicker: 'Network',
+      title: 'LinkedIn',
+      sub: 'linkedin.com/in/riyan-sugiarto',
+      href: linkedinUrl,
+    },
+    {
+      key: 'github',
+      icon: 'GitHub',
+      kicker: 'Source Code',
+      title: 'GitHub',
+      sub: 'github.com/0xriyans',
+      href: githubUrl,
+    },
+  ];
+
+  const [selectedIdx, setSelectedIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [senderName, setSenderName] = useState('');
+  const [senderEmail, setSenderEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [submitState, setSubmitState] = useState('idle');
+  const [feedback, setFeedback] = useState('');
+
   useEffect(() => {
-    if (prefersReducedMotion) {
+    if (paused || prefersReducedMotion) {
+      return undefined;
+    }
+    const timer = setInterval(() => {
+      setSelectedIdx(prev => (prev + 1) % cards.length);
+    }, MOTION.duration.rotatorInterval);
+    return () => clearInterval(timer);
+  }, [paused, prefersReducedMotion, cards.length]);
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const trimmedName = senderName.trim();
+    const trimmedEmail = senderEmail.trim();
+    const trimmedMessage = message.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
+      setSubmitState('error');
+      setFeedback('Please fill in your name, email, and message.');
       return;
     }
-    sr.reveal(revealContainer.current, srConfig(200, 0.05));
-  }, []);
 
-  const getGithub = () => socialMedia.find(s => s.name === 'GitHub')?.url || 'https://github.com/0xriyans';
-  const getLinkedin = () => socialMedia.find(s => s.name === 'Linkedin')?.url || 'https://linkedin.com/in/riyan-sugiarto';
+    if (!EMAIL_RE.test(trimmedEmail)) {
+      setSubmitState('error');
+      setFeedback('Please enter a valid email address.');
+      return;
+    }
+
+    if (!CONTACT_ENDPOINT) {
+      setSubmitState('error');
+      setFeedback(
+        `Form backend is not configured yet. Your message is preserved — please email ${email} directly.`,
+      );
+      return;
+    }
+
+    setSubmitState('sending');
+    setFeedback('Sending your message...');
+
+    try {
+      const res = await fetch(CONTACT_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: trimmedName,
+          email: trimmedEmail,
+          message: trimmedMessage,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Request failed (${res.status})`);
+      }
+
+      setSubmitState('success');
+      setFeedback('Message sent successfully. Thank you for reaching out!');
+      setSenderName('');
+      setSenderEmail('');
+      setMessage('');
+    } catch (err) {
+      setSubmitState('error');
+      setFeedback(
+        `Could not deliver message (${err.message}). Your text is preserved — please email ${email} directly.`,
+      );
+    }
+  };
 
   return (
-    <StyledContactSection id="contact" ref={revealContainer}>
-      <TerminalWindow>
-        <div className="terminal-header">
-          <div className="window-controls">
-            <span className="dot red"></span>
-            <span className="dot yellow"></span>
-            <span className="dot green"></span>
-          </div>
-          <div className="window-title">root - BASH - 80x24</div>
-        </div>
-        <div className="terminal-body">
-          <div className="output-line">
-            <span className="prompt">root@system:~$</span> ls -la networks/social
-          </div>
-          <div className="output-line text-dim">
-            drwxr-xr-x 2 root admin 4096 Mar 04 12:00 .
-          </div>
-          <div className="output-line">
-            <span className="text-dim">-rw-r--r-- 1 root admin 84</span>{' '}
-            <a href={getGithub()} target="_blank" rel="noreferrer">
-              github.com/0xriyans
-            </a>
-          </div>
-          <div className="output-line">
-            <span className="text-dim">-rw-r--r-- 1 root admin 42</span>{' '}
-            <a href={getLinkedin()} target="_blank" rel="noreferrer">
-              linkedin.com/in/riyan-sugiarto
-            </a>
-          </div>
-          <div className="output-line">
-            <span className="text-dim">-rw-r--r-- 1 root admin 64</span>{' '}
-            <a href={`mailto:${email}`}>
-              mailto:{email}
-            </a>
-          </div>
+    <StyledContactSection id="contact">
+      <div className="contact-header">
+        <span className="section-kicker">{t('Contact')}</span>
+        <h2 className="contact-heading">{t('contact_heading')}</h2>
+        <p className="contact-intro">{t('contact_intro')}</p>
+      </div>
 
-          <div className="output-line mt-4">
-            <span className="prompt">root@system:~$</span> ./send_message.sh
-          </div>
-          <div className="output-line">
-            <span className="text-green">{'>'}</span> {t('Initialize secure transmission protocol')}
-          </div>
-          <div className="output-line text-dim">
-            [OK] {t('Payload encrypted and ready.')}
-          </div>
-
-          <div className="input-wrapper">
-            <div className="input-text">
-              <span className="text-green">_</span> {t('start_transmission')} <span className="cursor"></span>
+      <CardsGrid
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
+      >
+        {cards.map((card, idx) => (
+          <ContactCard
+            key={card.key}
+            href={card.href}
+            $active={selectedIdx === idx}
+            target={card.key === 'email' ? undefined : '_blank'}
+            rel={card.key === 'email' ? undefined : 'noreferrer'}
+            onFocus={() => setSelectedIdx(idx)}
+          >
+            <div className="card-top">
+              <span className="card-kicker">{card.kicker}</span>
+              <span className="card-icon" aria-hidden="true">
+                <Icon name={card.icon} />
+              </span>
             </div>
-            <a href={`mailto:${email}`} className="execute-btn">
-              EXECUTE
-            </a>
+            <div>
+              <div className="card-title">{card.title}</div>
+              <div className="card-sub">{card.sub}</div>
+            </div>
+          </ContactCard>
+        ))}
+      </CardsGrid>
+
+      <div
+        role="tablist"
+        aria-label="Contact card rotator controls"
+        style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 14 }}
+      >
+        {cards.map((card, idx) => (
+          <button
+            key={card.key}
+            type="button"
+            role="tab"
+            aria-selected={selectedIdx === idx}
+            aria-label={`Highlight ${card.title}`}
+            onClick={() => setSelectedIdx(idx)}
+            style={{
+              width: selectedIdx === idx ? 22 : 8,
+              height: 8,
+              borderRadius: 9999,
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              background: selectedIdx === idx ? 'var(--cream)' : 'var(--color-accent)',
+              transition: 'all 200ms cubic-bezier(0.22, 1, 0.36, 1)',
+            }}
+          />
+        ))}
+      </div>
+
+      <FreelanceBar>
+        <div className="freelance-status">
+          <span className="dot" aria-hidden="true" />
+          <span>{freelance.status}</span>
+        </div>
+
+        <div className="freelance-links" aria-label="Freelance platforms, CV, and X profile">
+          <a href="/Riyan%20Sugiarto%20Resume.pdf" download="Riyan Sugiarto Resume.pdf">
+            <span>Download CV (PDF)</span>
+          </a>
+          <a href={freelance.fiverr} target="_blank" rel="noreferrer">
+            <Icon name="Fiverr" />
+            <span>Fiverr</span>
+          </a>
+          <a href={freelance.upwork} target="_blank" rel="noreferrer">
+            <Icon name="Upwork" />
+            <span>Upwork</span>
+          </a>
+          <a href={xUrl} target="_blank" rel="noreferrer">
+            <Icon name="Twitter" />
+            <span>X (@0xriyans)</span>
+          </a>
+        </div>
+      </FreelanceBar>
+
+      <ContactFormCard onSubmit={handleSubmit}>
+        <h3 className="form-title">Send a message</h3>
+        <p className="form-sub">
+          Write a brief note below to start an email directly to{' '}
+          <a href={`mailto:${email}`}>{email}</a>.
+        </p>
+
+        <div className="form-grid">
+          <div className="field">
+            <label htmlFor="contact-name">Your name</label>
+            <input
+              id="contact-name"
+              type="text"
+              required
+              placeholder="Riyan / Your name"
+              value={senderName}
+              onChange={e => setSenderName(e.target.value)}
+            />
+          </div>
+
+          <div className="field">
+            <label htmlFor="contact-email">Your email</label>
+            <input
+              id="contact-email"
+              type="email"
+              required
+              placeholder="you@domain.com"
+              value={senderEmail}
+              onChange={e => setSenderEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="field full">
+            <label htmlFor="contact-message">Project or inquiry details</label>
+            <textarea
+              id="contact-message"
+              required
+              placeholder="Tell me about the backend architecture, API integration, or product scope..."
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+            />
           </div>
         </div>
-      </TerminalWindow>
+
+        <div className="form-actions">
+          <span
+            className="status-note"
+            role={submitState === 'error' ? 'alert' : 'status'}
+            aria-live="polite"
+          >
+            {feedback || (
+              <>
+                Fallback: <a href={`mailto:${email}`}>{email}</a>
+              </>
+            )}
+          </span>
+          <button type="submit" className="submit-btn" disabled={submitState === 'sending'}>
+            {submitState === 'sending' ? 'Sending...' : 'Send Message'}
+          </button>
+        </div>
+      </ContactFormCard>
     </StyledContactSection>
   );
 };

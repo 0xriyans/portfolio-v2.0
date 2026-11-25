@@ -1,18 +1,20 @@
 ---
 date: '2020-01-01'
-title: 'Software Engineer'
-company: 'Asuransi Kredit Indonesia'
+title: 'Full-Stack Developer (Core & e-Materai)'
+company: 'PT Asuransi Kredit Indonesia (Askrindo)'
+tabLabel: 'Askrindo — Periode Pertama'
 location: 'Jakarta, Indonesia'
-range: '2020 - 2022'
+range: '2020 – 2022'
 url: 'https://askrindo.co.id/'
 tech:
   - Java
   - Spring Boot
+  - Angular
   - PostgreSQL
+  - Microsoft SQL Server
   - JasperReports
 ---
 
-- Mengonsep dan memelihara modul aplikasi backend berkinerja tinggi menggunakan Java dan Spring Boot untuk operasi keuangan inti perusahaan.
-- Menjalankan kerangka integrasi yang aman dengan Kementerian Keuangan (Kemenkeu) untuk mengotomatisasi pemrosesan e-Meterai secara real-time.
-- Menganalisis dan mengoptimalkan kueri basis data relasional yang kompleks serta menetapkan rencana pengindeksan data strategis di PostgreSQL dan SQL Server.
-- Membangun pipeline data end-to-end terotomatisasi untuk menghasilkan laporan keuangan dan model rekonsiliasi yang presisi menggunakan JasperReports.
+- Periode kerja pertama di Askrindo dalam pengembangan full-stack sistem penjaminan kredit dan operasional keuangan inti.
+- Membangun **Agunan Bank Online & e-Materai** (integrasi meterai elektronik real-time dengan Kemenkeu), **Pemulihan Ekonomi Nasional (PEN)**, dan **Surety Bond Online**.
+- Merancang skema serta optimasi query PostgreSQL & Microsoft SQL Server dan pelaporan rekonsiliasi otomatis.

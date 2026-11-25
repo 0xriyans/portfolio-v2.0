@@ -1,38 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
-import { useLocation } from '@reach/router';
 import { useStaticQuery, graphql } from 'gatsby';
-import { useI18next } from 'gatsby-plugin-react-i18next';
+import CalibreRegularWoff2 from '@fonts/Calibre/Calibre-Regular.woff2';
+import CalibreSemiboldWoff2 from '@fonts/Calibre/Calibre-Semibold.woff2';
 
-// https://www.gatsbyjs.com/docs/add-seo-component/
-
-const Head = ({ title, description, image }) => {
-  const { pathname } = useLocation();
-
-  const { site } = useStaticQuery(
-    graphql`
-      query {
-        site {
-          siteMetadata {
-            defaultTitle: title
-            defaultDescription: description
-            siteUrl
-            defaultImage: image
-            twitterUsername
-          }
+const Head = ({
+  title = null,
+  description = null,
+  image = null,
+  pathname = '/',
+  language = 'en',
+}) => {
+  const { site } = useStaticQuery(graphql`
+    query {
+      site {
+        siteMetadata {
+          defaultTitle: title
+          defaultDescription: description
+          siteUrl
+          defaultImage: image
+          twitterUsername
         }
       }
-    `,
-  );
+    }
+  `);
 
-  const {
-    defaultTitle,
-    defaultDescription,
-    siteUrl,
-    defaultImage,
-    twitterUsername,
-  } = site.siteMetadata;
+  const { defaultTitle, defaultDescription, siteUrl, defaultImage, twitterUsername } =
+    site.siteMetadata;
 
   const seo = {
     title: title || defaultTitle,
@@ -41,15 +35,32 @@ const Head = ({ title, description, image }) => {
     url: `${siteUrl}${pathname}`,
   };
 
-  const { language } = useI18next();
+  const documentTitle = title ? `${title} | ${defaultTitle}` : defaultTitle;
 
   return (
-    <Helmet title={title} defaultTitle={seo.title} titleTemplate={`%s | ${defaultTitle}`}>
+    <>
       <html lang={language} dir={language === 'ar' ? 'rtl' : 'ltr'} />
+      <title>{documentTitle}</title>
 
       <meta name="description" content={seo.description} />
       <meta name="image" content={seo.image} />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+      <meta name="robots" content="index, follow" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="canonical" href={seo.url} />
+      <link
+        rel="preload"
+        as="font"
+        type="font/woff2"
+        href={CalibreSemiboldWoff2}
+        crossOrigin="anonymous"
+      />
+      <link
+        rel="preload"
+        as="font"
+        type="font/woff2"
+        href={CalibreRegularWoff2}
+        crossOrigin="anonymous"
+      />
 
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />
@@ -62,9 +73,7 @@ const Head = ({ title, description, image }) => {
       <meta name="twitter:title" content={seo.title} />
       <meta name="twitter:description" content={seo.description} />
       <meta name="twitter:image" content={seo.image} />
-
-      <meta name="google-site-verification" content="DCl7VAf9tcz6eD9gb67NfkNnJ1PKRNcg8qQiwpbx9Lk" />
-    </Helmet>
+    </>
   );
 };
 
@@ -74,10 +83,6 @@ Head.propTypes = {
   title: PropTypes.string,
   description: PropTypes.string,
   image: PropTypes.string,
-};
-
-Head.defaultProps = {
-  title: null,
-  description: null,
-  image: null,
+  pathname: PropTypes.string,
+  language: PropTypes.string,
 };

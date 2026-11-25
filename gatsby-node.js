@@ -4,31 +4,110 @@
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
+const https = require('https');
 const path = require('path');
-const _ = require('lodash');
 
 // Mencegah peringatan MaxListenersExceededWarning saat gatsby-plugin-manifest membuat puluhan favicon
 require('events').EventEmitter.defaultMaxListeners = 20;
 
-exports.createPages = async ({ actions, graphql, reporter }) => {
+const fetchJson = (url, timeoutMs = 6000) =>
+  new Promise(resolve => {
+    const req = https.get(url, { headers: { 'User-Agent': 'gatsby-build' } }, res => {
+      if (res.statusCode !== 200) {
+        res.resume();
+        resolve(null);
+        return;
+      }
+      let data = '';
+      res.on('data', chunk => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(data));
+        } catch {
+          resolve(null);
+        }
+      });
+    });
+    req.setTimeout(timeoutMs, () => {
+      req.destroy();
+      resolve(null);
+    });
+    req.on('error', () => resolve(null));
+  });
+
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions;
+  createTypes(`
+    type MarkdownRemarkFrontmatter {
+      title: String
+      date: String
+      company: String
+      tabLabel: String
+      location: String
+      range: String
+      url: String
+      tech: [String]
+      github: String
+      external: String
+      cta: String
+      ios: String
+      android: String
+      diagram: String
+      videoWebm: File @fileByRelativePath
+      videoMp4: File @fileByRelativePath
+      poster: File @fileByRelativePath
+      showInProjects: Boolean
+      cover: File @fileByRelativePath
+    }
+
+    type GithubContributionDay {
+      date: String!
+      count: Int!
+      level: Int!
+    }
+
+    type GithubActivity implements Node {
+      total: Int!
+      contributions: [GithubContributionDay!]!
+    }
+  `);
+};
+
+exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => {
+  const { createNode } = actions;
+  const payload = await fetchJson(
+    'https://github-contributions-api.jogruber.de/v4/0xriyans?y=last',
+  );
+  const contributions =
+    payload && Array.isArray(payload.contributions) ? payload.contributions : [];
+  const total =
+    payload && payload.total && typeof payload.total.lastYear === 'number'
+      ? payload.total.lastYear
+      : 0;
+
+  createNode({
+    id: createNodeId('github-activity-0xriyans'),
+    total,
+    contributions,
+    internal: {
+      type: 'GithubActivity',
+      contentDigest: createContentDigest({ total, len: contributions.length }),
+    },
+  });
+};
+
+exports.createPages = async () => {
   // Blog (pensieve) and tag pages have been removed to keep the portfolio clean.
 };
 
 // https://www.gatsbyjs.org/docs/node-apis/#onCreateWebpackConfig
 exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
-  // https://www.gatsbyjs.org/docs/debugging-html-builds/#fixing-third-party-modules
   if (stage === 'build-html' || stage === 'develop-html') {
     actions.setWebpackConfig({
       module: {
         rules: [
-          {
-            test: /scrollreveal/,
-            use: loaders.null(),
-          },
-          {
-            test: /animejs/,
-            use: loaders.null(),
-          },
           {
             test: /miniraf/,
             use: loaders.null(),

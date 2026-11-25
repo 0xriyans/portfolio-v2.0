@@ -10,6 +10,7 @@ tech:
   - MyBatis
   - OCR & Biometrics
   - OAuth2 & JWT
+showInProjects: false
 ---
 
 **ORION** is a digital application designed to revolutionize insurance sales, empowering agents to sell, recruit, and monitor their sales activities directly from their smartphones or tablets. "Digitalize Your Business".

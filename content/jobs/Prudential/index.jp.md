@@ -1,18 +1,20 @@
 ---
 date: '2023-01-01'
 title: 'Backend Developer'
-company: 'Prudential Life Assurance'
+company: 'Prudential'
+tabLabel: 'Prudential'
 location: 'Jakarta, Indonesia'
-range: '2023 - 2024'
+range: '2023 – 2024'
 url: 'https://www.prudential.co.id/'
 tech:
   - Quarkus
-  - Apache Flink
-  - IBM BPM
+  - Apache Kafka
+  - PostgreSQL
   - Couchbase
+  - Kubernetes
+  - Docker
 ---
 
-- ストリーム処理サービスのアーキテクチャをApache Flinkから軽量なQuarkusランタイムに変換し、クラウドメモリのオーバーヘッドを大幅に削減。
-- 厳格なデータ欠損ゼロの制約の下でリアルタイムのトランザクション操作を処理するため、Apache Kafkaを利用した高速ETLデータストリーミングパイプラインを設計。
-- 複雑なポリシー処理と意思決定ロジックを自動化するため、リアルタイムストリーミングランタイムとIBM BPMおよびBRMSを接続する統合レイヤーを開発。
-- PostgreSQLとCouchbase NoSQLのハイブリッドを利用して、高性能で回復力のあるデータ保持環境をモデル化。
+- **Pruhub**において Apache Flink から**Quarkus**への移行を主導し、コンテナメモリ使用量を`1.5 GB`超から`300 MB`未満へ 60%以上削減。
+- 資金引き出し処理を`2営業日`から**リアルタイム**化（**PostgreSQL ACID 台帳**）。
+- 手動オフセットコミットを用いたゼロロス**Apache Kafka**基盤と**PruServices AI e-KYC**を構築。

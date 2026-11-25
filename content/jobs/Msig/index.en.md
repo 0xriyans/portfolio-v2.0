@@ -1,18 +1,20 @@
 ---
 date: '2024-01-01'
-title: 'Software Developer'
-company: 'MSIG Life Indonesia'
+title: 'Full-Stack Software Engineer'
+company: 'MSIG Life'
+tabLabel: 'MSIG Life'
 location: 'Jakarta, Indonesia'
-range: '2024 - 2025'
+range: '2024 – 2025'
 url: 'https://www.msiglife.co.id/'
 tech:
+  - Java
+  - Spring Boot
   - Spring Cloud
-  - Zuul & Eureka
   - Apache Kafka
+  - PostgreSQL
   - OCR & Biometrics
 ---
 
-- Designed and maintained a resilient, distributed financial backend architecture using Spring Cloud, Eureka Server, and Zuul Gateway.
-- Spearheaded the technical integration of AI engines (OCR, biometric Liveness Detection, TTS, STT) to enable real-time user verification and automated voice interactions.
-- Built decoupled, event-driven messaging networks using Apache Kafka to manage asynchronous workflows across distinct service clusters.
-- Orchestrated extensive historical database migrations of active agent profiles using Spring Batch.
+- Delivered full-stack digital onboarding and agency platforms (**Fortify Digital Life Insurance** and **Andromeda Agency Financing**) using Java, Spring Boot, Spring Cloud, and modern web frontends.
+- Integrated third-party AI verification engines including OCR document extraction, biometric liveness detection, and Text-to-Speech / Speech-to-Text (**TTS / STT**) workflows.
+- Built asynchronous event-driven pipelines with Apache Kafka and orchestrated historical data migrations across PostgreSQL and Microsoft SQL Server.
