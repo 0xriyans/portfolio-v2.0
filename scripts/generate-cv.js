@@ -1,5 +1,8 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Generates static/Riyan Sugiarto Resume.pdf directly from verified Section 2 content.
@@ -20,9 +23,9 @@ const SECTIONS = [
     heading: 'SUMMARY',
     style: 'section',
     lines: [
-      'I design backend systems, APIs, and databases, and also build products end-to-end covering',
-      'system architecture, frontend UIs, and applied AI workflows, so features actually ship.',
-      'Strong believer in maintainable code and pragmatic trade-offs.',
+      'Software Engineer based in Indonesia (6+ years) designing backend systems, APIs, and',
+      'databases end-to-end — covering system architecture, frontend UIs, and applied AI workflows.',
+      'Strong believer in maintainable code, pragmatic trade-offs, and pragmatic system design.',
     ],
   },
   {
@@ -136,6 +139,6 @@ function buildPdfBuffer(contentStream) {
   return Buffer.from(body, 'utf8');
 }
 
-const outPath = path.join(__dirname, '..', 'static', 'Riyan Sugiarto Resume.pdf');
+const outPath = path.join(__dirname, '..', 'public', 'Riyan Sugiarto Resume.pdf');
 fs.writeFileSync(outPath, buildPdfBuffer(buildPdfStream()));
 console.log('Generated CV:', outPath);

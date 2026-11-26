@@ -1,1 +1,2 @@
+export PATH="/d/tools/nodejs-24:$PATH"
 npm run lint-staged

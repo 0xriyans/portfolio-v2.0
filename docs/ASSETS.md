@@ -1,63 +1,38 @@
 # Media & Visual Asset Inventory (`ASSETS.md`)
 
-Asset tracking for Riyan Sugiarto's portfolio revamp. Every project cover must show readable, domain-accurate media — **no dark placeholder blocks, no stock photos, and no assets copied from `rasmadibnu.com`**.
+Asset tracking for the Astro portfolio on branch `migration/astro`. Images use Astro's built-in `astro:assets` (`<Image />`) pipeline into `.webp` under `dist/_astro/`.
 
 ---
 
-## 1. Media Format Standards
+## 1. Profile Portraits & Branding Assets
 
-| Media Type                       | When to Use                              | Technical Requirements                                                                                                                                                                                                           |
-| -------------------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **(a) Looping Video**            | User provides UI recording               | **WebM** preferred + **MP4** fallback, **`6–12s`** muted loop, `playsInline`, max width **`960px`**, target size **`<= 1.5 MB`**, static **`poster` image required** (fallback on mobile `saveData` & `prefers-reduced-motion`). |
-| **(b) Architecture SVG Diagram** | Internal/backend system with no UI asset | Custom clean vector topology diagram styled with **`#010736` / `#0D1C42` / `#22396F` / `#FCF1D0`** (and subtle sans typography). Shows real data flow & verified metrics.                                                        |
-| **(c) Product Screenshot**       | User provides high-contrast UI image     | **WebP / AVIF** (via `gatsby-plugin-image` / `sharp`), lazy-loaded below Hero, rendered `<= 2x` display size, framed cleanly inside `#0D1C42` rounded cards (`16–24px` radius).                                                  |
-
----
-
-## 2. Profile Portraits (Hero & About)
-
-| Asset File                  | Observed Details in Repo                                                                                      | Status                                                      | Notes / Action                                                                                                                                                                                                   |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/images/riyans-jas.png` | PNG (`229,475` bytes), formal dark suit full-body studio portrait                                             | **Have** (builds cleanly with `gatsby-plugin-sharp`)        | Can crop cleanly (`object-position: top`) as a Hero/About portrait, though tight close-up framing is preferable.                                                                                                 |
-| `src/images/riyans-jas.jpg` | `315,776` bytes, casual close-up grey jacket portrait (**file header is actually PNG bytes misnamed `.jpg`**) | **Have — Broken with Sharp `pngquant` at `quality 90-100`** | Previously caused `pngquant.exe` exit code `4` during `gatsby build` when referenced directly by `StaticImage`. Do not use as-is without properly re-encoding to real `.jpg`/`.png`, or supply a fresh portrait. |
-| **Fresh Hero Portrait**     | High-res square/4:5 headshot with balanced lighting against midnight navy `#010736`                           | **`TODO` (Recommended)**                                    | Provide a dedicated high-contrast portrait photo if you prefer a newer headshot over `riyans-jas.png`.                                                                                                           |
+| Asset File                       | Location                                               | Pipeline                            | Status                                          |
+| -------------------------------- | ------------------------------------------------------ | ----------------------------------- | ----------------------------------------------- |
+| Portrait (`riyans-jas.png`)      | `src/assets/riyans-jas.png`                            | `<Image />` (`astro:assets`)        | Active (Hero 48px + About flush right)          |
+| OG Image (`og.png`, `og@2x.png`) | `public/og.png`, `public/og@2x.png`                    | `scripts/generate-assets.js`        | Active (`#FCF1D0` / `#010736` Light Navy/Cream) |
+| Favicons                         | `public/favicon.svg`, `public/favicon.png`             | `scripts/generate-assets.js`        | Active (palette-only monogram)                  |
+| Fonts (`Calibre`)                | `public/fonts/Calibre-{Regular,Medium,Semibold}.woff2` | `@font-face` (`font-display: swap`) | Active (`Calibre-Semibold.woff2` preloaded)     |
+| Resume PDF                       | `public/Riyan Sugiarto Resume.pdf`                     | `scripts/generate-cv.js`            | Active (built from Section 2 facts)             |
 
 ---
 
-## 3. Production Projects Asset Inventory (13 Named Projects)
+## 2. Project Media (`13` Production Systems)
 
-| #   | Project                                      | Content Directory                          | Current Visual in Repo                                                        | Status                                          | Required Format / Action                                                                                                         |
-| --- | -------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Portal Bisnis Askrindo**                   | `content/featured/Insurtech/`              | `insurtech-cover.png` (**Caveat:** image visibly depicts _Asmik by Askrindo_) | **Have (Verify / Replace)**                     | **TODO:** Confirm keeping `insurtech-cover.png` or upload a crisp screenshot / `6–12s` WebM of Portal Bisnis Askrindo.           |
-| 2   | **Fortify Digital Life Insurance**           | `content/featured/Fortify/`                | `fortify.png`                                                                 | **Have**                                        | Clean screenshot exists; optionally add `6–12s` WebM/MP4 + poster for P1/P2 motion.                                              |
-| 3   | **Andromeda Agency Financing**               | `content/featured/Andromeda/`              | `andromeda-cover.png`                                                         | **Have**                                        | Clean screenshot exists; optionally add `6–12s` WebM/MP4 + poster.                                                               |
-| 4   | **Pemulihan Ekonomi Nasional (PEN)**         | `content/featured/Penjaminan_KMK_PEN/`     | `PEN.png`                                                                     | **Have**                                        | Clean screenshot exists.                                                                                                         |
-| 5   | **Pruhub Framework Migration & Withdrawals** | `content/featured/Pruhub/`                 | SVG diagram (`diagram: 'pruhub'`)                                             | **Missing Photo/Video (To-Update SVG Palette)** | Provide sanitized dashboard/architecture slide or WebM if available; otherwise keep custom `#0D1C42`/`#FCF1D0` architecture SVG. |
-| 6   | **PruServices AI e-KYC**                     | `content/featured/PruServices/`            | SVG diagram (`diagram: 'pruservices'`)                                        | **Missing Photo/Video (To-Update SVG Palette)** | Provide non-confidential e-KYC flow screenshot/video if available; otherwise keep SVG diagram.                                   |
-| 7   | **Agunan Bank Online & e-Materai**           | `content/projects/AgunanEMaterai/`         | SVG diagram (`diagram: 'ematerai'`)                                           | **Missing Photo/Video (To-Update SVG Palette)** | Supply redacted UI screenshot/WebM or retain SVG diagram.                                                                        |
-| 8   | **Surety Bond Online**                       | `content/projects/SuretyBondOnline/`       | SVG diagram (`diagram: 'surety'`)                                             | **Missing Photo/Video (To-Update SVG Palette)** | Supply redacted UI screenshot/WebM or retain SVG diagram.                                                                        |
-| 9   | **XL Fulfillment Policy Engine**             | `content/projects/XlFulfillmentPolicy/`    | SVG diagram (`diagram: 'xl-policy'`)                                          | **Missing Photo/Video (To-Update SVG Palette)** | Internal backend system — retain custom architecture SVG unless diagram/demo asset provided.                                     |
-| 10  | **XL Incident Notification**                 | `content/projects/XlIncidentNotification/` | SVG diagram (`diagram: 'xl-incident'`)                                        | **Missing Photo/Video (To-Update SVG Palette)** | Internal backend system — retain architecture SVG unless redacted alert UI asset provided.                                       |
-| 11  | **XL Info Paket**                            | `content/projects/XlInfoPaket/`            | SVG diagram (`diagram: 'xl-paket'`)                                           | **Missing Photo/Video (To-Update SVG Palette)** | Supply redacted UI/API screen if shareable; otherwise retain architecture SVG.                                                   |
-| 12  | **XL Info Quota**                            | `content/projects/XlInfoQuota/`            | SVG diagram (`diagram: 'xl-quota'`)                                           | **Missing Photo/Video (To-Update SVG Palette)** | Supply redacted UI/API screen if shareable; otherwise retain architecture SVG.                                                   |
-| 13  | **XL Bulk IMEI Registration**                | `content/projects/XlBulkImei/`             | SVG diagram (`diagram: 'xl-imei'`)                                            | **Missing Photo/Video (To-Update SVG Palette)** | Supply redacted batch portal capture/WebM or retain architecture SVG.                                                            |
+| Project                               | Cover Type                           | Source Path                             | Status                              |
+| ------------------------------------- | ------------------------------------ | --------------------------------------- | ----------------------------------- |
+| Portal Bisnis Askrindo                | Screenshot (`.webp` via `<Image />`) | `src/assets/projects/portal-bisnis.png` | Active                              |
+| Fortify Digital Life Insurance        | Screenshot (`.webp` via `<Image />`) | `src/assets/projects/fortify.png`       | Active                              |
+| Andromeda Agency Financing            | Screenshot (`.webp` via `<Image />`) | `src/assets/projects/andromeda.png`     | Active                              |
+| Pemulihan Ekonomi Nasional (PEN)      | Screenshot (`.webp` via `<Image />`) | `src/assets/projects/pen.png`           | Active                              |
+| Pruhub Framework Migration (Featured) | Palette SVG Architecture Diagram     | `src/components/ProjectDiagram.astro`   | Active (open for WebM/MP4 clip)     |
+| Agunan Bank Online & e-Materai        | Palette SVG Architecture Diagram     | `src/components/ProjectDiagram.astro`   | Active (open for screenshot/clip)   |
+| Surety Bond Online                    | Palette SVG Architecture Diagram     | `src/components/ProjectDiagram.astro`   | Active (open for screenshot/clip)   |
+| PruServices AI e-KYC                  | Palette SVG Architecture Diagram     | `src/components/ProjectDiagram.astro`   | Active (open for screenshot/clip)   |
+| XL (`5` Microservices Projects)       | Palette SVG Architecture Diagrams    | `src/components/ProjectDiagram.astro`   | Active (open for screenshots/clips) |
 
 ---
 
-## 4. Brand, OpenGraph & Vector Assets
+## 3. Open Motion Media Slots (Optional Future Additions)
 
-| Asset                                           | Current State                                                                                           | Status                        | Action Needed                                                                                                                                                                                                                                         |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `static/og.png` & `static/og@2x.png`            | Likely carries previous dark-terminal branding                                                          | **Need Update** (`To-Create`) | Update social share preview image in `#010736` navy + `#FCF1D0` cream (`Riyan Sugiarto — Software Engineer`) once P0 design is approved.                                                                                                              |
-| `src/images/logo.png` & `src/images/favicons/*` | Existing dark/neon logo assets                                                                          | **To-Verify**                 | Confirm whether to refresh monogram favicon to `#010736` + `#FCF1D0`.                                                                                                                                                                                 |
-| Technology Stack Logos (7 Core Cards)           | Repo previously used CSS text glyphs (`JVM`, `SB`, `KFK`, `PG`, `QKS`, `K8S`, `DKR`) to keep JS lean    | **To-Create (SVG)**           | Section 4.4 specifies real logos/icons on the 7 core fan cards (`Java`, `Spring Boot`, `Apache Kafka`, `PostgreSQL`, `Quarkus`, `Kubernetes`, `Docker`) — use lightweight inline SVGs (`<= 1 KB` each) instead of importing full `react-icons` packs. |
-| Social / Freelance Icons                        | Repo has `GitHub`, `Linkedin`, `Twitter`; lacks native `Fiverr` and `Upwork` icons on baseline branches | **To-Create (SVG)**           | Include crisp lightweight SVG glyphs for `X`, `Fiverr`, `Upwork`, and `Email`.                                                                                                                                                                        |
-
----
-
-## 5. Checklist of Assets Needed From You
-
-- [ ] **Hero / About Portrait Photo:** Confirm `src/images/riyans-jas.png`, request proper re-export of `src/images/riyans-jas.jpg`, or upload a clean headshot.
-- [ ] **Portal Bisnis Askrindo (`insurtech-cover.png`):** Confirm whether to replace the _Asmik by Askrindo_ image with a Portal Bisnis screenshot or `6–12s` WebM recording.
-- [ ] **Optional Video Previews (`6–12s` muted WebM + MP4 + poster, `< 1.5 MB`, max `960px` wide):** For `Portal Bisnis Askrindo`, `Fortify`, `Andromeda`, `PEN`, or any of the 9 diagram-backed systems (`Pruhub`, `PruServices`, `AgunanEMaterai`, `SuretyBondOnline`, and 5 `XL` services) that have public/redacted captures you want showcased.
-- [ ] **Updated Resume PDF (optional):** Confirm if `static/Riyan Sugiarto Resume.pdf` should be refreshed before linking.
+- **Lottie JSON (`src/assets/lottie/`):** No `.json` files provided yet; `LottiePlayer.tsx` (`client:visible`) renders a palette SVG fallback slot cleanly without external hotlinks. Target `< 100 KB` per JSON when added.
+- **Rive `.riv` (`src/assets/rive/`):** No `.riv` file provided yet; `RiveIllustration.tsx` (`client:visible`) renders an interactive Light Navy/Cream SVG fallback with click/hover state toggle. Target `< 200 KB` when added.

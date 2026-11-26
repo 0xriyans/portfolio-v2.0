@@ -1,0 +1,120 @@
+---
+import { getImage } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import portraitImg from '../assets/riyans-jas.png';
+import andromedaImg from '../assets/projects/andromeda.png';
+import fortifyImg from '../assets/projects/fortify.png';
+import penImg from '../assets/projects/pen.png';
+import portalBisnisImg from '../assets/projects/portal-bisnis.png';
+import { getGithubActivity } from '../lib/github';
+import { FloatingNav } from '../components/FloatingNav';
+import { CommandPalette } from '../components/CommandPalette';
+import { AmbientBackground } from '../components/AmbientBackground';
+import { ScrollProgressBar } from '../components/ScrollProgressBar';
+import { ScrollSectionTransition } from '../components/ui/scroll-section-transition';
+import { HeroSection } from '../components/HeroSection';
+import { AboutSection } from '../components/AboutSection';
+import { ProjectsSection } from '../components/ProjectsSection';
+import { StackSection } from '../components/StackSection';
+import { ExperienceSection } from '../components/ExperienceSection';
+import { GithubSection } from '../components/GithubSection';
+import { ContactSection } from '../components/ContactSection';
+import FooterSection from '../components/FooterSection.astro';
+
+const [
+  idCardPortrait,
+  portal480,
+  portal820,
+  fortify480,
+  fortify820,
+  andromeda480,
+  andromeda820,
+  pen480,
+  pen820,
+  github,
+] = await Promise.all([
+  getImage({ src: portraitImg, width: 360, height: 420, format: 'webp' }),
+  getImage({ src: portalBisnisImg, width: 480, format: 'webp' }),
+  getImage({ src: portalBisnisImg, width: 820, format: 'webp' }),
+  getImage({ src: fortifyImg, width: 480, format: 'webp' }),
+  getImage({ src: fortifyImg, width: 820, format: 'webp' }),
+  getImage({ src: andromedaImg, width: 480, format: 'webp' }),
+  getImage({ src: andromedaImg, width: 820, format: 'webp' }),
+  getImage({ src: penImg, width: 480, format: 'webp' }),
+  getImage({ src: penImg, width: 820, format: 'webp' }),
+  getGithubActivity('0xriyans'),
+]);
+
+const screenshots = {
+  'portal-bisnis-askrindo': {
+    src: portal820.src,
+    srcSet: `${portal480.src} 480w, ${portal820.src} 820w`,
+  },
+  fortify: {
+    src: fortify820.src,
+    srcSet: `${fortify480.src} 480w, ${fortify820.src} 820w`,
+  },
+  andromeda: {
+    src: andromeda820.src,
+    srcSet: `${andromeda480.src} 480w, ${andromeda820.src} 820w`,
+  },
+  pen: {
+    src: pen820.src,
+    srcSet: `${pen480.src} 480w, ${pen820.src} 820w`,
+  },
+};
+---
+
+<Layout>
+  <AmbientBackground client:load />
+  <ScrollProgressBar client:idle />
+  <FloatingNav client:load />
+  <CommandPalette client:load />
+
+  <main id="main-content" class="relative z-10 flex w-full flex-col gap-28 md:gap-36 overflow-x-clip">
+    {/* 1. Hero Section */}
+    <div class="mx-auto w-full max-w-[1360px] px-5 sm:px-8 lg:px-12 xl:px-16">
+      <HeroSection client:load portraitSrc={idCardPortrait.src} />
+    </div>
+
+    {/* 2. Currently / About Section with Continuous Scroll Transition */}
+    <div class="mx-auto w-full max-w-[1360px] px-5 sm:px-8 lg:px-12 xl:px-16">
+      <ScrollSectionTransition client:visible>
+        <AboutSection client:idle />
+      </ScrollSectionTransition>
+    </div>
+
+    {/* 3. Projects Section (100vw Fullscreen Stacking) */}
+    <ProjectsSection client:idle screenshots={screenshots} />
+
+    {/* 4. Technology Stack Section with Continuous Scroll Transition */}
+    <div class="mx-auto w-full max-w-[1360px] px-5 sm:px-8 lg:px-12 xl:px-16">
+      <ScrollSectionTransition client:visible>
+        <StackSection client:idle />
+      </ScrollSectionTransition>
+    </div>
+
+    {/* 5. Work Experience Section with Continuous Scroll Transition */}
+    <div class="mx-auto w-full max-w-[1360px] px-5 sm:px-8 lg:px-12 xl:px-16">
+      <ScrollSectionTransition client:visible>
+        <ExperienceSection client:idle />
+      </ScrollSectionTransition>
+    </div>
+
+    {/* 6. GitHub Activity Section with Continuous Scroll Transition */}
+    <div class="mx-auto w-full max-w-[1360px] px-5 sm:px-8 lg:px-12 xl:px-16">
+      <ScrollSectionTransition client:visible>
+        <GithubSection client:idle github={github} />
+      </ScrollSectionTransition>
+    </div>
+
+    {/* 7. Contact Section with Continuous Scroll Transition */}
+    <div class="mx-auto w-full max-w-[1360px] px-5 sm:px-8 lg:px-12 xl:px-16">
+      <ScrollSectionTransition client:visible>
+        <ContactSection client:idle />
+      </ScrollSectionTransition>
+    </div>
+  </main>
+
+  <FooterSection />
+</Layout>
