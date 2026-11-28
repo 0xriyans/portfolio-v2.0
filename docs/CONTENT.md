@@ -21,18 +21,18 @@ Single source of truth for all verified personal, career, project, stack, and co
 
 ## 2. Contact & Email Correction (`P0 Fix`)
 
-> **Critical P0 Email Fix:** The live production site currently displays `riyansgrt23@gmail.com` (with an unwanted `i` after `riyan`), which is **WRONG**. Every occurrence across UI text, metadata, `mailto:` links, footer, and contact forms MUST use **`ryansgrt23@gmail.com`** (confirmed already fixed in `src/config.js`, `package.json`, and `locales/*/translation.json` on the revamp branches — verify zero occurrences remain before release).
+> **Critical Email Fix:** Every occurrence across UI copy, metadata, `mailto:` links, footer, and the rebuilt Resume PDF uses **`ryansgrt23@gmail.com`** (zero occurrences of the incorrect spelling with `i` remain in [src/lib/config.ts](../src/lib/config.ts), [package.json](../package.json), or [dist/index.html](../dist/index.html)).
 
-| Channel                    | Exact Verified Destination                                                                                                                                                                        |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Email (CORRECT)**        | `ryansgrt23@gmail.com` (`mailto:ryansgrt23@gmail.com`)                                                                                                                                            |
-| **Email (WRONG — Remove)** | ~~`riyansgrt23@gmail.com`~~                                                                                                                                                                       |
-| **GitHub**                 | `@0xriyans` — `https://github.com/0xriyans`                                                                                                                                                       |
-| **LinkedIn**               | `https://www.linkedin.com/in/riyan-sugiarto/`                                                                                                                                                     |
-| **X (Twitter)**            | `@0xriyans` — `https://twitter.com/0xriyans`                                                                                                                                                      |
-| **Fiverr**                 | `https://www.fiverr.com/riyansugiarto` (`Open for Freelance`)                                                                                                                                     |
-| **Upwork**                 | `https://www.upwork.com/freelancers/~0111240786693d428e` (`Open for Freelance`)                                                                                                                   |
-| **Resume PDF**             | `TODO`: Confirm whether [static/Riyan Sugiarto Resume.pdf](../static/Riyan%20Sugiarto%20Resume.pdf) also contains old `8+` / `riyansgrt23` / `Deputy VP` details and needs updating or unlinking. |
+| Channel                    | Exact Verified Destination                                                                                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Email (CORRECT)**        | `ryansgrt23@gmail.com` (`mailto:ryansgrt23@gmail.com`)                                                                                                                          |
+| **Email (WRONG — Remove)** | Previously fixed and excluded everywhere                                                                                                                                        |
+| **GitHub**                 | `@0xriyans` — `https://github.com/0xriyans`                                                                                                                                     |
+| **LinkedIn**               | `https://www.linkedin.com/in/riyan-sugiarto/`                                                                                                                                   |
+| **X (Twitter)**            | `@0xriyans` — `https://twitter.com/0xriyans`                                                                                                                                    |
+| **Fiverr**                 | `https://www.fiverr.com/riyansugiarto` (`Open for Freelance`)                                                                                                                   |
+| **Upwork**                 | `https://www.upwork.com/freelancers/~0111240786693d428e` (`Open for Freelance`)                                                                                                 |
+| **Resume PDF**             | Generated from verified Section 2 facts at [public/Riyan Sugiarto Resume.pdf](../public/Riyan%20Sugiarto%20Resume.pdf) via [scripts/generate-cv.js](../scripts/generate-cv.js). |
 
 ---
 

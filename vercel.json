@@ -1,5 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "NODE_OPTIONS=--openssl-legacy-provider gatsby clean && NODE_OPTIONS=--openssl-legacy-provider gatsby build",
-  "outputDirectory": "public"
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }
